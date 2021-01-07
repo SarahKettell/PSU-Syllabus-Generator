@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import './css/style.css';
 import './css/bootstrap.css';
@@ -311,6 +311,7 @@ function App() {
         }
     );
 
+
     // meetingInfo holds data related to meetings for the course
     // when new meeting added, add additional object to meeting_times array
 	const [meetingInfo, setMeetingInfo] = useState({
@@ -361,7 +362,7 @@ function App() {
     });
 
     // holds RTE formatted text for course goals and objectives
-    const [courseObjectives, setCourseObjectives] = useState(null);
+    const [courseObjectives, setCourseObjectives] = useState("");
 
     // holds RTE formatted text for course prerequisites
     const [prereqs, setPrereqs] = useState(null);
@@ -375,7 +376,7 @@ function App() {
     });
 
     // holds RTE formatted text for additional (optional) materials
-    const [additionalMaterials, setAdditionalMaterials] = useState(null);
+    const [additionalMaterials, setAdditionalMaterials] = useState("");
 
     // holds info about exams, assignments, and grading scale/breakdown
     // TODO: Need to create assignment form fields
@@ -407,7 +408,7 @@ function App() {
     });
 
     // holds RTE of any optional additional content
-    const [additionalContent, setAdditionalContent] = useState(null);
+    const [additionalContent, setAdditionalContent] = useState("");
 
     // holds information about required policies
     // TODO: initialize from external source, TBD
@@ -503,6 +504,439 @@ function App() {
 		</p>
 	</div>;
 	const covidName=readCovid?'Covid-19 Statements << ':'Covid-19 Statements >> '
+
+	const [includedContentCheck, setIncludedContentCheck] = useState({
+		course_num: 		{content: "Course Number", added: false, required: false},
+		course_name: 		{content: "Course Name", added: false, required: false},
+		meeting_location: 	{content: "Scheduled Meeting Location", added: false, required: false},
+		meeting_times: 		{content: "Scheduled Meeting Times", added: false, required: false},
+		instructor_name: 	{content: "Instructor Name", added: false, required: true},
+		instructor_contact: {content: "Instructor Phone/Email", added: false, required: true},
+		office_hours: 		{content: "Office Hours", added: false, required: true},
+		course_objectives: 	{content: "Course goals and objectives", added: false, required: true},
+		prereqs: 			{content: "Prerequisites", added: false, required: false},
+		req_materials: 		{content: "Required Materials", added: false, required: true},
+		add_materials: 		{content: "Additional Materials", added: false, required: false},
+		assessment_info: 	{content: "Assessment and Grading Scale", added: false, required: true},
+		exam_info: 			{content: "Examination Policy/Schedule", added: false, required: true},
+		detailed_sched: 	{content: "Detailed Course Schedule", added: false, required: false},
+		added_content: 		{content: "Custom Content", added: false, required: false},
+		required_policies: 	{content: [
+				"Academic Integrity Statement",
+				"Disability Statement",
+				"Counselling and Psychological Services Statement",
+				"Educational Equity",
+				"Mandated Reporting",
+				"Covid-19 Statements"
+			], added: true, required: true}
+	});
+
+	// updates course info and related checklist items
+	function handleCourseInfo(info){
+		const value = info.target.value;
+		const name = info.target.name;
+		setCourseInfo({
+			...courseInfo,
+			[name]: value
+		});
+		let tempContent = includedContentCheck[info.target.name].content;
+		let tempReq = includedContentCheck[info.target.name].required;
+		if(value != "") {
+			setIncludedContentCheck({
+				...includedContentCheck,
+				[name]: {content: tempContent, added: true, required: tempReq}
+			});
+		}
+		else {
+			setIncludedContentCheck({
+				...includedContentCheck,
+				[name]: {content: tempContent, added: false, required: tempReq}
+			});
+		}
+	}
+
+	function updateIncludedContent(){
+		console.log("Clicked");
+		console.log(includedContentCheck);
+		setIncludedContentCheck({
+			...includedContentCheck, course_name: {content: includedContentCheck.course_name.content, added: true}
+		});
+		let test = document.getElementsByClassName("checklist")[0].getElementsByClassName("check-item");
+		for(let index = 0; index < test.length; index++){
+			if(test[index].getAttribute("name") === "course_num"){
+				test[index].classList.add("included-symbol");
+			}
+			console.log(test[index].getAttribute("name"));
+			console.log(test[index].getAttribute("name") === "course_num");
+			console.log(test[index].classList);
+		}
+	}
+
+	// Displays and manages the syllabus checklist module, which includes each type of content
+	// that can be added to the syllabus along with which ones are optional, required, and currently
+	// included
+	function SyllabusChecklistModule() {
+
+		return (
+			<div className="box">
+				<h2>Syllabus Checklist</h2>
+				<div className="checklist">
+					<ul>
+						<li>Course Information</li>
+						<ul>
+							<li className="check-item optional-symbol" name="course_num">{includedContentCheck.course_num.content} {includedContentCheck.course_num.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="course_name">{includedContentCheck.course_name.content} {includedContentCheck.course_name.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="meeting_location">{includedContentCheck.meeting_location.content} {includedContentCheck.meeting_location.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="meeting_times">{includedContentCheck.meeting_times.content} {includedContentCheck.meeting_times.added && <span className="included-symbol"></span>}</li>
+						</ul>
+						<li>Contact information</li>
+						<ul>
+							<li className="check-item required-symbol" name="instructor_name">{includedContentCheck.instructor_name.content} {includedContentCheck.instructor_name.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="instructor_contact">{includedContentCheck.instructor_contact.content} {includedContentCheck.instructor_contact.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="office_hours">{includedContentCheck.office_hours.content} {includedContentCheck.office_hours.added && <span className="included-symbol"></span>}</li>
+						</ul>
+						<li>Course Description</li>
+						<ul>
+							<li className="check-item required-symbol" name="course_objectives">{includedContentCheck.course_objectives.content} {includedContentCheck.course_objectives.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="prereqs">{includedContentCheck.prereqs.content} {includedContentCheck.prereqs.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="req_materials">{includedContentCheck.req_materials.content} {includedContentCheck.req_materials.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="add_materials">{includedContentCheck.add_materials.content} {includedContentCheck.add_materials.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="assessment_info">{includedContentCheck.assessment_info.content} {includedContentCheck.assessment_info.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="exam_info">{includedContentCheck.exam_info.content} {includedContentCheck.exam_info.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="detailed_sched">{includedContentCheck.detailed_sched.content} {includedContentCheck.detailed_sched.added && <span className="included-symbol"></span>}</li>
+						</ul>
+						<li>Additional Content</li>
+						<ul>
+							<li className="check-item optional-symbol" name="added_content">{includedContentCheck.added_content.content} {includedContentCheck.added_content.added && <span className="included-symbol"></span>}</li>
+						</ul>
+						<li>Required Policies</li>
+						<ul>
+							<li className="check-item required-symbol" name="required_policies_0">{includedContentCheck.required_policies.content[0]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="required_policies_1">{includedContentCheck.required_policies.content[1]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="required_policies_2">{includedContentCheck.required_policies.content[2]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="required_policies_3">{includedContentCheck.required_policies.content[3]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="required_policies_4">{includedContentCheck.required_policies.content[4]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="required_policies_5">{includedContentCheck.required_policies.content[5]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
+						</ul>
+
+					</ul>
+					<ul>
+						<li>Course Information</li>
+						<ul>
+							<li><span className="optional-symbol">O</span> Course Number
+								{state.course_num !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="optional-symbol">O</span> Course Name
+								{state.course_name !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="optional-symbol">O</span> Scheduled Meeting Location
+								{state.meeting_location !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="optional-symbol">O</span> Scheduled Meeting Times
+								{state.course_meeting_type !== "" && state.course_start_times !== "" && state.course_end_times !== "" && (state.meeting_mon || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+						</ul>
+						<li>Contact information</li>
+						<ul>
+							<li><span className="required-symbol">R</span> Instructor Name
+								{state.instructor_name !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="required-symbol">R</span> Instructor Phone/Email
+								{state.email !== "" && state.phone !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="required-symbol">R</span> Office Hours
+								{state.office_start_time !== "" && state.office_end_time !== "" && (state.office_mon || state.office_tues || state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+						</ul>
+						<li>Course Description</li>
+						<ul>
+							<li><span className="required-symbol">R</span> Course goals and objectives
+								{state.RichTextCourseGoal !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="optional-symbol">O</span> Prerequisites
+								{state.RichTextPrereq !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="required-symbol">R</span> Required Materials
+								{state.RichTextRequiredTextbooks !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="optional-symbol">O</span> Additional Materials
+								{state.RichTextAdditionalMaterials !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="required-symbol">R</span> Assessment and Grading Scale
+								{state.RichTextExamPolicies !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+							<li><span className="required-symbol">R</span> Examination Policy/Schedule</li>
+							<li><span className="optional-symbol">O</span> Detailed Course Schedule</li>
+						</ul>
+						<li>Additional Content</li>
+						<ul>
+							<li><span className="optional-symbol">O</span> Custom Content
+								{state.RichTextAdditionalContent !== "" && (
+									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
+										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd"
+											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+									</svg>
+								)}
+							</li>
+						</ul>
+						<li>Required Policies</li>
+						<ul>
+							<li><span className="required-symbol">R</span> Academic Integrity Statement <svg width="1.5em"
+																											 height="1.5em"
+																											 viewBox="0 0 16 16"
+																											 className="bi bi-check"
+																											 fill="currentColor"
+																											 xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+							</svg></li>
+							<li><span className="required-symbol">R</span> Disability Statement <svg width="1.5em"
+																									 height="1.5em"
+																									 viewBox="0 0 16 16"
+																									 className="bi bi-check"
+																									 fill="currentColor"
+																									 xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+							</svg></li>
+							<li><span className="required-symbol">R</span> Counselling and Psychological Services Statement <svg
+								width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check" fill="currentColor"
+								xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+							</svg></li>
+							<li><span className="required-symbol">R</span> Educational Equity <svg width="1.5em" height="1.5em"
+																								   viewBox="0 0 16 16"
+																								   className="bi bi-check"
+																								   fill="currentColor"
+																								   xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+							</svg></li>
+							<li><span className="required-symbol">R</span> Mandated Reporting <svg width="1.5em" height="1.5em"
+																								   viewBox="0 0 16 16"
+																								   className="bi bi-check"
+																								   fill="currentColor"
+																								   xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+							</svg></li>
+							<li><span className="required-symbol">R</span> Covid-19 Statements <svg width="1.5em" height="1.5em"
+																									viewBox="0 0 16 16"
+																									className="bi bi-check"
+																									fill="currentColor"
+																									xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+							</svg></li>
+						</ul>
+					</ul>
+				</div>
+			</div>
+		)
+	}
+
+	// Displays and manages the syllabus preview module, which includes the HTML formatted
+	// content of the syllabus. This content is updated live as the user adds to the form.
+	function SyllabusPreviewModule() {
+		return(
+			<div className="box">
+				<h2>Syllabus Preview</h2>
+				<div className="preview">
+					<div className="preview-box">
+
+						{(state.course_num !== "" || state.course_name !== "" || state.course_section !== "" || state.meeting_location !== "") && (
+							<div>
+								<h4>Course Information</h4>
+								<p>
+									Course Number: {state.course_num} <br/>
+									Course Name: {state.course_name} <br/>
+									Course Section: {state.course_section} <br/>
+									Meeting Location : {state.meeting_location} <br/>
+								</p>
+							</div>
+						)}
+
+						{(state.course_start_date !== "" || state.course_end_date !== "" || state.course_meeting_type !== "" || state.meeting_mon || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) && (
+							<div>
+								<h4>Course Schedule & Meeting Times</h4>
+								<p>
+									Course Start Date : {state.course_start_date} <br/>
+									Course End Date : {state.course_end_date} <br/>
+									Course Meeting Type : {state.course_meeting_type} <br/>
+									Course Meeting Days: {state.meeting_mon ? ("Mon ") : ("")}
+									{state.meeting_mon && (state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
+									{state.meeting_tues ? ("Tues ") : ("")}
+									{state.meeting_tues && (state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
+									{state.meeting_wed ? ("Wed ") : ("")}
+									{state.meeting_wed && (state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
+									{state.meeting_thurs ? ("Thurs ") : ("")}
+									{state.meeting_thurs && (state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
+									{state.meeting_fri ? ("Fri ") : ("")}
+									{state.meeting_fri && (state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
+									{state.meeting_sat ? ("Sat ") : ("")}
+									{state.meeting_sat && (state.meeting_sun) ? (", ") : ("")}
+									{state.meeting_sun ? ("Sun ") : ("")} <br/>
+									Course Meeting Start Time : {state.course_start_times} <br/>
+									Course Meeting End Time: {state.course_end_times}
+								</p>
+							</div>
+						)}
+
+
+						<h4>Contact Information</h4>
+						<p>
+							Instructor Name : {state.instructor_name} <br/>
+							Email : {state.email} <br/>
+							Phone : {state.phone} <br/>
+							Office Location: {state.office_location} <br/>
+							Office Hour Days: {state.office_mon ? ("Mon ") : ("")}
+							{state.office_mon && (state.office_tues || state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
+							{state.office_tues ? ("Tues ") : ("")}
+							{state.office_tues && (state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
+							{state.office_wed ? ("Wed ") : ("")}
+							{state.office_wed && (state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
+							{state.office_thurs ? ("Thurs ") : ("")}
+							{state.office_thurs && (state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
+							{state.office_fri ? ("Fri ") : ("")}
+							{state.office_fri && (state.office_sat || state.office_sun) ? (", ") : ("")}
+							{state.office_sat ? ("Sat ") : ("")}
+							{state.office_sat && (state.office_sun) ? (", ") : ("")}
+							{state.office_sun ? ("Sun ") : ("")} <br/>
+							Office Hour: {state.office_start_time}
+							{state.office_start_time === "" ? ("") : (" ~ ")}
+							{state.office_end_time}
+						</p>
+
+						<div>
+							<h4>Course goals and objectives</h4>
+							<p> {state.RichTextCourseGoal} <br/></p>
+						</div>
+
+						{state.RichTextPrereq !== "" && (
+							<div>
+								<h4>Prerequisites</h4>
+								<p>
+									{state.RichTextPrereq} <br/>
+								</p>
+							</div>
+						)}
+
+
+						<div>
+							<h4>Required Materials</h4>
+
+							<p>
+								Required Textbooks: {state.RichTextRequiredTextbooks} <br/>
+								{state.RichTextAdditionalRequiredMaterials === "" ? ("") : ("Additional Required Materials: " + state.RichTextAdditionalRequiredMaterials)}
+								<br/>
+								{state.RichTextLabInfo === "" ? ("") : ("Lab Information: " + state.RichTextLabInfo)}
+							</p>
+						</div>
+
+
+						{state.RichTextAdditionalMaterials !== "" && (
+							<div>
+								<h4>Additional Materials: </h4>
+								<p>
+									{state.RichTextAdditionalMaterials} <br/>
+								</p>
+							</div>
+						)}
+						<div>
+							<h4>Assessment and Grading Scale: </h4>
+							<p>
+								{"Exam Policies: " + state.RichTextExamPolicies} <br/>
+							</p>
+						</div>
+
+
+						{state.RichTextAdditionalContent !== "" && (
+							<div>
+								<h4>Additional Syllabus Content </h4>
+								<p>
+									{state.RichTextAdditionalContent} <br/>
+								</p>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+		)
+	}
  
   return (
 	  <>
@@ -513,7 +947,7 @@ function App() {
 				<h1 id="title">Syllabus Generator</h1>
 				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
 				<div class="intro-buttons">
-					<button type="button" class="btn btn-primary btn-lg">
+					<button type="button" class="btn btn-primary btn-lg" onClick={updateIncludedContent}>
 						Create a Syllabus
 					</button>
 					<button type="button" class="btn btn-primary btn-lg">
@@ -543,15 +977,15 @@ function App() {
 					  <label for="course-number">Course Number:</label>
 					  <input type="text" id="course-number" placeholder="EDUC 305"
 		  name="course_num"
-		  value={state.course_num}
-		  onChange={handleChange} />
+		  value={courseInfo.course_num}
+		  onChange={handleCourseInfo} />
 					</div>
 					  <div class="form-field-inline">
 					  <label for="course-name">Course Name:</label>
 					  <input type="text" id="course-name" placeholder="Creative Arts"
 		  name="course_name"
-		  value={state.course_name}
-		  onChange={handleChange}/>
+		  value={courseInfo.course_name}
+		  onChange={handleCourseInfo}/>
 					</div>
 					<div class="form-field-inline">
 					  <label id="course-section">Section:</label>
@@ -1092,261 +1526,8 @@ function App() {
 			</div>
 
 			<div id="results" class="col results">
-				<div class="box">
-					<h2>Syllabus Checklist</h2>
-					<div class="checklist">
-					<ul>
-						<li>Course Information</li>
-						<ul>
-							<li><span class="optional-symbol">O</span> Course Number
-							{state.course_num !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="optional-symbol">O</span> Course Name
-							{state.course_name !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="optional-symbol">O</span> Scheduled Meeting Location
-							{state.meeting_location !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="optional-symbol">O</span> Scheduled Meeting Times
-							{state.course_meeting_type !== "" && state.course_start_times !== ""&& state.course_end_times !== "" && (state.meeting_mon || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-						</ul>
-						<li>Contact information</li>
-						<ul>
-							<li><span class="required-symbol">R</span> Instructor Name
-							{state.instructor_name !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="required-symbol">R</span> Instructor Phone/Email
-							{state.email !== "" && state.phone !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="required-symbol">R</span> Office Hours
-							{state.office_start_time !== "" && state.office_end_time !== "" && (state.office_mon || state.office_tues || state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-						</ul>
-						<li>Course Description</li>
-						<ul>
-							<li><span class="required-symbol">R</span> Course goals and objectives
-							{state.RichTextCourseGoal !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="optional-symbol">O</span> Prerequisites
-							{state.RichTextPrereq !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="required-symbol">R</span> Required Materials
-							{state.RichTextRequiredTextbooks !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="optional-symbol">O</span> Additional Materials
-							{state.RichTextAdditionalMaterials !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="required-symbol">R</span> Assessment and Grading Scale
-							{state.RichTextExamPolicies !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-							<li><span class="required-symbol">R</span> Examination Policy/Schedule </li>
-							<li><span class="optional-symbol">O</span> Detailed Course Schedule</li>
-						</ul>
-						<li>Additional Content</li>
-						<ul>
-							<li><span class="optional-symbol">O</span> Custom Content
-							{state.RichTextAdditionalContent !== "" && (
-								<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg>
-							)}
-							</li>
-						</ul>
-						<li>Required Policies</li>
-						<ul>
-							<li><span class="required-symbol">R</span> Academic Integrity Statement <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-								</svg></li>
-							<li><span class="required-symbol">R</span> Disability Statement <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-								</svg></li>
-							<li><span class="required-symbol">R</span> Counselling and Psychological Services Statement <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-								</svg></li>
-							<li><span class="required-symbol">R</span> Educational Equity <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-								</svg></li>
-							<li><span class="required-symbol">R</span> Mandated Reporting <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-								</svg></li>
-							<li><span class="required-symbol">R</span> Covid-19 Statements <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-								</svg></li>
-						</ul>
-					</ul>
-					</div>
-				</div>
-				<div class="box">
-					<h2>Syllabus Preview</h2>
-					<div class="preview">
-					<div class="preview-box">
-
-						{(state.course_num !== "" || state.course_name !== "" || state.course_section !== ""|| state.meeting_location !== "" ) && (
-								<div>
-								<h4>Course Information</h4>
-								<p>
-								Course Number: {state.course_num} <br/>
-								Course Name: {state.course_name } <br/>
-								Course Section: {state.course_section} <br/>
-								Meeting Location : {state.meeting_location} <br/>
-								</p>
-								</div>
-						)}
-
-						{(state.course_start_date !== "" || state.course_end_date !== "" || state.course_meeting_type !== ""|| state.meeting_mon  || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun ) && (
-								<div>
-								<h4>Course Schedule & Meeting Times</h4>
-						<p>
-						Course Start Date : {state.course_start_date} <br/>
-						Course End Date : {state.course_end_date} <br/>
-						Course Meeting Type : {state.course_meeting_type} <br/>
-						Course Meeting Days: { state.meeting_mon ? ("Mon ") : ("") }
-							{state.meeting_mon && (state.meeting_tues || state.meeting_wed ||state.meeting_thurs ||state.meeting_fri || state.meeting_sat ||state.meeting_sun) ? (", ") : ("") }
-							{state.meeting_tues ? ("Tues ") : ("") }
-							{state.meeting_tues && (state.meeting_wed ||state.meeting_thurs ||state.meeting_fri || state.meeting_sat ||state.meeting_sun) ? (", ") : ("") }
-							{state.meeting_wed ? ("Wed ") : ("") }
-							{state.meeting_wed && (state.meeting_thurs ||state.meeting_fri || state.meeting_sat ||state.meeting_sun) ? (", ") : ("") }
-							{state.meeting_thurs ? ("Thurs ") : ("") }
-							{state.meeting_thurs && (state.meeting_fri || state.meeting_sat ||state.meeting_sun) ? (", ") : ("") }
-							{state.meeting_fri ? ("Fri ") : ("") }
-							{state.meeting_fri && (state.meeting_sat ||state.meeting_sun) ? (", ") : ("") }
-							{state.meeting_sat ? ("Sat ") : ("") }
-							{state.meeting_sat  && (state.meeting_sun) ? (", ") : ("") }
-							{state.meeting_sun ? ("Sun ") : ("") } <br/>
-						Course Meeting Start Time : {state.course_start_times} <br/>
-						Course Meeting End Time: {state.course_end_times}
-						</p>
-								</div>
-						)}
-
-
-
-						<h4>Contact Information</h4>
-						<p>
-						Instructor Name : {state.instructor_name} <br/>
-						Email : {state.email} <br/>
-						Phone : {state.phone} <br/>
-						Office Location: {state.office_location} <br/>
-						Office Hour Days: { state.office_mon ? ("Mon ") : ("") }
-							{state.office_mon && (state.office_tues || state.office_wed ||state.office_thurs ||state.office_fri || state.office_sat ||state.office_sun) ? (", ") : ("") }
-							{state.office_tues ? ("Tues ") : ("") }
-							{state.office_tues && (state.office_wed ||state.office_thurs ||state.office_fri || state.office_sat ||state.office_sun) ? (", ") : ("") }
-							{state.office_wed ? ("Wed ") : ("") }
-							{state.office_wed && (state.office_thurs ||state.office_fri || state.office_sat ||state.office_sun) ? (", ") : ("") }
-							{state.office_thurs ? ("Thurs ") : ("") }
-							{state.office_thurs && (state.office_fri || state.office_sat ||state.office_sun) ? (", ") : ("") }
-							{state.office_fri ? ("Fri ") : ("") }
-							{state.office_fri && (state.office_sat ||state.office_sun) ? (", ") : ("") }
-							{state.office_sat ? ("Sat ") : ("") }
-							{state.office_sat  && (state.office_sun) ? (", ") : ("") }
-							{state.office_sun ? ("Sun ") : ("") } <br/>
-						Office Hour: {state.office_start_time}
-						{state.office_start_time === "" ? ("") : (" ~ ")}
-						{state.office_end_time}
-						</p>
-
-						<div>
-						<h4>Course goals and objectives</h4>
-						<p> {state.RichTextCourseGoal} <br/> </p>
-						</div>
-
-						{state.RichTextPrereq !== "" && (
-								<div>
-								<h4>Prerequisites</h4>
-								<p>
-								 {state.RichTextPrereq} <br/>
-								</p>
-								</div>
-						)}
- 
-
-								<div>
-								<h4>Required Materials</h4>
-
-								<p>
-								Required Textbooks: {state.RichTextRequiredTextbooks} <br/>
-								{state.RichTextAdditionalRequiredMaterials === "" ? ("") : ("Additional Required Materials: " + state.RichTextAdditionalRequiredMaterials )} <br/>
-								{state.RichTextLabInfo === "" ? ("") : ("Lab Information: " + state.RichTextLabInfo)}
-								</p>
-								</div>
-
-
-						{state.RichTextAdditionalMaterials !== "" && (
-								<div>
-								<h4>Additional Materials: </h4>
-								<p>
-								 {state.RichTextAdditionalMaterials} <br/>
-								</p>
-								</div>
-						)}
-								<div>
-								<h4>Assessment and Grading Scale: </h4>
-								<p>
-								 {"Exam Policies: " + state.RichTextExamPolicies} <br/>
-								</p>
-								</div>
-
-
-						{state.RichTextAdditionalContent !== "" && (
-								<div>
-								<h4>Additional Syllabus Content </h4>
-								<p>
-								 {state.RichTextAdditionalContent} <br/>
-								</p>
-								</div>
-						)}
-					</div>
-					</div>
-				</div>
+				<SyllabusChecklistModule />
+				<SyllabusPreviewModule />
 			</div>
 		</div>
 		</div>
