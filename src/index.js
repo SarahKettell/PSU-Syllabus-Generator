@@ -29,10 +29,14 @@ class MyStatefulEditor extends Component {
 			// This is here to demonstrate using `.toString()` but in a real app it
 			// would be better to avoid generating a string on each change.
 			this.props.onChange(
-				value.toString('html')
+				value
 			);
 		}
-		this.props.updateContent(value.toString('html'));
+		let tempInfo = {
+			id: this.props.id,
+			value: value.toString('html')
+		}
+		this.props.updateContent(tempInfo);
 	};
 
 	render () {
@@ -416,7 +420,7 @@ function App() {
     const [courseObjectives, setCourseObjectives] = useState("");
 
     // holds RTE formatted text for course prerequisites
-    const [prereqs, setPrereqs] = useState(null);
+    const [coursePrereqs, setCoursePrereqs] = useState("");
 
     // holds RTE formatted text for required materials
     const [requiredMaterials, setRequiredMaterials] = useState({
@@ -566,7 +570,7 @@ function App() {
 		instructor_contact: {content: "Instructor Phone/Email", added: false, required: true},
 		office_hours: 		{content: "Office Hours", added: false, required: true},
 		course_objectives: 	{content: "Course goals and objectives", added: false, required: true},
-		prereqs: 			{content: "Prerequisites", added: false, required: false},
+		course_prereqs: 	{content: "Prerequisites", added: false, required: false},
 		req_materials: 		{content: "Required Materials", added: false, required: true},
 		add_materials: 		{content: "Additional Materials", added: false, required: false},
 		assessment_info: 	{content: "Assessment and Grading Scale", added: false, required: true},
@@ -619,19 +623,17 @@ function App() {
 		if(value === "" && includedContentCheck[name].added){updateChecklist(name, false);}
 	}
 
-	function handleCourseObjectives(content){
-		let name = "course_objectives";
-		setCourseObjectives(content);
-		if(content != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
-		if(content === "" && includedContentCheck[name].added){updateChecklist(name, false);}
+	function handleCourseObjectives(info){
+		setCourseObjectives(info.value);
+		if(info.value != "" && !includedContentCheck[info.id].added){updateChecklist(info.id, true);}
+		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
 	}
 
-	function handlePrereqs(info){
-		const value = info.target.value;
-		const name = info.target.name;
-		setPrereqs(value);
-		if(value != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
-		if(value === "" && includedContentCheck[name].added){updateChecklist(name, false);}
+	function handleCoursePrereqs(info){
+		console.log(info.value);
+		setCoursePrereqs(info.value);
+		if(info.value != "" && !includedContentCheck[info.id].added){updateChecklist(info.id, true);}
+		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
 	}
 
 	function handleRequiredMaterials(info){
@@ -693,7 +695,7 @@ function App() {
 						<li>Course Description</li>
 						<ul>
 							<li className="check-item required-symbol" name="course_objectives">{includedContentCheck.course_objectives.content} {includedContentCheck.course_objectives.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item optional-symbol" name="prereqs">{includedContentCheck.prereqs.content} {includedContentCheck.prereqs.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="course_prereqs">{includedContentCheck.course_prereqs.content} {includedContentCheck.course_prereqs.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item required-symbol" name="req_materials">{includedContentCheck.req_materials.content} {includedContentCheck.req_materials.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item optional-symbol" name="add_materials">{includedContentCheck.add_materials.content} {includedContentCheck.add_materials.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item required-symbol" name="assessment_info">{includedContentCheck.assessment_info.content} {includedContentCheck.assessment_info.added && <span className="included-symbol"></span>}</li>
@@ -796,12 +798,10 @@ function App() {
 							<div dangerouslySetInnerHTML={{__html: courseObjectives}} />
 						</div>
 
-						{state.RichTextPrereq !== "" && (
+						{coursePrereqs !== "" && (
 							<div>
 								<h4>Prerequisites</h4>
-								<p>
-									{state.RichTextPrereq} <br/>
-								</p>
+								<div dangerouslySetInnerHTML={{__html: coursePrereqs}} />
 							</div>
 						)}
 
@@ -1168,10 +1168,8 @@ function App() {
 						Description for information in this section goes here.
 						</p>
 						<label for="objectives">Course Goals and Objectives:</label>
-						<MyStatefulEditor updateContent={handleCourseObjectives}/>
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextCourseGoal', text)} />
+						<MyStatefulEditor updateContent={handleCourseObjectives} id="course_objectives"/>
 					</div>
-
 				</fieldset>
 
 				<fieldset>
@@ -1181,7 +1179,7 @@ function App() {
 						Description for information in this section goes here.
 						</p>
 						<label for="prerequisites">Prerequisites:</label>
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextPrereq', text)} />
+						<MyStatefulEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
 					</div>
 				</fieldset>
 
