@@ -1,10 +1,60 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, Component} from 'react';
 import ReactDOM from 'react-dom';
 import './css/style.css';
 import './css/bootstrap.css';
 import {Editor, EditorState, RichUtils} from 'draft-js';
 import 'draft-js/dist/Draft.css';
+import RichTextEditor from 'react-rte';
 
+class RteContent extends Component {
+	render() {
+		let parser = new DOMParser();
+		let doc = parser.parseFromString("<strong>Test</strong>", 'text/html');
+		return(
+			doc.body
+		);
+	}
+}
+
+// Uses Draft.js for functionality and renders content into HTML format
+class MyStatefulEditor extends Component {
+	state = {
+		value: RichTextEditor.createEmptyValue()
+	}
+
+	onChange = (value) => {
+		this.setState({value});
+		if (this.props.onChange) {
+			// Send the changes up to the parent component as an HTML string.
+			// This is here to demonstrate using `.toString()` but in a real app it
+			// would be better to avoid generating a string on each change.
+			this.props.onChange(
+				value.toString('html')
+			);
+		}
+		this.props.updateContent(value.toString('html'));
+	};
+
+	render () {
+		return (
+			<RichTextEditor
+				value={this.state.value}
+				onChange={this.onChange}
+			/>
+		);
+	}
+}
+
+/**
+ * Convert a template string into HTML DOM nodes
+ * @param  {String} str The template string
+ * @return {Node}       The template HTML
+ */
+const stringToHTML = function (str) {
+	let parser = new DOMParser();
+	let doc = parser.parseFromString(str, 'text/html');
+	return doc.body;
+};
 
 // Used Draft.js library
 // Please read https://draftjs.org/docs/api-reference-content-state/#getplaintext for the API Information
@@ -17,6 +67,7 @@ class RichEditorExample extends React.Component {
 	this.onChange = (editorState) => {
 		this.props.setPlainText(editorState.getCurrentContent().getPlainText())
 		this.setState({editorState})
+		console.log(editorState.getCurrentContent().convertToRaw);
 	};
 
 	this.handleKeyCommand = (command) => this._handleKeyCommand(command);
@@ -436,7 +487,8 @@ function App() {
   }
 
   function handleRichEditorChange(key, value) {
-
+	console.log(key);
+	console.log(value);
 	setState({
 	  ...state,
 	  [key]: value
@@ -555,20 +607,63 @@ function App() {
 		}
 	}
 
-	function updateIncludedContent(){
-		console.log("Clicked");
-		console.log(includedContentCheck);
-		setIncludedContentCheck({
-			...includedContentCheck, course_name: {content: includedContentCheck.course_name.content, added: true}
+	// updates contact info and related checklist items
+	function handleContactInfo(info){
+		const value = info.target.value;
+		const name = info.target.name;
+		setContactInfo({
+			...contactInfo,
+			[name]: value
 		});
-		let test = document.getElementsByClassName("checklist")[0].getElementsByClassName("check-item");
-		for(let index = 0; index < test.length; index++){
-			if(test[index].getAttribute("name") === "course_num"){
-				test[index].classList.add("included-symbol");
-			}
-			console.log(test[index].getAttribute("name"));
-			console.log(test[index].getAttribute("name") === "course_num");
-			console.log(test[index].classList);
+		if(value != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
+		if(value === "" && includedContentCheck[name].added){updateChecklist(name, false);}
+	}
+
+	function handleCourseObjectives(content){
+		let name = "course_objectives";
+		setCourseObjectives(content);
+		if(content != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
+		if(content === "" && includedContentCheck[name].added){updateChecklist(name, false);}
+	}
+
+	function handlePrereqs(info){
+		const value = info.target.value;
+		const name = info.target.name;
+		setPrereqs(value);
+		if(value != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
+		if(value === "" && includedContentCheck[name].added){updateChecklist(name, false);}
+	}
+
+	function handleRequiredMaterials(info){
+		const value = info.target.value;
+		const name = info.target.name;
+		if(name === "hasRequiredMaterials"){
+			console.log(value);
+		}
+		else{
+			setRequiredMaterials({
+				...requiredMaterials,
+				[name]: value
+			});
+			if(value != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
+			if(value === "" && includedContentCheck[name].added){updateChecklist(name, false);}
+		}
+	}
+
+	function updateChecklist(fieldName, isIncluded){
+		let tempContent = includedContentCheck[fieldName].content;
+		let tempReq = includedContentCheck[fieldName].required;
+		if(isIncluded) {
+			setIncludedContentCheck({
+				...includedContentCheck,
+				[fieldName]: {content: tempContent, added: true, required: tempReq}
+			});
+		}
+		else {
+			setIncludedContentCheck({
+				...includedContentCheck,
+				[fieldName]: {content: tempContent, added: false, required: tempReq}
+			});
 		}
 	}
 
@@ -617,191 +712,6 @@ function App() {
 							<li className="check-item required-symbol" name="required_policies_3">{includedContentCheck.required_policies.content[3]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item required-symbol" name="required_policies_4">{includedContentCheck.required_policies.content[4]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item required-symbol" name="required_policies_5">{includedContentCheck.required_policies.content[5]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
-						</ul>
-
-					</ul>
-					<ul>
-						<li>Course Information</li>
-						<ul>
-							<li><span className="optional-symbol">O</span> Course Number
-								{state.course_num !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="optional-symbol">O</span> Course Name
-								{state.course_name !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="optional-symbol">O</span> Scheduled Meeting Location
-								{state.meeting_location !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="optional-symbol">O</span> Scheduled Meeting Times
-								{state.course_meeting_type !== "" && state.course_start_times !== "" && state.course_end_times !== "" && (state.meeting_mon || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-						</ul>
-						<li>Contact information</li>
-						<ul>
-							<li><span className="required-symbol">R</span> Instructor Name
-								{state.instructor_name !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="required-symbol">R</span> Instructor Phone/Email
-								{state.email !== "" && state.phone !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="required-symbol">R</span> Office Hours
-								{state.office_start_time !== "" && state.office_end_time !== "" && (state.office_mon || state.office_tues || state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-						</ul>
-						<li>Course Description</li>
-						<ul>
-							<li><span className="required-symbol">R</span> Course goals and objectives
-								{state.RichTextCourseGoal !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="optional-symbol">O</span> Prerequisites
-								{state.RichTextPrereq !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="required-symbol">R</span> Required Materials
-								{state.RichTextRequiredTextbooks !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="optional-symbol">O</span> Additional Materials
-								{state.RichTextAdditionalMaterials !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="required-symbol">R</span> Assessment and Grading Scale
-								{state.RichTextExamPolicies !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-							<li><span className="required-symbol">R</span> Examination Policy/Schedule</li>
-							<li><span className="optional-symbol">O</span> Detailed Course Schedule</li>
-						</ul>
-						<li>Additional Content</li>
-						<ul>
-							<li><span className="optional-symbol">O</span> Custom Content
-								{state.RichTextAdditionalContent !== "" && (
-									<svg width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check"
-										 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-										<path fill-rule="evenodd"
-											  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-									</svg>
-								)}
-							</li>
-						</ul>
-						<li>Required Policies</li>
-						<ul>
-							<li><span className="required-symbol">R</span> Academic Integrity Statement <svg width="1.5em"
-																											 height="1.5em"
-																											 viewBox="0 0 16 16"
-																											 className="bi bi-check"
-																											 fill="currentColor"
-																											 xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg></li>
-							<li><span className="required-symbol">R</span> Disability Statement <svg width="1.5em"
-																									 height="1.5em"
-																									 viewBox="0 0 16 16"
-																									 className="bi bi-check"
-																									 fill="currentColor"
-																									 xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg></li>
-							<li><span className="required-symbol">R</span> Counselling and Psychological Services Statement <svg
-								width="1.5em" height="1.5em" viewBox="0 0 16 16" className="bi bi-check" fill="currentColor"
-								xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg></li>
-							<li><span className="required-symbol">R</span> Educational Equity <svg width="1.5em" height="1.5em"
-																								   viewBox="0 0 16 16"
-																								   className="bi bi-check"
-																								   fill="currentColor"
-																								   xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg></li>
-							<li><span className="required-symbol">R</span> Mandated Reporting <svg width="1.5em" height="1.5em"
-																								   viewBox="0 0 16 16"
-																								   className="bi bi-check"
-																								   fill="currentColor"
-																								   xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg></li>
-							<li><span className="required-symbol">R</span> Covid-19 Statements <svg width="1.5em" height="1.5em"
-																									viewBox="0 0 16 16"
-																									className="bi bi-check"
-																									fill="currentColor"
-																									xmlns="http://www.w3.org/2000/svg">
-								<path fill-rule="evenodd"
-									  d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-							</svg></li>
 						</ul>
 					</ul>
 				</div>
@@ -883,7 +793,7 @@ function App() {
 
 						<div>
 							<h4>Course goals and objectives</h4>
-							<p> {state.RichTextCourseGoal} <br/></p>
+							<div dangerouslySetInnerHTML={{__html: courseObjectives}} />
 						</div>
 
 						{state.RichTextPrereq !== "" && (
@@ -947,7 +857,7 @@ function App() {
 				<h1 id="title">Syllabus Generator</h1>
 				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
 				<div class="intro-buttons">
-					<button type="button" class="btn btn-primary btn-lg" onClick={updateIncludedContent}>
+					<button type="button" class="btn btn-primary btn-lg">
 						Create a Syllabus
 					</button>
 					<button type="button" class="btn btn-primary btn-lg">
@@ -1142,32 +1052,32 @@ function App() {
 							<label for="name">Instrutor Name:</label>
 							<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
 							name="instructor_name"
-							value={state.instructor_name}
-							onChange={handleChange}
+							value={contactInfo.instructor_name}
+							onChange={handleContactInfo}
 							/> 
 						</div>
 						<div class="form-field-inline">
 						  <label for="email">Email:</label>
 						  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
 						  name="email"
-						  value={state.email}
-						  onChange={handleChange}
+						  value={contactInfo.email}
+						  onChange={handleContactInfo}
 						  />
 						</div>
 						<div class="form-field-inline">
 						  <label for="phone">Phone:</label>
 						  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
 						  name="phone"
-						  value={state.phone}
-						  onChange={handleChange}
+						  value={contactInfo.phone}
+						  onChange={handleContactInfo}
 						  />  
 						</div>
 						<div class="form-field-inline">
 						  <label for="office">Office Location:</label>
 						  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
 						  name="office_location"
-						  value={state.office_location}
-						  onChange={handleChange}
+						  value={contactInfo.office_location}
+						  onChange={handleContactInfo}
 						  />
 						</div>
 						<h4>Office Hours</h4>
@@ -1258,6 +1168,7 @@ function App() {
 						Description for information in this section goes here.
 						</p>
 						<label for="objectives">Course Goals and Objectives:</label>
+						<MyStatefulEditor updateContent={handleCourseObjectives}/>
 						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextCourseGoal', text)} />
 					</div>
 
