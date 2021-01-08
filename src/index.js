@@ -427,7 +427,7 @@ function App() {
         textbooks: "",
         additional: "",
         lab_info: "",
-        hasRequiredMaterials: false
+        has_no_required: false
     });
 
     // holds RTE formatted text for additional (optional) materials
@@ -443,7 +443,7 @@ function App() {
             num_of: 0,
             points_total: 0
         }],
-        exam_policies: "",
+        exam_info: "",
         grading_scale_type: {
             percent: true,
             points: false,
@@ -484,10 +484,6 @@ function App() {
 	  ...state,
 	  [evt.target.name]: value
 	});
-	// console.log(evt.target.name, value);
-	// console.log(state);
-	  console.log(evt);
-	  console.log(state);
   }
 
   function handleRichEditorChange(key, value) {
@@ -506,8 +502,8 @@ function App() {
 		  ...state,
 		  [evt.target.name]: value
 		});
-		// console.log(evt.target.name, value);
-		// console.log(state);
+		console.log(evt.target.name, value);
+		console.log(state);
 	}
 
 	const [readMore,setReadMore]=React.useState(false);
@@ -576,7 +572,7 @@ function App() {
 		assessment_info: 	{content: "Assessment and Grading Scale", added: false, required: true},
 		exam_info: 			{content: "Examination Policy/Schedule", added: false, required: true},
 		detailed_sched: 	{content: "Detailed Course Schedule", added: false, required: false},
-		added_content: 		{content: "Custom Content", added: false, required: false},
+		additional_content: {content: "Custom Content", added: false, required: false},
 		required_policies: 	{content: [
 				"Academic Integrity Statement",
 				"Disability Statement",
@@ -630,26 +626,56 @@ function App() {
 	}
 
 	function handleCoursePrereqs(info){
-		console.log(info.value);
 		setCoursePrereqs(info.value);
 		if(info.value != "" && !includedContentCheck[info.id].added){updateChecklist(info.id, true);}
 		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
 	}
 
 	function handleRequiredMaterials(info){
-		const value = info.target.value;
-		const name = info.target.name;
-		if(name === "hasRequiredMaterials"){
-			console.log(value);
+		const value = info.value;
+		const id = info.id;
+		setRequiredMaterials({
+			...requiredMaterials,
+			[id]: value
+		})
+		if(value != "" && !includedContentCheck.req_materials.added){updateChecklist("req_materials", true);}
+		if(value === "" && includedContentCheck.req_materials.added){
+			// check if other required materials are added
+			if(!(requiredMaterials.textbooks.length > 0 ||
+				requiredMaterials.additional.length > 0 ||
+				requiredMaterials.lab_info.length > 0 ||
+				requiredMaterials.has_no_required)) {
+				updateChecklist("req_materials", false);
+			}
 		}
-		else{
-			setRequiredMaterials({
-				...requiredMaterials,
-				[name]: value
-			});
-			if(value != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
-			if(value === "" && includedContentCheck[name].added){updateChecklist(name, false);}
-		}
+	}
+
+	function handleNoReqMaterials(info){
+		setRequiredMaterials({
+			...requiredMaterials,
+			[info.target.id]: [info.target.checked]
+		})
+	}
+
+	function handleAdditionalMaterials(info){
+		setAdditionalMaterials(info.value);
+		if(info.value != "" && !includedContentCheck[info.id].added){updateChecklist(info.id, true);}
+		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
+	}
+
+	function handleExamInfo(info){
+		setAssessmentInfo({
+			...assessmentInfo,
+			exam_info: info.value
+		});
+		if(info.value != "" && !includedContentCheck[info.id].added){updateChecklist(info.id, true);}
+		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
+	}
+
+	function handleAdditionalContent(info){
+		setAdditionalContent(info.value);
+		if(info.value != "" && !includedContentCheck[info.id].added){updateChecklist(info.id, true);}
+		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
 	}
 
 	function updateChecklist(fieldName, isIncluded){
@@ -704,7 +730,7 @@ function App() {
 						</ul>
 						<li>Additional Content</li>
 						<ul>
-							<li className="check-item optional-symbol" name="added_content">{includedContentCheck.added_content.content} {includedContentCheck.added_content.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item optional-symbol" name="additional_content">{includedContentCheck.additional_content.content} {includedContentCheck.additional_content.added && <span className="included-symbol"></span>}</li>
 						</ul>
 						<li>Required Policies</li>
 						<ul>
@@ -810,10 +836,12 @@ function App() {
 							<h4>Required Materials</h4>
 
 							<p>
-								Required Textbooks: {state.RichTextRequiredTextbooks} <br/>
-								{state.RichTextAdditionalRequiredMaterials === "" ? ("") : ("Additional Required Materials: " + state.RichTextAdditionalRequiredMaterials)}
-								<br/>
-								{state.RichTextLabInfo === "" ? ("") : ("Lab Information: " + state.RichTextLabInfo)}
+								Required Textbooks:
+								<div dangerouslySetInnerHTML={{__html: requiredMaterials.textbooks}} />
+								Additional Materials:
+								<div dangerouslySetInnerHTML={{__html: requiredMaterials.additional}} />
+								Lab Info:
+								<div dangerouslySetInnerHTML={{__html: requiredMaterials.lab_info}} />
 							</p>
 						</div>
 
@@ -821,15 +849,14 @@ function App() {
 						{state.RichTextAdditionalMaterials !== "" && (
 							<div>
 								<h4>Additional Materials: </h4>
-								<p>
-									{state.RichTextAdditionalMaterials} <br/>
-								</p>
+								<div dangerouslySetInnerHTML={{__html: additionalMaterials}} />
 							</div>
 						)}
 						<div>
 							<h4>Assessment and Grading Scale: </h4>
 							<p>
-								{"Exam Policies: " + state.RichTextExamPolicies} <br/>
+								Exam Information:
+								<div dangerouslySetInnerHTML={{__html: assessmentInfo.exam_info}} />
 							</p>
 						</div>
 
@@ -837,9 +864,7 @@ function App() {
 						{state.RichTextAdditionalContent !== "" && (
 							<div>
 								<h4>Additional Syllabus Content </h4>
-								<p>
-									{state.RichTextAdditionalContent} <br/>
-								</p>
+								<div dangerouslySetInnerHTML={{__html: additionalContent}} />
 							</div>
 						)}
 					</div>
@@ -1190,23 +1215,26 @@ function App() {
 						<p class="description">
 						Description for information in this section goes here.
 						</p>
-						<label for="required-textbooks">
+						<label for="textbooks">
 						Required Textbooks:</label>
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextRequiredTextbooks', text)} /> <br/>
-						<label for="required-materials">
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="textbooks"/>
+						<label for="additional">
 						Additional Required Materials:</label>
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextAdditionalRequiredMaterials', text)} /> <br/>
-						<label for="lab-information">
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="additional"/>
+						<label for="lab_info">
 						Lab Information:
-						</label> 
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextLabInfo', text)} />
+						</label>
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="lab_info"/>
 
 						<div class="radio-set">
-								<div class="custom-control custom-checkbox custom-control-inline">
-							<input type="checkbox" id="no-required-materials" class="custom-control-input"/>
-							<label for="no-required-materials" class="custom-control-label">
-							There are no required materials for this course.
-							</label>
+							<div class="custom-control custom-checkbox custom-control-inline">
+								<input type="checkbox" id="has_no_required" class="custom-control-input"
+									   checked={requiredMaterials.has_no_required}
+									   onChange={handleNoReqMaterials}
+								/>
+								<label for="has_no_required" class="custom-control-label">
+									There are no required materials for this course.
+								</label>
 							</div>
 						</div>
 					</div>
@@ -1219,9 +1247,8 @@ function App() {
 						Description for information in this section goes here.
 						</p>
 						<label for="additional-materials">
-						Additional Materials:</label> 
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextAdditionalMaterials', text)} />
-
+						Additional Materials:</label>
+						<MyStatefulEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
 					</div>
 				</fieldset>
 
@@ -1232,9 +1259,8 @@ function App() {
 						Description for information in this section goes here.
 						</p>
 					<div>
-						<label for="exam-policies">Exam Policies:</label>
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextExamPolicies', text)} />
-
+						<label for="exam_info">Exam Policies:</label>
+						<MyStatefulEditor updateContent={handleExamInfo} id="exam_info"/>
 					</div>
 					<div>
 						<h4>Grading Scale</h4>
@@ -1351,8 +1377,7 @@ function App() {
 						Include any additional content you would like in the syllabus here.
 						</p>
 						<label for="additional-content">Additional Content:</label>
-						<RichEditorExample setPlainText={text => handleRichEditorChange('RichTextAdditionalContent', text)} />
-
+						<MyStatefulEditor updateContent={handleAdditionalContent} id="additional_content"/>
 					</div>
 				</fieldset>
 
