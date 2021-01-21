@@ -467,14 +467,56 @@ function App() {
 
     // holds information about required policies
     // TODO: initialize from external source, TBD
-    const [requiredPolicies, setRequiredPolicies] = useState([
-        { title: "Academic Integrity Statement", content: ""},
-        { title: "Disability Statement", content: ""},
-        { title: "Counselling and Psychological Services Statement", content: ""},
-        { title: "Educational Equity Statement", content: ""},
-        { title: "Mandated Reporting Statement", content: ""},
-        { title: "Covid-19 Statements", content: ""},
-    ]);
+    const [requiredPolicies, setRequiredPolicies] = useState({
+		academic_integrity: {
+			title: "Academic Integrity Statement",
+			content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit erat. Donec eu porttitor arcu. " +
+				"Suspendisse elit lorem, vestibulum a metus et, auctor tincidunt justo. Duis hendrerit mi in condimentum mollis. " +
+				"Vestibulum sed accumsan nulla. Donec ut risus iaculis, egestas purus pellentesque, convallis nisl. Sed tincidunt " +
+				"posuere sapien, non faucibus purus. Phasellus id molestie ligula. Integer eu luctus velit.",
+			preview: false
+		},
+		disability_access: {
+			title: "Disability Statement",
+			content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit erat. Donec eu porttitor arcu. " +
+				"Suspendisse elit lorem, vestibulum a metus et, auctor tincidunt justo. Duis hendrerit mi in condimentum mollis. " +
+				"Vestibulum sed accumsan nulla. Donec ut risus iaculis, egestas purus pellentesque, convallis nisl. Sed tincidunt " +
+				"posuere sapien, non faucibus purus. Phasellus id molestie ligula. Integer eu luctus velit.",
+			preview: false
+		},
+		counseling_statement: {
+			title: "Counselling and Psychological Services Statement",
+			content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit erat. Donec eu porttitor arcu. " +
+				"Suspendisse elit lorem, vestibulum a metus et, auctor tincidunt justo. Duis hendrerit mi in condimentum mollis. " +
+				"Vestibulum sed accumsan nulla. Donec ut risus iaculis, egestas purus pellentesque, convallis nisl. Sed tincidunt " +
+				"posuere sapien, non faucibus purus. Phasellus id molestie ligula. Integer eu luctus velit.",
+			preview: false
+		},
+		educational_equity: {
+			title: "Educational Equity Statement",
+			content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit erat. Donec eu porttitor arcu. " +
+				"Suspendisse elit lorem, vestibulum a metus et, auctor tincidunt justo. Duis hendrerit mi in condimentum mollis. " +
+				"Vestibulum sed accumsan nulla. Donec ut risus iaculis, egestas purus pellentesque, convallis nisl. Sed tincidunt " +
+				"posuere sapien, non faucibus purus. Phasellus id molestie ligula. Integer eu luctus velit.",
+			preview: false
+		},
+		mandated_reporting: {
+			title: "Mandated Reporting Statement",
+			content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit erat. Donec eu porttitor arcu. " +
+				"Suspendisse elit lorem, vestibulum a metus et, auctor tincidunt justo. Duis hendrerit mi in condimentum mollis. " +
+				"Vestibulum sed accumsan nulla. Donec ut risus iaculis, egestas purus pellentesque, convallis nisl. Sed tincidunt " +
+				"posuere sapien, non faucibus purus. Phasellus id molestie ligula. Integer eu luctus velit.",
+			preview: false
+		},
+		covid_statements: {
+			title: "Covid-19 Statements",
+			content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit erat. Donec eu porttitor arcu. " +
+				"Suspendisse elit lorem, vestibulum a metus et, auctor tincidunt justo. Duis hendrerit mi in condimentum mollis. " +
+				"Vestibulum sed accumsan nulla. Donec ut risus iaculis, egestas purus pellentesque, convallis nisl. Sed tincidunt " +
+				"posuere sapien, non faucibus purus. Phasellus id molestie ligula. Integer eu luctus velit.",
+			preview: false
+		}
+	});
 
 	// currently handles changes for ALL non RTE input
 	// attempt to break it up by different types
@@ -506,60 +548,10 @@ function App() {
 		console.log(state);
 	}
 
-	const [readMore,setReadMore]=React.useState(false);
-	const [readDisabilityStatement,setDisabilityStatement]=React.useState(false);
-	const [readCounseling,setCounseling]=React.useState(false);
-	const [readEducation,setEducation]=React.useState(false);
-	const [readMandated,setMandated]=React.useState(false);
-	const [readCovid,setCovid]=React.useState(false);
-
-	//academic integrity statement
-	const academicIntegrityStatement=<div>
-		<p>
-		Academic dishonesty is not limited to simply cheating on an exam or assignment. The following is quoted directly from the "PSU Faculty Senate Policies for Students" regarding academic integrity and academic dishonesty: "Academic integrity is the pursuit of scholarly activity free from fraud and deception and is an educational objective of this institution. Academic dishonesty includes, but is not limited to, cheating, plagiarizing, fabricating of information or citations, facilitating acts of academic dishonesty by others, having
-12unauthorized possession of examinations, submitting work of another person or work previously used without informing the instructor, or tampering with the academic work of other students."
-		</p>
-	</div>;
-	const academicIntegrityName=readMore?'Academic Integrity Statement << ':'Academic Integrity Statement >> '
-	//Disability Statement
-	const disabilityStatement=<div>
-		<p>
-		Penn State welcomes students with disabilities into the University's educational programs. Every Penn State campus has a Student DisAbility Resources office. Student DisAbility Resources at Penn State Harrisburg is located in SEC 205. The Disability Services Coordinator, Alan Babcock, can be reached via email at aub15@psu.edu or phone 717-948-6025.
-		</p>
-	</div>;
-	const disabilityName=readDisabilityStatement?'Disability Statement << ':'Disability Statement >> '
-	//Counselling and Psychological Services Statement
-	const counselingStatement=<div>
-		<p>
-		Students may face a variety of concerns over the course of their time at PSH such as depressed mood, anxiety, stress, family concerns, body image, substance use, sexuality and many others that may interfere with their ability to focus on their studies. Counseling Services provides FREE mental health and social support for all currently enrolled students. Staffs follow strict legal and ethical guidelines concerning the confidentiality of counseling. Counseling services is located in SEC 205 and can be reached by phone at (717) 948-6025. You can find more information at the Counseling Services webpage: http://harrisburg.psu.edu/counseling-services
-		</p>
-	</div>;
-	const counselingName=readCounseling?'Counselling and Psychological Services Statement << ':'Counselling and Psychological Services Statement >> '
-	//Educational Equity
-	const educationStatement=<div>
-		<p>
-		Penn State takes great pride to foster a diverse and inclusive environment for students, faculty, and staff. Acts of intolerance, discrimination, harassment, and/or incivility due to age, ancestry, color, disability, gender, national origin, race, religious belief, sexual orientation, or veteran status are not tolerated and can be reported through Educational Equity at the Report Bias site: http://equity.psu.edu/reportbias/statement. Penn State's Code of Conduct can be found at the following link https://studentaffairs.psu.edu/support-safety-conduct/student-conduct/code-conduct.
-		</p>
-	</div>;
-	const educationName=readEducation?'Educational Equity << ':'Educational Equity >> '
-	//Mandated Reporting
-	const mandatedStatement=<div>
-		<p>
-		One of your instructor's responsibilities is to help create a safe learning environment on our campus. Your instructor also has a mandatory reporting responsibility related to their role as an educator. It is your instructor's goal that you feel able to share information related to your life experiences in classroom discussions, in your written work, and in one-on-one meetings. Your instructor will seek to keep information you share private to the greatest extent possible. However, per University policy AD85, your instructor is required to share information regarding sexual misconduct or information about a crime with the University including incidents of sex-based discrimination and harassment (discrimination, harassment, sexual harassment, sexual misconduct, dating violence, domestic violence, stalking, and retaliation). While faculty are ethically bound to report any information as it relates to University policy, they are also a resource and want to be sure you are aware of the services available to you.
-		</p>
-	</div>;
-	const mandatedName=readMandated?'Mandated Reporting << ':'Mandated Reporting >> '
-	//Covid-19 Statements
-	const covidStatement=<div>
-		<p>
-		  Covid-19 Statement content here
-		</p>
-	</div>;
-	const covidName=readCovid?'Covid-19 Statements << ':'Covid-19 Statements >> '
-
 	const [includedContentCheck, setIncludedContentCheck] = useState({
 		course_num: 		{content: "Course Number", added: false, required: false},
 		course_name: 		{content: "Course Name", added: false, required: false},
+		course_section:		{content: "Course Section", added: false, required: false},
 		meeting_location: 	{content: "Scheduled Meeting Location", added: false, required: false},
 		meeting_times: 		{content: "Scheduled Meeting Times", added: false, required: false},
 		instructor_name: 	{content: "Instructor Name", added: false, required: true},
@@ -591,20 +583,8 @@ function App() {
 			...courseInfo,
 			[name]: value
 		});
-		let tempContent = includedContentCheck[info.target.name].content;
-		let tempReq = includedContentCheck[info.target.name].required;
-		if(value != "") {
-			setIncludedContentCheck({
-				...includedContentCheck,
-				[name]: {content: tempContent, added: true, required: tempReq}
-			});
-		}
-		else {
-			setIncludedContentCheck({
-				...includedContentCheck,
-				[name]: {content: tempContent, added: false, required: tempReq}
-			});
-		}
+		if(value != "" && !includedContentCheck[name].added){updateChecklist(name, true);}
+		if(value === "" && includedContentCheck[name].added){updateChecklist(name, false);}
 	}
 
 	// updates contact info and related checklist items
@@ -695,6 +675,14 @@ function App() {
 		}
 	}
 
+	function toggleRequiredPolicies(info){
+		let newVal = requiredPolicies[info.target.name];
+		// setRequiredPolicies({
+		// 	...requiredPolicies,
+		// 	[info.target.name]:
+		// })
+	}
+
 	// Displays and manages the syllabus checklist module, which includes each type of content
 	// that can be added to the syllabus along with which ones are optional, required, and currently
 	// included
@@ -756,17 +744,15 @@ function App() {
 				<div className="preview">
 					<div className="preview-box">
 
-						{(state.course_num !== "" || state.course_name !== "" || state.course_section !== "" || state.meeting_location !== "") && (
-							<div>
-								<h4>Course Information</h4>
-								<p>
-									Course Number: {state.course_num} <br/>
-									Course Name: {state.course_name} <br/>
-									Course Section: {state.course_section} <br/>
-									Meeting Location : {state.meeting_location} <br/>
-								</p>
-							</div>
-						)}
+						<div>
+							<h4>Course Information</h4>
+							<p>
+								Course Number: {courseInfo.course_num} <br/>
+								Course Name: {courseInfo.course_name} <br/>
+								Course Section: {courseInfo.course_section} <br/>
+								Meeting Location : {courseInfo.meeting_location} <br/>
+							</p>
+						</div>
 
 						{(state.course_start_date !== "" || state.course_end_date !== "" || state.course_meeting_type !== "" || state.meeting_mon || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) && (
 							<div>
@@ -797,10 +783,10 @@ function App() {
 
 						<h4>Contact Information</h4>
 						<p>
-							Instructor Name : {state.instructor_name} <br/>
-							Email : {state.email} <br/>
-							Phone : {state.phone} <br/>
-							Office Location: {state.office_location} <br/>
+							Instructor Name : {contactInfo.instructor_name} <br/>
+							Email : {contactInfo.email} <br/>
+							Phone : {contactInfo.phone} <br/>
+							Office Location: {contactInfo.office_location} <br/>
 							Office Hour Days: {state.office_mon ? ("Mon ") : ("")}
 							{state.office_mon && (state.office_tues || state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
 							{state.office_tues ? ("Tues ") : ("")}
@@ -909,32 +895,32 @@ function App() {
 					<div class="form-section">
 					<p class="description">Description for information in this section goes here.</p>
 					<div class="form-field-inline">
-					  <label for="course-number">Course Number:</label>
-					  <input type="text" id="course-number" placeholder="EDUC 305"
+					  <label for="course_name">Course Number:</label>
+					  <input type="text" id="course_name" placeholder="EDUC 305"
 		  name="course_num"
 		  value={courseInfo.course_num}
 		  onChange={handleCourseInfo} />
 					</div>
 					  <div class="form-field-inline">
-					  <label for="course-name">Course Name:</label>
-					  <input type="text" id="course-name" placeholder="Creative Arts"
+					  <label for="course_name">Course Name:</label>
+					  <input type="text" id="course_name" placeholder="Creative Arts"
 		  name="course_name"
 		  value={courseInfo.course_name}
 		  onChange={handleCourseInfo}/>
 					</div>
 					<div class="form-field-inline">
-					  <label id="course-section">Section:</label>
-					  <input type="email" id="course-section" placeholder="001"
+					  <label id="course_section">Section:</label>
+					  <input type="email" id="course_section" placeholder="001"
 		  name="course_section"
-		  value={state.course_section}
-		  onChange={handleChange}/>
+		  value={courseInfo.course_section}
+		  onChange={handleCourseInfo}/>
 					</div>
 					<div class="form-field-inline">
-					  <label for="meeting-location">Meeting Location:</label>
-					  <input type="text" id="meeting-location" placeholder="Olmsted 205"
+					  <label for="meeting_location">Meeting Location:</label>
+					  <input type="text" id="meeting_location" placeholder="Olmsted 205"
 		  name="meeting_location"
-		  value={state.meeting_location}
-		  onChange={handleChange}/>
+		  value={courseInfo.meeting_location}
+		  onChange={handleCourseInfo}/>
 					</div>
 					</div>
 				</fieldset>
@@ -1074,7 +1060,7 @@ function App() {
 					<div class="form-section">
 						<p class="description">Description for information in this section goes here.</p>
 						<div class="form-field-inline">
-							<label for="name">Instrutor Name:</label>
+							<label for="name">Instructor Name:</label>
 							<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
 							name="instructor_name"
 							value={contactInfo.instructor_name}
@@ -1392,8 +1378,8 @@ function App() {
 								<input type="checkbox" id="policy-ai" value="academic-integrity" class="custom-control-input" checked/>
 								<label for="policy-ai" class="custom-control-label">
 									<div >
-										<a className="read-more-link" onClick={()=>{setReadMore(!readMore)}}><span>{academicIntegrityName}</span></a>
-											{readMore && academicIntegrityStatement}
+										<a className="read-more-link" name="academic_integrity"><span>{requiredPolicies.academic_integrity.title}</span></a>
+											{requiredPolicies.academic_integrity.preview && requiredPolicies.academic_integrity.content}
 									</div>
 								</label>
 							</div>
@@ -1401,8 +1387,8 @@ function App() {
 								<input type="checkbox" id="policy-da" value="disability-access" class="custom-control-input" checked/>
 								<label for="policy-da" class="custom-control-label">
 									<div >
-										<a className="read-more-link" onClick={()=>{setDisabilityStatement(!readDisabilityStatement)}}><span>{disabilityName}</span></a>
-											{readDisabilityStatement && disabilityStatement}
+										<a className="read-more-link"><span>{requiredPolicies.disability_access.title}</span></a>
+											{requiredPolicies.disability_access.preview && requiredPolicies.disability_access.content}
 									</div>
 								</label>
 							</div>
@@ -1410,8 +1396,8 @@ function App() {
 								<input type="checkbox" id="policy-cs" value="counseling-services" class="custom-control-input" checked/>
 								<label for="policy-cs" class="custom-control-label">
 								  <div >
-										<a className="read-more-link" onClick={()=>{setCounseling(!readCounseling)}}><span>{counselingName}</span></a>
-											{readCounseling&& counselingStatement }
+										<a className="read-more-link"><span>{requiredPolicies.counseling_statement.title}</span></a>
+											{requiredPolicies.counseling_statement.preview && requiredPolicies.counseling_statement.content }
 									</div>
 								</label>
 							</div>
@@ -1419,8 +1405,8 @@ function App() {
 								<input type="checkbox" id="policy-ee" value="educational-equity" class="custom-control-input" checked/>
 								<label for="policy-ee" class="custom-control-label">
 									<div >
-										<a className="read-more-link" onClick={()=>{setEducation(!readEducation)}}><span>{educationName}</span></a>
-											{readEducation && educationStatement}
+										<a className="read-more-link"><span>{requiredPolicies.educational_equity.title}</span></a>
+											{requiredPolicies.educational_equity.preview && requiredPolicies.educational_equity.content}
 									</div>
 								</label>
 							</div>
@@ -1428,8 +1414,8 @@ function App() {
 								<input type="checkbox" id="policy-mr" value="mandated-reporting" class="custom-control-input" checked/>
 								<label for="policy-mr" class="custom-control-label">
 									<div >
-										<a className="read-more-link" onClick={()=>{setMandated(!readMandated)}}><span>{mandatedName}</span></a>
-											{readMandated && mandatedStatement}
+										<a className="read-more-link"><span>{requiredPolicies.mandated_reporting.title}</span></a>
+											{requiredPolicies.mandated_reporting.preview && requiredPolicies.mandated_reporting.content}
 									</div>
 								</label>
 							</div>
@@ -1437,8 +1423,8 @@ function App() {
 								<input type="checkbox" id="policy-c19" value="covid-19-statements" class="custom-control-input" checked/>
 								<label for="policy-c19" class="custom-control-label">
 									<div >
-										<a className="read-more-link" onClick={()=>{setCovid(!readCovid)}}><span>{covidName}</span></a>
-											{readCovid && covidStatement}
+										<a className="read-more-link"><span>{requiredPolicies.covid_statements.title}</span></a>
+											{requiredPolicies.covid_statements.preview && requiredPolicies.covid_statements.content}
 									</div>
 								</label>
 							</div>

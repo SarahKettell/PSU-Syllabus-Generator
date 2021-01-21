@@ -1,0 +1,28 @@
+/* This stylesheet is used to define the styles for the HTML syllabus format in the preview and all associated files*/
+
+.syllabus-container{
+    background-image: url("syllabus-header-image.png");
+    background-repeat: no-repeat;
+    background-position: top left;
+    padding:2em;
+}
+
+.syllabus-container h1, h2, h3, h4, h5, h6{
+    font-family: Avenir, sans-serif;
+}
+
+.syllabus-container .header{
+    text-align: center;
+}
+
+.syllabus-container p{
+    padding: 0 2em 0 2em;
+}
+
+.syllabus-container ul{
+    padding: 0 3em 0 3em;
+}
+
+.syllabus-container .course-information p{
+    margin: 0.5em 0 0.5em 0;
+}
