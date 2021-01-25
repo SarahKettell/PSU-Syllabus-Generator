@@ -1274,7 +1274,7 @@ function App() {
 							<li>
 								<label class="letter">A-</label>
 								<span class="range">
-									<input type="number" min="0" value="90"/>  to <input type="number" min="0" value="94"/>
+									<input type="number" min="0"/>  to <input type="number" min="0" value="94"/>
 								</span>
 							</li>
 							<li>

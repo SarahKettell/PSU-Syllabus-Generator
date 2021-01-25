@@ -1,28 +1,89 @@
 /* This stylesheet is used to define the styles for the HTML syllabus format in the preview and all associated files*/
 
 .syllabus-container{
-    background-image: url("syllabus-header-image.png");
-    background-repeat: no-repeat;
-    background-position: top left;
-    padding:2em;
+    padding:2rem;
+    margin: 1rem 3rem;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .syllabus-container h1, h2, h3, h4, h5, h6{
-    font-family: Avenir, sans-serif;
+    font-family: Avenir, 'Roboto', sans-serif;
+}
+
+.syllabus-container h2{
+    margin-top: 1.5em;
+    border-top: 1px solid #314d64;
+    padding-top: 1em;
+}
+
+.syllabus-container h3{
+    margin-top: 2em;
+}
+
+.syllabus-container h3, h4, h5, h6{
+    text-transform: uppercase;
 }
 
 .syllabus-container .header{
     text-align: center;
+    margin-bottom: 3rem;
 }
+
+.syllabus-container .header h1{
+    margin-bottom: 0;
+    border:none;
+}
+
+.syllabus-container .header h2{
+    margin-top: 0;
+    border:none;
+}
+
+.syllabus-container{}
 
 .syllabus-container p{
-    padding: 0 2em 0 2em;
 }
 
-.syllabus-container ul{
-    padding: 0 3em 0 3em;
+.syllabus-container li{
 }
 
 .syllabus-container .course-information p{
     margin: 0.5em 0 0.5em 0;
 }
+
+.syllabus-container .course-information .title{
+    font-weight: bold;
+    margin-right:.5em;
+}
+
+.syllabus-container .grading-information ul  {
+    list-style: none;
+    padding-left: 0;
+}
+
+.syllabus-container .grading-information ul.assignment-grades .title{
+    font-weight:bold;
+    margin-left:0;
+}
+
+.syllabus-container .grading-information ul.assignment-grades li{
+    margin-bottom:20px;
+}
+
+.syllabus-container .grading-information  ul.grading-scale{
+    text-align: center;
+}
+
+.syllabus-container .grading-information  ul.grading-scale li.grade-scale-titles{
+    font-weight: bold;
+}
+.syllabus-container .grading-information ul.grading-scale li span{
+    width:100px;
+    display:inline-block;
+    text-align: center;
+}
+
+.syllabus-container .grading-information ul.grading-scale .grade{
+    text-align: left;
+}
+
