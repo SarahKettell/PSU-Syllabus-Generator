@@ -2,9 +2,12 @@ import React, {useEffect, useState, Component} from 'react';
 import ReactDOM from 'react-dom';
 import './css/style.css';
 import './css/bootstrap.css';
+import './css/html-syllabus-styles.css';
+import './css/preview-styles.css';
 import {Editor, EditorState, RichUtils} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import RichTextEditor from 'react-rte';
+import SyllabusPreview from "./SyllabusPreview";
 
 class RteContent extends Component {
 	render() {
@@ -258,51 +261,51 @@ const InlineStyleControls = (props) => {
 };
 
 
-//I left it for your reference when you implement dynamically generating buttons
-function Button() {
-
-  const [inputs, setInputs] = React.useState([
-	  { id: 1, name: 'Input 1', value: '' },
-  ])
-
-  const [testtt, setTesttt] = React.useState(0)
-
-  const handleChange = (evt) => {
-
-	  let inputsState = inputs
-	  inputsState.forEach(input => {
-		  if (input.name === evt.target.name) {
-			  input.value = evt.target.value
-		  }
-	  })
-
-	  setInputs(inputsState)
-
-	  console.log(inputs)
-  }
-
-  const handleAdd = () => {
-	  setInputs([...inputs, { id: new Date().getTime(), name: new Date().getTime().toString(), value: '' }])
-	  console.log(inputs)
-  }
-
-
-  const testt = () => {
-	  setTesttt(new Date().getTime())
-  }
-
-return (
-  <div className="App">
-	<header className="App-header">
-		{inputs.map(input => <InputComponent key={input.id} input={input} onChange={handleChange} />)}
-
-		<button onClick={handleAdd}>Add more</button>
-		<button onClick={testt}>Test</button>
-
-	</header>
-  </div>
-);
-}
+// //I left it for your reference when you implement dynamically generating buttons
+// function Button() {
+//
+//   const [inputs, setInputs] = React.useState([
+// 	  { id: 1, name: 'Input 1', value: '' },
+//   ])
+//
+//   const [testtt, setTesttt] = React.useState(0)
+//
+//   const handleChange = (evt) => {
+//
+// 	  let inputsState = inputs
+// 	  inputsState.forEach(input => {
+// 		  if (input.name === evt.target.name) {
+// 			  input.value = evt.target.value
+// 		  }
+// 	  })
+//
+// 	  setInputs(inputsState)
+//
+// 	  console.log(inputs)
+//   }
+//
+//   const handleAdd = () => {
+// 	  setInputs([...inputs, { id: new Date().getTime(), name: new Date().getTime().toString(), value: '' }])
+// 	  console.log(inputs)
+//   }
+//
+//
+//   const testt = () => {
+// 	  setTesttt(new Date().getTime())
+//   }
+//
+// return (
+//   <div className="App">
+// 	<header className="App-header">
+// 		{inputs.map(input => <InputComponent key={input.id} input={input} onChange={handleChange} />)}
+//
+// 		<button onClick={handleAdd}>Add more</button>
+// 		<button onClick={testt}>Test</button>
+//
+// 	</header>
+//   </div>
+// );
+//}
 
 //Main function that contains all the contents
 function App() {
@@ -1448,6 +1451,7 @@ function App() {
 			<div id="results" class="col results">
 				<SyllabusChecklistModule />
 				<SyllabusPreviewModule />
+				<SyllabusPreview />
 			</div>
 		</div>
 		</div>
@@ -1457,23 +1461,6 @@ function App() {
 		</div>
 	  </>
   );
-}
-
-function InputComponent({input, onChange}) {
-
-	console.log(input)
-
-return (
-  
-	<div>
-		<div>This is the input for {input.name}</div>
-		<div>This is the value {input.value}</div>
-		<input type="text" name={input.name} onChange={onChange}/>
-		<br/>
-		<br/>
-	</div>
-
-)
 }
 
 

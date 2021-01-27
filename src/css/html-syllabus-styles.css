@@ -6,6 +6,13 @@
 }
 .syllabus-container h1, h2, h3, h4, h5, h6{
     font-family: Avenir, 'Roboto', sans-serif;
+    background: none;
+    color:black;
+}
+.box .syllabus-container h2{
+    padding: 0;
+    background: none;
+    color: black;
 }
 .syllabus-container h2{
     margin-top: 1.5em;
@@ -88,7 +95,6 @@
     .syllabus-container{
         margin: 0;
         padding: 0;
-        background-image: url("syllabus-header-image.png");
         background-position: top left;
         background-repeat: no-repeat;
         background-size: 100px;
