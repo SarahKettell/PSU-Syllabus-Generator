@@ -43,18 +43,11 @@
         }
         .syllabus-container .table-of-contents ul{
             list-style: none;
-            border-bottom: 1px solid #314d64;
             text-transform: uppercase;
-            padding: 20px;
+            padding:0;
         }
         .syllabus-container .table-of-contents li{
-            display: inline-block;
-            padding: 0 10px 0 10px;
-            margin: 5px 0 5px 0;
-            border-right: 1px solid lightgrey;
-        }
-        .syllabus-container .table-of-contents li:first-child{
-            border-left: 1px solid lightgrey;
+            margin: 0;
         }
         .syllabus-container .table-of-contents a{
             text-decoration: none;
@@ -65,8 +58,19 @@
             text-decoration: none;
             color:#1E407C;
         }
+        .syllabus-container .course-information {
+            width: 100%;
+        }
         .syllabus-container .course-information p{
             margin: 0.5em 0 0.5em 0;
+        }
+        .syllabus-container .course-information .table-of-contents {
+            display: inline-block;
+            width: 49%;
+        }
+        .syllabus-container .course-information .main-info{
+            width: 49%;
+            display: inline-block;
         }
         .syllabus-container .course-information .title{
             font-weight: bold;
@@ -83,6 +87,9 @@
         .syllabus-container .grading-information ul.assignment-grades li{
             margin-bottom:20px;
         }
+        /*.syllabus-container .grading-information  ul.grading-scale{*/
+        /*    text-align: center;*/
+        /*}*/
         .syllabus-container .grading-information  ul.grading-scale li.grade-scale-titles span{
             font-weight: bold;
             text-align: center;
@@ -96,25 +103,12 @@
             text-align: left;
         }
         @media print {
-            .syllabus-container{
-                margin: 0;
-                padding: 0;
-                background-image: url("syllabus-header-image.png");
-                background-position: top left;
-                background-repeat: no-repeat;
-                background-size: 100px;
+            .header{
+                display: flex;
             }
             .header img {
-                display:none;
             }
-            .header h1{
-                font-size: 16pt;
-            }
-            .header h2{
-                font-size: 14pt;
-            }
-            .table-of-contents {
-                display: none;
+            .header .header-text{
             }
         }
     </style>
@@ -125,37 +119,40 @@
     <div class="header">
         <img src="syllabus-header-image.png" alt="Penn State Harrisburg Logo">
         <div class="header-text">
-            <h1>CMPSC460: Principles of Programming Languages</h1>
-            <h2>Spring 2021</h2>
-            <div class="table-of-contents">
-                <ul class="anchor-links">
-                    <li><a href="#information">Course Information</a></li>
-                    <li><a href="#objectives">Description and Objectives</a></li>
-                    <li><a href="#prereqs">Prerequisites</a></li>
-                    <li><a href="#required">Required Materials</a></li>
-                    <li><a href="#supplemental">Supplemental Materials</a></li>
-                    <li><a href="#assignment-info">Assignments and Exams</a></li>
-                    <li><a href="#grading-info">Grading Scale</a></li>
-                    <li><a href="#policies">University Policies</a></li>
-                    <li><a href="#schedule">Course Schedule</a></li>
-                </ul>
-            </div>
+            <h1>[Course Number]: [Course Title]</h1>
+            <h2>[Semester] [Year]</h2>
         </div>
     </div>
     <div class="course-information" id="information">
-        <p><span class="title">Instructor:</span>[Instructor Name]</p>
-        <p><span class="title">Class Location:</span>[Meeting Location]</p>
-        <p><span class="title">Meeting Times:</span>[Day] [Start Time] - [End Time]</p>
-        <p><span class="title">Format:</span>[Class Format]</p>
-        <p><span class="title">Email:</span>[Email]</p>
-        <p><span class="title">Phone:</span>[Phone #]</p>
-        <p><span class="title">Office Hours Location:</span>[Office Location]</p>
-        <p><span class="title">Office Hours:</span>
+        <div class="main-info">
+            <p><span class="title">Instructor:</span>[Instructor Name]</p>
+            <p><span class="title">Class Location:</span>[Meeting Location]</p>
+            <p><span class="title">Meeting Times:</span>[Day] [Start Time] - [End Time]</p>
+            <p><span class="title">Format:</span>[Class Format]</p>
+            <p><span class="title">Email:</span>[Email]</p>
+            <p><span class="title">Phone:</span>[Phone #]</p>
+            <p><span class="title">Office Hours Location:</span>[Office Location]</p>
+            <p><span class="title">Office Hours:</span>
             <ul>
                 <li>[Day]: [Start Time] - [End Time]</li>
                 <li>[Day]: [Start Time] - [End Time]</li>
             </ul>
-        </p>
+            </p>
+        </div>
+        <div class="table-of-contents">
+            <ul class="anchor-links">
+                <li><a href="#information">Course Information</a></li>
+                <li><a href="#objectives">Description and Objectives</a></li>
+                <li><a href="#prereqs">Prerequisites</a></li>
+                <li><a href="#required">Required Materials</a></li>
+                <li><a href="#supplemental">Supplemental Materials</a></li>
+                <li><a href="#assignment-info">Assignments and Exams</a></li>
+                <li><a href="#grading-info">Grading Scale</a></li>
+                <li><a href="#policies">University Policies</a></li>
+                <li><a href="#schedule">Course Schedule</a></li>
+            </ul>
+        </div>
+
     </div>
     <div class="course-description-objectives">
         <h2 id="objectives">Course Description and Objectives</h2>
