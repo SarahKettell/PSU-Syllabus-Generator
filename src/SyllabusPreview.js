@@ -1,6 +1,19 @@
 import React, {useEffect, useState, Component} from 'react';
 
-export default function SyllabusPreview() {
+export default function SyllabusPreview(props) {
+    // Assign local variables to all of the user input info for cleaner use
+    let courseInfo = props.userInput.courseInfo;
+    let contactInfo = props.userInput.contactInfo;
+    let meetingInfo = props.userInput.meetingInfo;
+    let courseObjectives = props.userInput.courseObjectives;
+    let assessmentInfo = props.userInput.assessmentInfo;
+    let requiredMaterials = props.userInput.requiredMaterials;
+    let additionalMaterials = props.userInput.additionalMaterials;
+    let coursePrereqs = props.userInput.coursePrereqs;
+    let additionalContent = props.userInput.additionalContent;
+    let requiredPolicies = props.userInput.requiredPolicies;
+    let includedContentCheck = props.userInput.includedContentCheck;
+
     return (
         <div className="box">
             <h2>Syllabus Preview</h2>
@@ -8,7 +21,9 @@ export default function SyllabusPreview() {
                 <div className="syllabus-container">
             <div className="header">
                     <div className="header-text">
-                        <h1>CMPSC460: Principles of Programming Languages</h1>
+                        <h1>{(includedContentCheck.course_num.added) ? courseInfo.course_num : "[Course Number]"}: &nbsp;
+                            {(includedContentCheck.course_name.added) ? courseInfo.course_name : "[Course Name]"}
+                        </h1>
                         <h2>Spring 2021</h2>
                         <div className="table-of-contents">
                             <ul className="anchor-links">
@@ -26,12 +41,18 @@ export default function SyllabusPreview() {
                     </div>
             </div>
             <div className="course-information" id="information">
-                <p><span className="title">Instructor:</span>[Instructor Name]</p>
-                <p><span className="title">Class Location:</span>[Meeting Location]</p>
+                <p><span className="title">Instructor:</span>[Name]</p>
+                <p><span className="title">Class Location:</span>
+                    {(includedContentCheck.meeting_location.added) ? courseInfo.meeting_location : "[Meeting Location]"}
+                </p>
                 <p><span className="title">Meeting Times:</span>[Day] [Start Time] - [End Time]</p>
                 <p><span className="title">Format:</span>[Class Format]</p>
-                <p><span className="title">Email:</span>[Email]</p>
-                <p><span className="title">Phone:</span>[Phone #]</p>
+                <p><span className="title">Email:</span>
+                    {(includedContentCheck.instructor_contact.added) ? contactInfo.email : "[Email]"}
+                </p>
+                <p><span className="title">Phone:</span>
+                    {(includedContentCheck.instructor_contact.added) ? contactInfo.phone : "[###-###-####]"}
+                </p>
                 <p><span className="title">Office Hours Location:</span>[Office Location]</p>
                 <p><span className="title">Office Hours:</span>
                     <ul>
@@ -42,6 +63,7 @@ export default function SyllabusPreview() {
             </div>
             <div className="course-description-objectives">
                 <h2 id="objectives">Course Description and Objectives</h2>
+                <div dangerouslySetInnerHTML={{__html: courseObjectives}} />
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In posuere tristique vulputate.
                     Ut ullamcorper enim nisl, at efficitur orci finibus vitae. Pellentesque vitae felis
                     auctor sapien accumsan finibus. Phasellus et ipsum nec justo convallis maximus nec nec

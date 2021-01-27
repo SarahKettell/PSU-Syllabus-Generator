@@ -35,6 +35,13 @@
 .preview .syllabus-container h3{
     margin-top: 2em;
 }
+.preview .syllabus-container a{
+    text-decoration: none;
+    color: #009CDE;
+}
+.preview .syllabus-container a:hover{
+    color:#1E407C;
+}
 .preview .syllabus-container .header{
     text-align: center;
     margin-bottom: 3rem;

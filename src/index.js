@@ -366,9 +366,7 @@ function App() {
             course_name: "",
             course_section: "",
             meeting_location: ""
-        }
-    );
-
+        });
 
     // meetingInfo holds data related to meetings for the course
     // when new meeting added, add additional object to meeting_times array
@@ -861,7 +859,6 @@ function App() {
 			</div>
 		)
 	}
- 
   return (
 	  <>
 		<div id="main-container">
@@ -1451,7 +1448,10 @@ function App() {
 			<div id="results" class="col results">
 				<SyllabusChecklistModule />
 				<SyllabusPreviewModule />
-				<SyllabusPreview />
+				<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
+											courseObjectives, assessmentInfo, requiredMaterials,
+											additionalMaterials ,coursePrereqs, additionalContent,
+											includedContentCheck, requiredPolicies}} />
 			</div>
 		</div>
 		</div>
