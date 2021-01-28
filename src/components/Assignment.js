@@ -1,6 +1,20 @@
 import React, { useState } from 'react';
 
+/*  TODO:
+*   - make it look nicer, buttons need to be rearrange and input could be smaller size for numbers
+*
+*/
+
 export default function Assignment(props) {
+
+    let title = props.assignment_title;
+    let points_each = props.assignment_points_each;
+    let num_of = props.assignment_num_of;
+    let points_total = props.assignment_points_total;
+    let description = props.assignment_description;
+
+    let handleAssessmentInfo = props.handleAssessmentInfo;
+    let deleteAssignment = props.deleteAssignment;
 
     return (
 
@@ -12,8 +26,8 @@ export default function Assignment(props) {
                     id="title" 
                     placeholder="Discussion Forms"
                     name="title"
-                    value={props.assignment_title}
-                    onChange={props.handleAssessmentInfo} />
+                    value={title}
+                    onChange={handleAssessmentInfo} />
             </div>
             <div class="form-field-inline">
                 <label for="points_each">Points Each:</label>
@@ -22,8 +36,8 @@ export default function Assignment(props) {
                     id="points_each" 
                     placeholder="5"
                     name="points_each"
-                    value={props.assignment_points_each}
-                    onChange={props.handleAssessmentInfo} />
+                    value={points_each}
+                    onChange={handleAssessmentInfo} />
             </div>
             <div class="form-field-inline">
                 <label for="num_of">Number of:</label>
@@ -32,8 +46,8 @@ export default function Assignment(props) {
                     id="num_of" 
                     placeholder="4"
                     name="num_of"
-                    value={props.assignment_num_of}
-                    onChange={props.handleAssessmentInfo} />
+                    value={num_of}
+                    onChange={handleAssessmentInfo} />
             </div>
             <div class="form-field-inline">
                 <label for="points_total">Points Total:</label>
@@ -42,8 +56,8 @@ export default function Assignment(props) {
                     id="points_total" 
                     placeholder="50"
                     name="points_total"
-                    value={props.assignment_points_total}
-                    onChange={props.handleAssessmentInfo} />
+                    value={points_total}
+                    onChange={handleAssessmentInfo} />
             </div>
             <div class="form-field-inline">
                 <label for="description">Description:</label>
@@ -54,8 +68,11 @@ export default function Assignment(props) {
                     id="description" 
                     placeholder="Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim. Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla, eget convallis lacus luctus."
                     name="description"
-                    value={props.assignment_description}
-                    onChange={props.handleAssessmentInfo} />
+                    value={description}
+                    onChange={handleAssessmentInfo} />
+            </div>
+            <div class="form-field-inline">
+                <button onClick={deleteAssignment} class="btn btn-danger">X</button>
             </div>
         </div>
 

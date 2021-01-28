@@ -504,6 +504,15 @@ function App() {
         });
     }
 
+    function deleteAssignment(index) {
+        let assignments = assessmentInfo.assignments;
+        assignments.splice(index, 1);
+
+        setAssessmentInfo({
+            assignments
+        });
+    }
+
     //-----------------------------------------------
 
 
@@ -1424,6 +1433,7 @@ function App() {
                                         handleAssessmentInfo={info => {
                                             handleAssessmentInfo(info, i);
                                         }}
+                                        deleteAssignment={() => {deleteAssignment(i);}}
                                     />
                                 )
                             })}
