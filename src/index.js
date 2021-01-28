@@ -5,6 +5,9 @@ import './style.css';
 import {Editor, EditorState, RichUtils} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 
+//import AssignmentDetail from './Components/AssignmentDetail';
+import AssignmentGroup from './Components/AssignmentGroup';
+
 
 // Used Draft.js library
 //Please read https://draftjs.org/docs/api-reference-content-state/#getplaintext for the API Information
@@ -299,9 +302,75 @@ function App() {
     office_start_time : "",
     office_end_time : "",
 
-    disability_statement : false
+    disability_statement : false,
+
+
+    //----------------- 
+    assignment_groups: [
+        {
+            assignment_group_text: "Chapter Problems",
+            assignment_group_percent: 10
+        }
+    ]
+
+    //
   })
 
+//   const updateAssignment = (e, index) => {
+//       const assignments = state.assignment_details_list;
+//       const name = e.target.name;
+//       assignments[index].name = e.target.value;
+//       setState({
+//           assignment_details_list: assignments
+//       });
+//   };
+
+//   const addAssignmentDetail = (e) => {
+//     e.preventDefault();
+//     let x = {
+//         assignment_type: "",
+//         assignment_desc: "",
+//         assignment_points: 10
+//     }
+//     const assignments = state.assignment_details_list.concat(x);
+//     setState({
+//         assignment_details_list: assignments
+//     });
+//   };
+    
+    // onChange function for updating the percentage of an assignment group
+    
+    // 
+    const updateAssignmentGroup = (e, index) => {
+        const assignment_groups = state.assignment_groups;
+        assignment_groups[index].assignment_group_text = e.target.value;
+        setState({
+            assignment_groups
+        });
+    };
+    // onChange function for updating the percentage of an assignment group
+    const updateAssignmentGroupPercent = (e, index) => {
+        const assignment_groups = state.assignment_groups;
+        assignment_groups[index].assignment_group_percent = e.target.value;
+        setState({
+            assignment_groups
+        });
+    };
+
+    // button function to add an Assignment Group to form
+    const addAssignmentGroup = (e) => {
+        e.preventDefault();
+        let x = {
+            assignment_group_text: "",
+            assignment_group_percent: 10
+        };
+        const assignment_groups = state.assignment_groups.concat(x);
+        setState({
+            assignment_groups
+        });
+    };
+
+    //-----------------------
 
   function handleChange(evt) {
     const value = evt.target.value;
@@ -384,6 +453,11 @@ function App() {
     </div>; 
     const covidName=readCovid?'Covid-19 Statements << ':'Covid-19 Statements >> '
  
+    // make this add an item to the array in the state
+    
+
+    /* This is my stuff */
+
   return (
       <>
         <div id="main-container">
@@ -749,7 +823,7 @@ function App() {
                     </div>
                 </fieldset>
                 
-                 <fieldset>
+                <fieldset>
                     <legend>Additional Materials</legend>
                     <div class="form-section">
                         <p class="description">
@@ -773,6 +847,44 @@ function App() {
                         <RichEditorExample setPlainText={text => handleRichEditorChange('RichTextExamPolicies', text)} />
                        
                     </div>
+                    
+                    {/* This is where I will be putting the Assignment Details Section */}
+                    <div class="form-section">
+                        <h4>Assignment Groups</h4>
+                        <div class="assignment-details">
+                            {/* List of Assignment */}
+
+                            <table>
+                                <tr>
+                                    <th>Assignment Group</th>
+                                    <th>Percentage</th>
+                                </tr>
+                                {state.assignment_groups.map((assignment_groups, i) => {
+                                    return (
+                                        <AssignmentGroup
+                                            updateAssignmentGroup={e => {
+                                                updateAssignmentGroup(e, i);
+                                            }}
+                                            updateAssignmentGroupPercent={e => {
+                                                updateAssignmentGroupPercent(e, i);
+                                            }}
+                                            assignment_group_text={state.assignment_groups[i].assignment_group_text}
+                                            assignment_group_percent={state.assignment_groups[i].assignment_group_percent}
+                                        />
+                                    );
+                                })}
+                            </table>
+
+                            {/* Above */}
+                        </div>
+                        <div class="add-assignment">
+                            <button class="btn btn-outline-secondary btn-sm" onClick={addAssignmentGroup} > 
+                            + Add Another Assignment Group
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Above */}
                     <div>
                         <h4>Grading Scale</h4>
                         <div class="radio-set">

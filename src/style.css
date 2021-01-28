@@ -346,6 +346,24 @@ body {
     font-weight: 600;
     width: 6%;
   }
+
+  .assignment-details {
+    display: inline-block;
+  }
+
+  .assignment-details li {
+    list-style-type: none;
+  }
+
+  .assignment-details label{
+    display: inline-block;
+    margin: 0;
+    padding: 15px;
+  }
+
+  .assignment-details input[type=number] {
+    width:4em;
+  }
   
   .range{
     display: inline-block;
