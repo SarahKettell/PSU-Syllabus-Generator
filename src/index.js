@@ -10,7 +10,7 @@ import RichTextEditor from 'react-rte';
 import SyllabusPreview from "./SyllabusPreview";
 
 //-------------------------------
-import AssignmentGroup from './components/AssignmentGroup';
+import Assignment from './components/Assignment';
 //-------------------------------
 
 class RteContent extends Component {
@@ -467,8 +467,47 @@ function App() {
 
     });
 
-    
+    //-----------------------------------------------
 
+    // onClick function for add assessment button
+    // Adds blank assessment object into assessmentInfo.assignment array
+    function addAssignment(evt) {
+        evt.preventDefault();
+        let blank_assessment = {
+            title:"",
+            description:"",
+            points_each: 0,
+            num_of: 0,
+            points_total: 0
+        };
+        const assignments = assessmentInfo.assignments.concat(blank_assessment);
+        setAssessmentInfo({
+            assignments
+        });
+    }
+
+    // onChange function for assignments in assessmentInfo
+    // TODO: check out the other variables in assessmentInfo
+    function handleAssessmentInfo(info, index) {
+
+        const value = info.target.value;
+        const name = info.target.name;
+        
+        let assignment = assessmentInfo.assignments[index];
+        assignment[name] = value;
+        
+        let assignments = assessmentInfo.assignments;
+        assignments[index] = assignment;
+        
+        setAssessmentInfo({
+          assignments 
+        });
+    }
+
+    //-----------------------------------------------
+
+
+    //------------------------------------------------
 //   const [state, setState] = React.useState({
 //     //course info
 //     course_num: "",
@@ -1370,6 +1409,32 @@ function App() {
 						<label for="exam_info">Exam Policies:</label>
 						<MyStatefulEditor updateContent={handleExamInfo} id="exam_info"/>
 					</div>
+                    {/* ---------- */}
+                    <div>
+                        <h4>Assignment Information</h4>
+                        <div>
+                            {assessmentInfo.assignments.map((assignments, i) => {
+                                return (
+                                    <Assignment
+                                        assignment_title={assessmentInfo.assignments[i].title}
+                                        assignment_points_each={assessmentInfo.assignments[i].points_each}
+                                        assignment_num_of={assessmentInfo.assignments[i].num_of}
+                                        assignment_points_total={assessmentInfo.assignments[i].points_total}
+                                        assignment_description={assessmentInfo.assignments[i].description}
+                                        handleAssessmentInfo={info => {
+                                            handleAssessmentInfo(info, i);
+                                        }}
+                                    />
+                                )
+                            })}
+                        </div>
+                        <div class="add-another">
+							<button onClick={addAssignment} class="btn btn-outline-secondary btn-sm">
+							+ Add Another Assignment
+							</button>
+						</div>
+                    </div>
+                    {/* ---------- */}
 					<div>
 						<h4>Grading Scale</h4>
 						<div class="radio-set">
