@@ -1,0 +1,132 @@
+
+.preview .syllabus-container{
+    padding:2rem;
+    margin: 1rem 3rem;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11pt;
+}
+.box .preview .syllabus-container h1,
+.box .preview .syllabus-container h2,
+.box .preview .syllabus-container h3,
+.box .preview .syllabus-container h4,
+.box .preview .syllabus-container h5,
+.box .preview .syllabus-container h6{
+    font-family: Avenir, 'Roboto', sans-serif;
+    background: none;
+    color:black;
+    font-weight: bold;
+    font-size: 12pt;
+    text-transform: uppercase;
+}
+.box .preview .syllabus-container h1 {
+    font-size: 17pt;
+    padding: 0;
+    background: none;
+    color: black;
+    text-transform: none;
+}
+.box .preview .syllabus-container h2 {
+    font-size: 15pt;
+    margin-top: 1.5em;
+    border-top: 1px solid #314d64;
+    padding-top: 1em;
+    text-transform: none;
+}
+.preview .syllabus-container h3{
+    margin-top: 2em;
+}
+.preview .syllabus-container a{
+    text-decoration: none;
+    color: #009CDE;
+}
+.preview .syllabus-container a:hover{
+    color:#1E407C;
+}
+.preview .syllabus-container .header{
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.preview .syllabus-container .header h1{
+    margin-bottom: 0;
+    border:none;
+}
+.preview .syllabus-container .header h2{
+    margin-top: 0;
+    border:none;
+}
+.preview .syllabus-container .table-of-contents ul{
+    list-style: none;
+    border-bottom: 1px solid #314d64;
+    text-transform: uppercase;
+    padding: 20px;
+}
+.syllabus-container .table-of-contents li{
+    display: inline-block;
+    padding: 0 8px 0 8px;
+    margin: 5px 0 5px 0;
+    border-right: 1px solid lightgrey;
+}
+.syllabus-container .table-of-contents li:first-child{
+    border-left: 1px solid lightgrey;
+}
+.syllabus-container .table-of-contents a{
+    text-decoration: none;
+    color: #009CDE;
+    font-size: 9pt;
+}
+.syllabus-container .table-of-contents a:hover{
+    text-decoration: none;
+    color:#1E407C;
+}
+.syllabus-container p{
+    margin: 0;
+    padding: 0;
+}
+.syllabus-container .course-information .title{
+    font-weight: bold;
+    margin-right:.5em;
+}
+.syllabus-container .grading-information ul  {
+    list-style: none;
+    padding-left: 0;
+}
+.syllabus-container .grading-information ul.assignment-grades .title{
+    font-weight:bold;
+    margin-left:0;
+}
+.syllabus-container .grading-information ul.assignment-grades li{
+    margin-bottom:20px;
+}
+.syllabus-container .grading-information  ul.grading-scale li.grade-scale-titles span{
+    font-weight: bold;
+    text-align: center;
+}
+.syllabus-container .grading-information ul.grading-scale li span{
+    width:100px;
+    display:inline-block;
+    text-align: center;
+}
+.syllabus-container .grading-information ul.grading-scale li span.grade{
+    text-align: left;
+}
+@media print {
+    .syllabus-container{
+        margin: 0;
+        padding: 0;
+        background-position: top left;
+        background-repeat: no-repeat;
+        background-size: 100px;
+    }
+    .header img {
+        display:none;
+    }
+    .header h1{
+        font-size: 16pt;
+    }
+    .header h2{
+        font-size: 14pt;
+    }
+    .table-of-contents {
+        display: none;
+    }
+}
