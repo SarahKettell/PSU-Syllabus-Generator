@@ -5,6 +5,10 @@
     font-family: 'Open Sans', sans-serif;
     font-size: 11pt;
 }
+
+.preview .syllabus-container p{
+    margin: 10px 0 10px 0;
+}
 .box .preview .syllabus-container h1,
 .box .preview .syllabus-container h2,
 .box .preview .syllabus-container h3,

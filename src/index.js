@@ -8,6 +8,7 @@ import {Editor, EditorState, RichUtils} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import RichTextEditor from 'react-rte';
 import SyllabusPreview from "./SyllabusPreview";
+import sanitizeHtml from 'sanitize-html';
 
 class RteContent extends Component {
 	render() {
@@ -35,11 +36,16 @@ class MyStatefulEditor extends Component {
 				value
 			);
 		}
-		let tempInfo = {
-			id: this.props.id,
-			value: value.toString('html')
+		let dirtyHTML = value.toString('html');
+		if (dirtyHTML !== "") {
+			if(dirtyHTML === "<p><br></p>"){dirtyHTML = ""}
+			let cleanHTML = sanitizeHtml(dirtyHTML);
+			let tempInfo = {
+				id: this.props.id,
+				value: cleanHTML
+			}
+			this.props.updateContent(tempInfo);
 		}
-		this.props.updateContent(tempInfo);
 	};
 
 	render () {
