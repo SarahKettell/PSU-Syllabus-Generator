@@ -1,5 +1,5 @@
 import React, {useEffect, useState, Component} from 'react';
-import sanitizeHtml from 'sanitize-html';
+
 
 
 // Displays and manages the syllabus preview module, which includes the HTML formatted
@@ -18,8 +18,6 @@ export default function SyllabusPreview(props) {
     let additionalContent = props.userInput.additionalContent;
     let requiredPolicies = props.userInput.requiredPolicies;
     let includedContentCheck = props.userInput.includedContentCheck;
-
-    console.log(includedContentCheck);
 
     // Assign defaults for each of the fields
     const course_num = "[Course Number]";
