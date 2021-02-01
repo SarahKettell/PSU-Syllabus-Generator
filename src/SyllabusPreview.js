@@ -2,6 +2,9 @@ import React, {useEffect, useState, Component} from 'react';
 import sanitizeHtml from 'sanitize-html';
 
 
+// Displays and manages the syllabus preview module, which includes the HTML formatted
+// content of the syllabus. This content is updated live as the user adds to the form.
+
 export default function SyllabusPreview(props) {
     // Assign local variables to all of the user input info for cleaner use
     let courseInfo = props.userInput.courseInfo;

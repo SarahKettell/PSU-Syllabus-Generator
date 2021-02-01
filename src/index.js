@@ -264,53 +264,6 @@ const InlineStyleControls = (props) => {
   );
 };
 
-
-// //I left it for your reference when you implement dynamically generating buttons
-// function Button() {
-//
-//   const [inputs, setInputs] = React.useState([
-// 	  { id: 1, name: 'Input 1', value: '' },
-//   ])
-//
-//   const [testtt, setTesttt] = React.useState(0)
-//
-//   const handleChange = (evt) => {
-//
-// 	  let inputsState = inputs
-// 	  inputsState.forEach(input => {
-// 		  if (input.name === evt.target.name) {
-// 			  input.value = evt.target.value
-// 		  }
-// 	  })
-//
-// 	  setInputs(inputsState)
-//
-// 	  console.log(inputs)
-//   }
-//
-//   const handleAdd = () => {
-// 	  setInputs([...inputs, { id: new Date().getTime(), name: new Date().getTime().toString(), value: '' }])
-// 	  console.log(inputs)
-//   }
-//
-//
-//   const testt = () => {
-// 	  setTesttt(new Date().getTime())
-//   }
-//
-// return (
-//   <div className="App">
-// 	<header className="App-header">
-// 		{inputs.map(input => <InputComponent key={input.id} input={input} onChange={handleChange} />)}
-//
-// 		<button onClick={handleAdd}>Add more</button>
-// 		<button onClick={testt}>Test</button>
-//
-// 	</header>
-//   </div>
-// );
-//}
-
 //Main function that contains all the contents
 function App() {
 
@@ -623,17 +576,9 @@ function App() {
 		})
 		if(value != "" && !includedContentCheck[id].added){
 			updateChecklist(id, true);
-			//updateChecklist("req_materials", true);
 		}
 		if(value === "" && includedContentCheck[id].added){
 			updateChecklist(id, false);
-			// check if other materials are included, if not, requirement not met
-			// if(!(requiredMaterials.req_textbooks.length > 0 ||
-			// 	requiredMaterials.req_add_materials.length > 0 ||
-			// 	requiredMaterials.req_lab_info.length > 0 ||
-			// 	requiredMaterials.has_no_required)) {
-			// 	updateChecklist("req_materials", false);
-			// }
 		}
 	}
 
@@ -734,129 +679,6 @@ function App() {
 		)
 	}
 
-	// Displays and manages the syllabus preview module, which includes the HTML formatted
-	// content of the syllabus. This content is updated live as the user adds to the form.
-	function SyllabusPreviewModule() {
-		return(
-			<div className="box">
-				<h2>Syllabus Preview</h2>
-				<div className="preview">
-					<div className="preview-box">
-
-						<div>
-							<h4>Course Information</h4>
-							<p>
-								Course Number: {courseInfo.course_num} <br/>
-								Course Name: {courseInfo.course_name} <br/>
-								Course Section: {courseInfo.course_section} <br/>
-								Meeting Location : {courseInfo.meeting_location} <br/>
-							</p>
-						</div>
-
-						{(state.course_start_date !== "" || state.course_end_date !== "" || state.course_meeting_type !== "" || state.meeting_mon || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) && (
-							<div>
-								<h4>Course Schedule & Meeting Times</h4>
-								<p>
-									Course Start Date : {state.course_start_date} <br/>
-									Course End Date : {state.course_end_date} <br/>
-									Course Meeting Type : {state.course_meeting_type} <br/>
-									Course Meeting Days: {state.meeting_mon ? ("Mon ") : ("")}
-									{state.meeting_mon && (state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_tues ? ("Tues ") : ("")}
-									{state.meeting_tues && (state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_wed ? ("Wed ") : ("")}
-									{state.meeting_wed && (state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_thurs ? ("Thurs ") : ("")}
-									{state.meeting_thurs && (state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_fri ? ("Fri ") : ("")}
-									{state.meeting_fri && (state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_sat ? ("Sat ") : ("")}
-									{state.meeting_sat && (state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_sun ? ("Sun ") : ("")} <br/>
-									Course Meeting Start Time : {state.course_start_times} <br/>
-									Course Meeting End Time: {state.course_end_times}
-								</p>
-							</div>
-						)}
-
-
-						<h4>Contact Information</h4>
-						<p>
-							Instructor Name : {contactInfo.instructor_name} <br/>
-							Email : {contactInfo.email} <br/>
-							Phone : {contactInfo.phone} <br/>
-							Office Location: {contactInfo.office_location} <br/>
-							Office Hour Days: {state.office_mon ? ("Mon ") : ("")}
-							{state.office_mon && (state.office_tues || state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_tues ? ("Tues ") : ("")}
-							{state.office_tues && (state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_wed ? ("Wed ") : ("")}
-							{state.office_wed && (state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_thurs ? ("Thurs ") : ("")}
-							{state.office_thurs && (state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_fri ? ("Fri ") : ("")}
-							{state.office_fri && (state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_sat ? ("Sat ") : ("")}
-							{state.office_sat && (state.office_sun) ? (", ") : ("")}
-							{state.office_sun ? ("Sun ") : ("")} <br/>
-							Office Hour: {state.office_start_time}
-							{state.office_start_time === "" ? ("") : (" ~ ")}
-							{state.office_end_time}
-						</p>
-
-						<div>
-							<h4>Course goals and objectives</h4>
-							<div dangerouslySetInnerHTML={{__html: courseObjectives}} />
-						</div>
-
-						{coursePrereqs !== "" && (
-							<div>
-								<h4>Prerequisites</h4>
-								<div dangerouslySetInnerHTML={{__html: coursePrereqs}} />
-							</div>
-						)}
-
-
-						<div>
-							<h4>Required Materials</h4>
-
-							<p>
-								Required Textbooks:
-								<div dangerouslySetInnerHTML={{__html: requiredMaterials.textbooks}} />
-								Additional Materials:
-								<div dangerouslySetInnerHTML={{__html: requiredMaterials.additional}} />
-								Lab Info:
-								<div dangerouslySetInnerHTML={{__html: requiredMaterials.lab_info}} />
-							</p>
-						</div>
-
-
-						{state.RichTextAdditionalMaterials !== "" && (
-							<div>
-								<h4>Additional Materials: </h4>
-								<div dangerouslySetInnerHTML={{__html: additionalMaterials}} />
-							</div>
-						)}
-						<div>
-							<h4>Assessment and Grading Scale: </h4>
-							<p>
-								Exam Information:
-								<div dangerouslySetInnerHTML={{__html: assessmentInfo.exam_info}} />
-							</p>
-						</div>
-
-
-						{state.RichTextAdditionalContent !== "" && (
-							<div>
-								<h4>Additional Syllabus Content </h4>
-								<div dangerouslySetInnerHTML={{__html: additionalContent}} />
-							</div>
-						)}
-					</div>
-				</div>
-			</div>
-		)
-	}
   return (
 	  <>
 		<div id="main-container">
@@ -1445,7 +1267,6 @@ function App() {
 
 			<div id="results" class="col results">
 				<SyllabusChecklistModule />
-				<SyllabusPreviewModule />
 				<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
 											courseObjectives, assessmentInfo, requiredMaterials,
 											additionalMaterials ,coursePrereqs, additionalContent,
