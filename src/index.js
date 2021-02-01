@@ -8,6 +8,7 @@ import RichTextEditor from 'react-rte';
 import SyllabusPreview from "./SyllabusPreview";
 import sanitizeHtml from 'sanitize-html';
 import RequirementsChecklist from "./RequirementsChecklist";
+import {MDCTopAppBar} from '@material/top-app-bar';
 
 
 // Uses Draft.js for functionality and renders content into HTML format
@@ -414,6 +415,27 @@ function App() {
 
   return (
 	  <>
+		  <header className="mdc-top-app-bar">
+			  <div className="mdc-top-app-bar__row">
+				  <section className="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+					  <button className="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button"
+							  aria-label="Open navigation menu">menu
+					  </button>
+					  <span className="mdc-top-app-bar__title">Page title</span>
+				  </section>
+				  <section className="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+					  <button className="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+							  aria-label="Favorite">favorite
+					  </button>
+					  <button className="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+							  aria-label="Search">search
+					  </button>
+					  <button className="material-icons mdc-top-app-bar__action-item mdc-icon-button"
+							  aria-label="Options">more_vert
+					  </button>
+				  </section>
+			  </div>
+		  </header>
 		<div id="main-container">
 		<div class="container">
 		<div class="row intro">
