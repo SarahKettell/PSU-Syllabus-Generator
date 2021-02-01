@@ -1,6 +1,7 @@
 import React, {useEffect, useState, Component} from 'react';
 import sanitizeHtml from 'sanitize-html';
 
+
 export default function SyllabusPreview(props) {
     // Assign local variables to all of the user input info for cleaner use
     let courseInfo = props.userInput.courseInfo;
@@ -15,6 +16,8 @@ export default function SyllabusPreview(props) {
     let requiredPolicies = props.userInput.requiredPolicies;
     let includedContentCheck = props.userInput.includedContentCheck;
 
+    console.log(includedContentCheck);
+
     // Assign defaults for each of the fields
     const course_num = "[Course Number]";
     const course_name = "[Course Name]";
@@ -25,13 +28,12 @@ export default function SyllabusPreview(props) {
     const email = "[email@psu.edu]";
     const phone = "###-###-####";
     const office_location = "[Office Location]";
-
-    // default course objectives
     const course_objectives = "<p>[Course Description]</p>" +
         "<ul><li>Example Objective 1</li>" +
         "<li>Example Objective 1</li>" +
         "<li>Example Objective 1</li></ul>";
-
+    const details_needed = "[Add details here]"
+    const textbooks = "[APA format - Author, A. A. (Year of publication). Title of work: Capital letter also for subtitle. Location (City, State): Publisher.]"
 
     return (
         <div className="box">
@@ -84,39 +86,24 @@ export default function SyllabusPreview(props) {
             </div>
             <div className="course-description-objectives">
                 <h2 id="objectives">Course Description and Objectives</h2>
-                {(includedContentCheck.course_objectives.added) ? <div dangerouslySetInnerHTML={{__html: courseObjectives}}/> : <div dangerouslySetInnerHTML={{__html: sanitizeHtml(course_objectives)}}/>}
+                {(includedContentCheck.course_objectives.added) ? <div dangerouslySetInnerHTML={{__html: courseObjectives}}/> : <div dangerouslySetInnerHTML={{__html: course_objectives}}/>}
             </div>
             <div className="prerequisites" id="prereqs">
                 <h2>Prerequisites</h2>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.course_prereqs.added) ? <div dangerouslySetInnerHTML={{__html: coursePrereqs}}/> : details_needed}
             </div>
             <div className="required-materials">
                 <h2 id="required">Required Materials</h2>
                 <h3>Textbooks</h3>
-                <p>[APA format - Author, A. A. (Year of publication).
-                    Title of work: Capital letter also for subtitle.
-                    Location (City, State): Publisher.]</p>
+                {(includedContentCheck.req_textbooks.added) ? <div dangerouslySetInnerHTML={{__html: requiredMaterials.req_textbooks}}/> : textbooks}
                 <h3>Additional Materials</h3>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus.</p>
+                {(includedContentCheck.req_add_materials.added) ? <div dangerouslySetInnerHTML={{__html: requiredMaterials.req_add_materials}}/> : details_needed}
                 <h3>Lab Information</h3>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.req_lab_info.added) ? <div dangerouslySetInnerHTML={{__html: requiredMaterials.req_lab_info}}/> : details_needed}
             </div>
             <div className="supplemental-materials">
                 <h2 id="supplemental">Supplemental Materials</h2>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.add_materials.added) ? <div dangerouslySetInnerHTML={{__html: additionalMaterials}}/> : details_needed}
             </div>
             <div className="grading-information">
                 <h2>Grading Information</h2>

@@ -80,7 +80,6 @@ class RichEditorExample extends React.Component {
 	this.onChange = (editorState) => {
 		this.props.setPlainText(editorState.getCurrentContent().getPlainText())
 		this.setState({editorState})
-		console.log(editorState.getCurrentContent().convertToRaw);
 	};
 
 	this.handleKeyCommand = (command) => this._handleKeyCommand(command);
@@ -124,7 +123,6 @@ class RichEditorExample extends React.Component {
 
   render() {
 	const {editorState} = this.state;
-	// console.log(editorState);
 
 	// If the user changes block type before entering any text, we can
 	// either style the placeholder or hide it. Let's just hide it now.
@@ -431,9 +429,9 @@ function App() {
 
     // holds RTE formatted text for required materials
     const [requiredMaterials, setRequiredMaterials] = useState({
-        textbooks: "",
-        additional: "",
-        lab_info: "",
+        req_textbooks: "",
+		req_add_materials: "",
+        req_lab_info: "",
         has_no_required: false
     });
 
@@ -536,8 +534,6 @@ function App() {
   }
 
   function handleRichEditorChange(key, value) {
-	console.log(key);
-	console.log(value);
 	setState({
 	  ...state,
 	  [key]: value
@@ -551,8 +547,6 @@ function App() {
 		  ...state,
 		  [evt.target.name]: value
 		});
-		console.log(evt.target.name, value);
-		console.log(state);
 	}
 
 	const [includedContentCheck, setIncludedContentCheck] = useState({
@@ -566,7 +560,9 @@ function App() {
 		office_hours: 		{content: "Office Hours", added: false, required: true},
 		course_objectives: 	{content: "Course goals and objectives", added: false, required: true},
 		course_prereqs: 	{content: "Prerequisites", added: false, required: false},
-		req_materials: 		{content: "Required Materials", added: false, required: true},
+		req_textbooks: 		{content: "Required Textbooks", added: false, required: true},
+		req_add_materials: 	{content: "Additional Required Materials", added: false, required: true},
+		req_lab_info: 		{content: "Required Lab Info", added: false, required: true},
 		add_materials: 		{content: "Additional Materials", added: false, required: false},
 		assessment_info: 	{content: "Assessment and Grading Scale", added: false, required: true},
 		exam_info: 			{content: "Examination Policy/Schedule", added: false, required: true},
@@ -625,15 +621,19 @@ function App() {
 			...requiredMaterials,
 			[id]: value
 		})
-		if(value != "" && !includedContentCheck.req_materials.added){updateChecklist("req_materials", true);}
-		if(value === "" && includedContentCheck.req_materials.added){
-			// check if other required materials are added
-			if(!(requiredMaterials.textbooks.length > 0 ||
-				requiredMaterials.additional.length > 0 ||
-				requiredMaterials.lab_info.length > 0 ||
-				requiredMaterials.has_no_required)) {
-				updateChecklist("req_materials", false);
-			}
+		if(value != "" && !includedContentCheck[id].added){
+			updateChecklist(id, true);
+			//updateChecklist("req_materials", true);
+		}
+		if(value === "" && includedContentCheck[id].added){
+			updateChecklist(id, false);
+			// check if other materials are included, if not, requirement not met
+			// if(!(requiredMaterials.req_textbooks.length > 0 ||
+			// 	requiredMaterials.req_add_materials.length > 0 ||
+			// 	requiredMaterials.req_lab_info.length > 0 ||
+			// 	requiredMaterials.has_no_required)) {
+			// 	updateChecklist("req_materials", false);
+			// }
 		}
 	}
 
@@ -668,18 +668,10 @@ function App() {
 	function updateChecklist(fieldName, isIncluded){
 		let tempContent = includedContentCheck[fieldName].content;
 		let tempReq = includedContentCheck[fieldName].required;
-		if(isIncluded) {
-			setIncludedContentCheck({
-				...includedContentCheck,
-				[fieldName]: {content: tempContent, added: true, required: tempReq}
-			});
-		}
-		else {
-			setIncludedContentCheck({
-				...includedContentCheck,
-				[fieldName]: {content: tempContent, added: false, required: tempReq}
-			});
-		}
+		setIncludedContentCheck({
+			...includedContentCheck,
+			[fieldName]: {content: "TEST", added: isIncluded, required: tempReq}
+		});
 	}
 
 	function toggleRequiredPolicies(info){
@@ -717,7 +709,7 @@ function App() {
 						<ul>
 							<li className="check-item required-symbol" name="course_objectives">{includedContentCheck.course_objectives.content} {includedContentCheck.course_objectives.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item optional-symbol" name="course_prereqs">{includedContentCheck.course_prereqs.content} {includedContentCheck.course_prereqs.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="req_materials">{includedContentCheck.req_materials.content} {includedContentCheck.req_materials.added && <span className="included-symbol"></span>}</li>
+							<li className="check-item required-symbol" name="req_materials">Required Materials {(includedContentCheck.req_textbooks.added || includedContentCheck.req_add_materials.added || includedContentCheck.req_lab_info.added) && <span className="included-symbol"></span>}</li>
 							<li className="check-item optional-symbol" name="add_materials">{includedContentCheck.add_materials.content} {includedContentCheck.add_materials.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item required-symbol" name="assessment_info">{includedContentCheck.assessment_info.content} {includedContentCheck.assessment_info.added && <span className="included-symbol"></span>}</li>
 							<li className="check-item required-symbol" name="exam_info">{includedContentCheck.exam_info.content} {includedContentCheck.exam_info.added && <span className="included-symbol"></span>}</li>
@@ -1207,16 +1199,16 @@ function App() {
 						<p class="description">
 						Description for information in this section goes here.
 						</p>
-						<label for="textbooks">
+						<label for="req_textbooks">
 						Required Textbooks:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="textbooks"/>
-						<label for="additional">
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
+						<label for="req_add_materials">
 						Additional Required Materials:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="additional"/>
-						<label for="lab_info">
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
+						<label for="req_lab_info">
 						Lab Information:
 						</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="lab_info"/>
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
 
 						<div class="radio-set">
 							<div class="custom-control custom-checkbox custom-control-inline">
