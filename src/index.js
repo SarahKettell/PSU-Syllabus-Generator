@@ -873,8 +873,6 @@ function App() {
 					</div>
 				</fieldset>
 
-
-
 				<fieldset>
 					<legend>Contact Information</legend>
 					<div class="form-section">

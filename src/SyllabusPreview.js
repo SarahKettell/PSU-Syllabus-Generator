@@ -175,11 +175,7 @@ export default function SyllabusPreview(props) {
                     </li>
                 </ul>
                 <h3>Exam and Assignment Policies</h3>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.exam_info.added) ? <div dangerouslySetInnerHTML={{__html: assessmentInfo.exam_info}}/> : details_needed}
             </div>
             <div id="policies">
                 <h2>University Policies</h2>
