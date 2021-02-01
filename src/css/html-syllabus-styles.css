@@ -1,0 +1,114 @@
+/* This stylesheet is used to define the styles for the HTML syllabus format in the preview and all associated files*/
+.syllabus-container{
+    padding:2rem;
+    margin: 1rem 3rem;
+    font-family: 'Open Sans', sans-serif;
+}
+.syllabus-container h1, h2, h3, h4, h5, h6{
+    font-family: Avenir, 'Roboto', sans-serif;
+    background: none;
+    color:black;
+}
+.box .syllabus-container h2{
+    padding: 0;
+    background: none;
+    color: black;
+}
+.syllabus-container h2{
+    margin-top: 1.5em;
+    border-top: 1px solid #314d64;
+    padding-top: 1em;
+}
+.syllabus-container h3{
+    margin-top: 2em;
+}
+.syllabus-container h3, h4, h5, h6{
+    text-transform: uppercase;
+}
+.syllabus-container .header{
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.syllabus-container .header h1{
+    margin-bottom: 0;
+    border:none;
+}
+.syllabus-container .header h2{
+    margin-top: 0;
+    border:none;
+}
+.syllabus-container .table-of-contents ul{
+    list-style: none;
+    border-bottom: 1px solid #314d64;
+    text-transform: uppercase;
+    padding: 20px;
+}
+.syllabus-container .table-of-contents li{
+    display: inline-block;
+    padding: 0 10px 0 10px;
+    margin: 5px 0 5px 0;
+    border-right: 1px solid lightgrey;
+}
+.syllabus-container .table-of-contents li:first-child{
+    border-left: 1px solid lightgrey;
+}
+.syllabus-container .table-of-contents a{
+    text-decoration: none;
+    color: #009CDE;
+    font-size: 11pt;
+}
+.syllabus-container .table-of-contents a:hover{
+    text-decoration: none;
+    color:#1E407C;
+}
+.syllabus-container .course-information p{
+    margin: 0.5em 0 0.5em 0;
+}
+.syllabus-container .course-information .title{
+    font-weight: bold;
+    margin-right:.5em;
+}
+.syllabus-container .grading-information ul  {
+    list-style: none;
+    padding-left: 0;
+}
+.syllabus-container .grading-information ul.assignment-grades .title{
+    font-weight:bold;
+    margin-left:0;
+}
+.syllabus-container .grading-information ul.assignment-grades li{
+    margin-bottom:20px;
+}
+.syllabus-container .grading-information  ul.grading-scale li.grade-scale-titles span{
+    font-weight: bold;
+    text-align: center;
+}
+.syllabus-container .grading-information ul.grading-scale li span{
+    width:100px;
+    display:inline-block;
+    text-align: center;
+}
+.syllabus-container .grading-information ul.grading-scale li span.grade{
+    text-align: left;
+}
+@media print {
+    .syllabus-container{
+        margin: 0;
+        padding: 0;
+        background-position: top left;
+        background-repeat: no-repeat;
+        background-size: 100px;
+    }
+    .header img {
+        display:none;
+    }
+    .header h1{
+        font-size: 16pt;
+    }
+    .header h2{
+        font-size: 14pt;
+    }
+    .table-of-contents {
+        display: none;
+    }
+}
