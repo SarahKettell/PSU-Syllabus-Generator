@@ -10,6 +10,11 @@ import sanitizeHtml from 'sanitize-html';
 import RequirementsChecklist from "./RequirementsChecklist";
 
 
+//--------------------------------
+import Assignment from './components/Assignment';
+
+//--------------------------------
+
 // Uses Draft.js for functionality and renders content into HTML format
 class MyStatefulEditor extends Component {
 	state = {
@@ -664,6 +669,7 @@ function App() {
 							/>
 						</div>
 						<h4>Meeting Times</h4>
+						{/*--------------------------------- */}
 							<div class="radio-set">
 								<span class="title">Meeting Type:</span>
 								<div class="form-group" >
@@ -769,6 +775,7 @@ function App() {
 							+ Add Another Meeting
 							</button>
 						</div>
+						{/*--------------------------------------*/}
 					</div>
 				</fieldset>
 
