@@ -12,6 +12,7 @@ import RequirementsChecklist from "./RequirementsChecklist";
 
 //--------------------------------
 import Assignment from './components/Assignment';
+import AdditionalMeetingTimes from './components/AdditionalMeetingTimes';
 
 //--------------------------------
 
@@ -67,7 +68,7 @@ function App() {
 	course_start_date: "",
 	course_end_date: "",
 	course_meeting_type: "",
-	course_meeting_days: "",
+	//course_meeting_days: "",
 	course_start_times: "",
 	course_end_times: "",
 	//contact info
@@ -85,21 +86,21 @@ function App() {
 	RichTextExamPolicies: "",
 	RichTextAdditionalContent: "",
    //meeting days
-	meeting_mon: false,
-	meeting_tues: false,
-	meeting_wed: false,
-	meeting_thurs: false,
-	meeting_fri: false,
-	meeting_sat: false,
-	meeting_sun: false,
+	// meeting_mon: false,
+	// meeting_tues: false,
+	// meeting_wed: false,
+	// meeting_thurs: false,
+	// meeting_fri: false,
+	// meeting_sat: false,
+	// meeting_sun: false,
 	//office hour days
-	office_mon: false,
-	office_tues: false,
-	office_wed: false,
-	office_thurs: false,
-	office_fri: false,
-	office_sat: false,
-	office_sun: false,
+	// office_mon: false,
+	// office_tues: false,
+	// office_wed: false,
+	// office_thurs: false,
+	// office_fri: false,
+	// office_sat: false,
+	// office_sun: false,
 
 	office_start_time : "",
 	office_end_time : "",
@@ -118,24 +119,37 @@ function App() {
     // meetingInfo holds data related to meetings for the course
     // when new meeting added, add additional object to meeting_times array
 	const [meetingInfo, setMeetingInfo] = useState({
-        meeting_location: "",
-        meeting_times: [
-            {
-                meeting_id: 0,
-                meeting_type: "",
-                days: [
-                    {monday: false},
-                    {tuesday: false},
-                    {wednesday: false},
-                    {thursday: false},
-                    {friday: false},
-                    {saturday: false},
-                    {sunday: false}
-                ],
-                start_time: null,
-                end_time: null
-            }
-            ]
+		meeting_location: "",
+		meeting_type: "",
+		meeting_days: {
+			monday: false,
+			tuesday: false,
+			wednesday: false,
+			thursday: false,
+			friday: false,
+			saturday: false,
+			sunday: false
+		},
+		meeting_start_time: "",
+		meeting_end_time: "",
+        add_meetings: []
+		
+		
+			// {
+            //     meeting_id: 0,
+            //     meeting_type: "",
+            //     days: [
+            //         {monday: false},
+            //         {tuesday: false},
+            //         {wednesday: false},
+            //         {thursday: false},
+            //         {friday: false},
+            //         {saturday: false},
+            //         {sunday: false}
+            //     ],
+            //     start_time: null,
+            //     end_time: null
+            // }
     });
 
 	// contactInfo holds data related to contacting the instructor, including
@@ -210,12 +224,80 @@ function App() {
 
     });
 
+	//-----------------------------------------------
+
+	// handles input from the Meeting times section
+	function handleMeetingInfo(info) {
+		const name = info.target.name;
+		if(info.target.type === "checkbox") {
+			const value = info.target.type === "checkbox" ? info.target.checked : info.target.value;
+			let temp = {
+				meeting_mon: "monday",
+				meeting_tues: "tuesday",
+				meeting_wed: "wednesday",
+				meeting_thurs: "thursday",
+				meeting_fri: "friday",
+				meeting_sat: "saturday",
+				meeting_sun: "sunday"
+			};
+
+			let meeting_days = meetingInfo.meeting_days;
+			meeting_days[temp[name]] = value;
+			let temp_name = meeting_days;
+
+			setMeetingInfo({
+				...meetingInfo,
+				[temp_name]: meeting_days
+			});
+
+		} else {
+			
+			const value = info.target.value;
+			setMeetingInfo({
+				...meetingInfo,
+				[name]: value
+			});
+
+		}
+
+	}
+
+
+	function addMeetingTime(evt) {
+		evt.preventDefault();
+		//console.log("ADD MEETING BUTTON HAS BEEN PUSHED!!")
+
+		let new_meeting = {
+			add_meeting_type: "",
+			add_meeting_days: {
+				monday: false,
+				tuesday: false,
+				wednesday: false,
+				thursday: false,
+				friday: false,
+				saturday: false,
+				sunday: false
+			},
+			add_meeting_start_time: "",
+			add_meeting_end_time: ""
+		};
+		
+		const add_meetings = meetingInfo.add_meetings.concat(new_meeting);
+		
+		setMeetingInfo({
+			add_meetings
+		});
+	}
+	
+
+
+
     //-----------------------------------------------
 
     // onClick function for add assessment button
     // Adds blank assessment object into assessmentInfo.assignment array
     function addAssignment(evt) {
-        evt.preventDefault();
+		evt.preventDefault();
         let blank_assessment = {
             title:"",
             description:"",
@@ -227,7 +309,8 @@ function App() {
         setAssessmentInfo({
             assignments
         });
-    }
+	}
+	
 
     // onChange function for assignments in assessmentInfo
     // TODO: check out the other variables in assessmentInfo
@@ -256,124 +339,6 @@ function App() {
         });
     }
 
-    //-----------------------------------------------
-
-
-    //------------------------------------------------
-//   const [state, setState] = React.useState({
-//     //course info
-//     course_num: "",
-//     course_name: "",
-//     course_section: "",
-//     meeting_location: "",
-//     //course schedule and meeting times
-//     course_start_date: "",
-//     course_end_date: "",
-//     course_meeting_type: "",
-//     course_meeting_days: "",
-//     course_start_times: "",
-//     course_end_times: "",
-//     //contact info
-//     instructor_name: "",
-//     email: "",
-//     phone: "",
-//     office_location : "",
-//     //Rich Text Editor Text
-//     RichTextCourseGoal : "",
-//     RichTextPrereq : "",
-//     RichTextRequiredTextbooks: "",
-//     RichTextAdditionalRequiredMaterials: "",
-//     RichTextLabInfo: "",
-//     RichTextAdditionalMaterials: "",
-//     RichTextExamPolicies: "",
-//     RichTextAdditionalContent: "",
-//    //meeting days
-//     meeting_mon: false,
-//     meeting_tues: false,
-//     meeting_wed: false,
-//     meeting_thurs: false,
-//     meeting_fri: false,
-//     meeting_sat: false,
-//     meeting_sun: false,
-//     //office hour days
-//     office_mon: false,
-//     office_tues: false,
-//     office_wed: false,
-//     office_thurs: false,
-//     office_fri: false,
-//     office_sat: false,
-//     office_sun: false,
-
-//     office_start_time : "",
-//     office_end_time : "",
-
-//     disability_statement : false,
-
-
-//     //----------------- 
-//     assignment_groups: [
-//         {
-//             assignment_group_text: "Chapter Problems",
-//             assignment_group_percent: 10
-//         }
-//     ]
-
-//     //
-//   })
-
-//   const updateAssignment = (e, index) => {
-//       const assignments = state.assignment_details_list;
-//       const name = e.target.name;
-//       assignments[index].name = e.target.value;
-//       setState({
-//           assignment_details_list: assignments
-//       });
-//   };
-
-//   const addAssignmentDetail = (e) => {
-//     e.preventDefault();
-//     let x = {
-//         assignment_type: "",
-//         assignment_desc: "",
-//         assignment_points: 10
-//     }
-//     const assignments = state.assignment_details_list.concat(x);
-//     setState({
-//         assignment_details_list: assignments
-//     });
-//   };
-    
-    // onChange function for updating the percentage of an assignment group
-    
-    // 
-    const updateAssignmentGroup = (e, index) => {
-        const assignment_groups = state.assignment_groups;
-        assignment_groups[index].assignment_group_text = e.target.value;
-        setState({
-            assignment_groups
-        });
-    };
-    // onChange function for updating the percentage of an assignment group
-    const updateAssignmentGroupPercent = (e, index) => {
-        const assignment_groups = state.assignment_groups;
-        assignment_groups[index].assignment_group_percent = e.target.value;
-        setState({
-            assignment_groups
-        });
-    };
-
-    // button function to add an Assignment Group to form
-    const addAssignmentGroup = (e) => {
-        e.preventDefault();
-        let x = {
-            assignment_group_text: "",
-            assignment_group_percent: 10
-        };
-        const assignment_groups = state.assignment_groups.concat(x);
-        setState({
-            assignment_groups
-        });
-    };
 
     //-----------------------
     // holds RTE of any optional additional content
@@ -674,23 +639,23 @@ function App() {
 								<span class="title">Meeting Type:</span>
 								<div class="form-group" >
 								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-class" name="course_meeting_type" value="class" class="custom-control-input"
-									checked={state.course_meeting_type === "class"}
-									onChange={handleChange}
+									<input type="radio" id="meeting-class" name="meeting_type" value="class" class="custom-control-input"
+									checked={meetingInfo.meeting_type === "class"}
+									onChange={handleMeetingInfo}
 									/>
 									<label for="meeting-class" class="custom-control-label">Class</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-lab" name="course_meeting_type" value="lab" class="custom-control-input"
-									checked={state.course_meeting_type === "lab"}
-									onChange={handleChange}
+									<input type="radio" id="meeting-lab" name="meeting_type" value="lab" class="custom-control-input"
+									checked={meetingInfo.meeting_type === "lab"}
+									onChange={handleMeetingInfo}
 									/>
 									<label for="meeting-lab" class="custom-control-label">Lab</label>
 								</div>
 								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-other" name="course_meeting_type" value="other" class="custom-control-input"
-									checked={state.course_meeting_type === "other"}
-									onChange={handleChange}
+									<input type="radio" id="meeting-other" name="meeting_type" value="other" class="custom-control-input"
+									checked={meetingInfo.meeting_type === "other"}
+									onChange={handleMeetingInfo}
 									/>
 									<label for="meeting-other" class="custom-control-label">Other</label>
 								</div>
@@ -702,50 +667,57 @@ function App() {
 							<div class="form-group">
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-mon" name="meeting_mon" value="monday"
-								checked={state.meeting_mon}
-								onChange={handleChangeCheckbox}
+								checked={true //meetingInfo.meeting_days.monday
+								}
+								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-mon" class="custom-control-label">Mon</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-tues" name="meeting_tues" value="tuesday"
-								checked={state.meeting_tues}
-								onChange={handleChangeCheckbox}
+								checked={true //meetingInfo.meeting_days.monday
+								}
+								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-tues" class="custom-control-label">Tues</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-wed" name="meeting_wed" value="wednesday"
-								checked={state.meeting_wed}
-								onChange={handleChangeCheckbox}
+								checked={true //meetingInfo.meeting_days.monday
+								}
+								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-wed" class="custom-control-label">Wed</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-thurs" name="meeting_thurs" value="thursday"
-								checked={state.meeting_thurs}
-								onChange={handleChangeCheckbox}
+								checked={true //meetingInfo.meeting_days.monday
+								}
+								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-thurs" class="custom-control-label">Thurs</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-fri" name="meeting_fri" value="friday"
-								checked={state.meeting_fri}
-								onChange={handleChangeCheckbox}
+								checked={true //meetingInfo.meeting_days.monday
+								}
+								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-fri" class="custom-control-label">Fri</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-sat" name="meeting_sat" value="saturday"
-								checked={state.meeting_sat}
-								onChange={handleChangeCheckbox}
+								checked={true //meetingInfo.meeting_days.monday
+								}
+								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-sat" class="custom-control-label">Sat</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-sun" name="meeting_sun" value="sunday"
-								checked={state.meeting_sun}
-								onChange={handleChangeCheckbox}
+								checked={true //meetingInfo.meeting_days.monday
+								}
+								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-sun" class="custom-control-label">Sun</label>
 							</div>
@@ -755,23 +727,41 @@ function App() {
 							<div class="col">
 							<label id="start-time">Start Time:</label>
 							<input type="time" id="start-time"
-							name="course_start_times"
-							value={state.course_start_times}
-							onChange={handleChange}
+							name="meeting_start_time"
+							value={meetingInfo.meeting_start_time}
+							onChange={handleMeetingInfo}
 							/>
 
 							</div>
 							<div class="col">
 							<label id="end-time">End Time:</label>
 							<input type="time" id="end-time"
-							name="course_end_times"
-							value={state.course_end_times}
-							onChange={handleChange}
+							name="meeting_end_time"
+							value={meetingInfo.meeting_end_time}
+							onChange={handleMeetingInfo}
 							/>
 							</div>  
 						</div>
+						<h4>Additional Meetings</h4>
+						<div>
+							{meetingInfo.add_meetings.map((add_meetings, i) => {
+								return (
+									<AdditionalMeetingTimes 
+										add_meeting_type={meetingInfo.add_meetings[i].add_meeting_type}
+										add_meeting_days={meetingInfo.add_meetings[i].add_meeting_days}
+										add_meeting_start_time={meetingInfo.add_meetings[i].add_meeting_start_time}
+										add_meeting_end_time={meetingInfo.add_meetings[i].add_meeting_end_time}
+										add_meeting_key={i}	
+										handleMeetingInfo={info => {
+											handleMeetingInfo(info, i);
+										}}
+										
+									/>
+								);
+							})}
+						</div>
 						<div class="add-another">
-							<button class="btn btn-outline-secondary btn-sm" >
+							<button onClick={addMeetingTime} class="btn btn-outline-secondary btn-sm">
 							+ Add Another Meeting
 							</button>
 						</div>
