@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Removed some dead code from previous rich text editor implementation" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="sarah" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="1mbn2fQpSCaUfpRho0AXJwp4Cbo" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/css" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="DockerRegistry" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/css" />
+      <recent name="$PROJECT_DIR$/src/media" />
+      <recent name="$PROJECT_DIR$/public" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/public" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="" />
+      <created>1609770954882</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1609770954882</updated>
+      <workItem from="1609770962090" duration="17882000" />
+      <workItem from="1609959561691" duration="19489000" />
+      <workItem from="1610054352973" duration="17401000" />
+      <workItem from="1610547547582" duration="1313000" />
+      <workItem from="1610993808162" duration="66000" />
+      <workItem from="1610994000738" duration="8103000" />
+      <workItem from="1611261730801" duration="3527000" />
+      <workItem from="1611608968164" duration="3387000" />
+      <workItem from="1611757769844" duration="17330000" />
+      <workItem from="1611844119292" duration="10314000" />
+      <workItem from="1612203365640" duration="8025000" />
+      <workItem from="1612214219012" duration="471000" />
+    </task>
+    <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
+      <created>1609786050918</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1609786050918</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Update: Working checklist and update for Course Content">
+      <created>1610031703493</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1610031703493</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update: RTE is *dangerously* previewing">
+      <created>1610041481183</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1610041481183</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Update: RTE is *dangerously* previewing">
+      <created>1610056919534</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1610056919534</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Update: RTE content loaded in and displayed&#10;TODO: Need to handle data sanitization">
+      <created>1610127698716</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1610127698716</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Update: RTE fields update properly. Working on HTML display/design of syllabus.">
+      <created>1611261968231</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1611261968231</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Update: Syllabus HTML template built. Design may change a bit but HTML structure should largely stay the same.&#10;TODO: Still need to build course schedule.">
+      <created>1611610470424</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1611610470424</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Update: Added sample course schedule to syllabus template at public/sample-syllabus-html-format.html">
+      <created>1611611252967</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1611611252967</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Update: Added sample course schedule to syllabus template at public/sample-syllabus-html-format.html">
+      <created>1611611481565</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1611611481565</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Update: Added a course schedule example in the template at public/sample-syllabus-html-format.html">
+      <created>1611773296852</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1611773296852</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Update: Added a course schedule example in the template at public/sample-syllabus-html-format.html">
+      <created>1611773322400</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1611773322400</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Update: Basic preview loaded, need to get information from user">
+      <created>1611778751500</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1611778751500</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Update: Progress on preview box styling">
+      <created>1611784735048</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1611784735048</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Update: Progress on preview box styling">
+      <created>1611852820672</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1611852820672</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Update: Added sanitize-html library to clean RTE input before displaying">
+      <created>1611870081207</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1611870081207</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Included required materials in preview, changed checklist state variables related to required materials">
+      <created>1612208950026</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1612208950026</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Cleaned up code by removing previous syllabus preview">
+      <created>1612209124226</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1612209124226</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Cleaned up code by removing previous syllabus preview">
+      <created>1612209425373</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1612209425373</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Moved checklist to separate JS module">
+      <created>1612213143085</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1612213143085</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Removed some dead code from previous rich text editor implementation">
+      <created>1612213390290</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1612213390290</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Update: Breakdown of content state into logical sections for cleaner data management" />
+    <MESSAGE value="Update: Working checklist and update for Course Content" />
+    <MESSAGE value="Update: RTE is *dangerously* previewing" />
+    <MESSAGE value="Update: RTE content loaded in and displayed&#10;TODO: Need to handle data sanitization" />
+    <MESSAGE value="Update: RTE fields update properly. Working on HTML display/design of syllabus." />
+    <MESSAGE value="Update: Syllabus HTML template built. Design may change a bit but HTML structure should largely stay the same.&#10;TODO: Still need to build course schedule." />
+    <MESSAGE value="Update: Added sample course schedule to syllabus template at public/sample-syllabus-html-format.html" />
+    <MESSAGE value="Update: Added a course schedule example in the template at public/sample-syllabus-html-format.html" />
+    <MESSAGE value="Update: Basic preview loaded, need to get information from user" />
+    <MESSAGE value="Update: Progress on preview box styling" />
+    <MESSAGE value="Update: Added sanitize-html library to clean RTE input before displaying" />
+    <MESSAGE value="Included required materials in preview, changed checklist state variables related to required materials" />
+    <MESSAGE value="Cleaned up code by removing previous syllabus preview" />
+    <MESSAGE value="Moved checklist to separate JS module" />
+    <MESSAGE value="Removed some dead code from previous rich text editor implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed some dead code from previous rich text editor implementation" />
+  </component>
+</project>

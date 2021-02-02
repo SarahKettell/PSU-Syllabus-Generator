@@ -1,5 +1,10 @@
 import React, {useEffect, useState, Component} from 'react';
 
+
+
+// Displays and manages the syllabus preview module, which includes the HTML formatted
+// content of the syllabus. This content is updated live as the user adds to the form.
+
 export default function SyllabusPreview(props) {
     // Assign local variables to all of the user input info for cleaner use
     let courseInfo = props.userInput.courseInfo;
@@ -14,6 +19,23 @@ export default function SyllabusPreview(props) {
     let requiredPolicies = props.userInput.requiredPolicies;
     let includedContentCheck = props.userInput.includedContentCheck;
 
+    // Assign defaults for each of the fields
+    const course_num = "[Course Number]";
+    const course_name = "[Course Name]";
+    const course_section = "[Section]";
+    const meeting_location = "[Class Meeting Location]";
+    const meeting_times = "[Day] [Start Time] - [End Time]";
+    const instructor_name = "[Instructor Name]";
+    const email = "[email@psu.edu]";
+    const phone = "###-###-####";
+    const office_location = "[Office Location]";
+    const course_objectives = "<p>[Course Description]</p>" +
+        "<ul><li>Example Objective 1</li>" +
+        "<li>Example Objective 1</li>" +
+        "<li>Example Objective 1</li></ul>";
+    const details_needed = "[Add details here]"
+    const textbooks = "[APA format - Author, A. A. (Year of publication). Title of work: Capital letter also for subtitle. Location (City, State): Publisher.]"
+
     return (
         <div className="box">
             <h2>Syllabus Preview</h2>
@@ -21,8 +43,8 @@ export default function SyllabusPreview(props) {
                 <div className="syllabus-container">
             <div className="header">
                     <div className="header-text">
-                        <h1>{(includedContentCheck.course_num.added) ? courseInfo.course_num : "[Course Number]"}: &nbsp;
-                            {(includedContentCheck.course_name.added) ? courseInfo.course_name : "[Course Name]"}
+                        <h1>{(includedContentCheck.course_num.added) ? courseInfo.course_num : course_num}: &nbsp;
+                            {(includedContentCheck.course_name.added) ? courseInfo.course_name : course_name}
                         </h1>
                         <h2>Spring 2021</h2>
                         <div className="table-of-contents">
@@ -41,11 +63,13 @@ export default function SyllabusPreview(props) {
                     </div>
             </div>
             <div className="course-information" id="information">
-                <p><span className="title">Instructor:</span>[Name]</p>
-                <p><span className="title">Class Location:</span>
-                    {(includedContentCheck.meeting_location.added) ? courseInfo.meeting_location : "[Meeting Location]"}
+                <p><span className="title">Instructor:</span>
+                    {includedContentCheck.instructor_name.added ? contactInfo.instructor_name : instructor_name}
                 </p>
-                <p><span className="title">Meeting Times:</span>[Day] [Start Time] - [End Time]</p>
+                <p><span className="title">Class Location:</span>
+                    {(includedContentCheck.meeting_location.added) ? courseInfo.meeting_location : meeting_location}
+                </p>
+                <p><span className="title">Meeting Times:</span>{meeting_times}</p>
                 <p><span className="title">Format:</span>[Class Format]</p>
                 <p><span className="title">Email:</span>
                     {(includedContentCheck.instructor_contact.added) ? contactInfo.email : "[Email]"}
@@ -53,63 +77,34 @@ export default function SyllabusPreview(props) {
                 <p><span className="title">Phone:</span>
                     {(includedContentCheck.instructor_contact.added) ? contactInfo.phone : "[###-###-####]"}
                 </p>
-                <p><span className="title">Office Hours Location:</span>[Office Location]</p>
+                <p><span className="title">Office Hours Location:</span>{office_location}</p>
                 <p><span className="title">Office Hours:</span>
                     <ul>
-                        <li>[Day]: [Start Time] - [End Time]</li>
-                        <li>[Day]: [Start Time] - [End Time]</li>
+                        <li>{meeting_times}</li>
+                        <li>{meeting_times}</li>
                     </ul>
                 </p>
             </div>
             <div className="course-description-objectives">
                 <h2 id="objectives">Course Description and Objectives</h2>
-                <div dangerouslySetInnerHTML={{__html: courseObjectives}} />
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In posuere tristique vulputate.
-                    Ut ullamcorper enim nisl, at efficitur orci finibus vitae. Pellentesque vitae felis
-                    auctor sapien accumsan finibus. Phasellus et ipsum nec justo convallis maximus nec nec
-                    quam. Nunc at finibus mauris. Duis dui arcu, sodales ac dictum vel, dignissim sed
-                    lectus. Donec vitae massa sed lacus vulputate elementum. Aliquam consectetur diam
-                    eget pharetra interdum. Aenean dapibus nibh mattis, placerat sapien in, mattis sapien.
-                    Aliquam sit amet dui gravida, rutrum odio eu, vestibulum enim. Nullam at lacus velit.
-                    Vivamus tincidunt facilisis enim at tempus.
-                </p>
-                <ul>
-                    <li>Objective 1</li>
-                    <li>Objective 2</li>
-                    <li>Objective 3</li>
-                </ul>
+                {(includedContentCheck.course_objectives.added) ? <div dangerouslySetInnerHTML={{__html: courseObjectives}}/> : <div dangerouslySetInnerHTML={{__html: course_objectives}}/>}
             </div>
             <div className="prerequisites" id="prereqs">
                 <h2>Prerequisites</h2>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.course_prereqs.added) ? <div dangerouslySetInnerHTML={{__html: coursePrereqs}}/> : details_needed}
             </div>
             <div className="required-materials">
                 <h2 id="required">Required Materials</h2>
                 <h3>Textbooks</h3>
-                <p>[APA format - Author, A. A. (Year of publication).
-                    Title of work: Capital letter also for subtitle.
-                    Location (City, State): Publisher.]</p>
+                {(includedContentCheck.req_textbooks.added) ? <div dangerouslySetInnerHTML={{__html: requiredMaterials.req_textbooks}}/> : textbooks}
                 <h3>Additional Materials</h3>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus.</p>
+                {(includedContentCheck.req_add_materials.added) ? <div dangerouslySetInnerHTML={{__html: requiredMaterials.req_add_materials}}/> : details_needed}
                 <h3>Lab Information</h3>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.req_lab_info.added) ? <div dangerouslySetInnerHTML={{__html: requiredMaterials.req_lab_info}}/> : details_needed}
             </div>
             <div className="supplemental-materials">
                 <h2 id="supplemental">Supplemental Materials</h2>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.add_materials.added) ? <div dangerouslySetInnerHTML={{__html: additionalMaterials}}/> : details_needed}
             </div>
             <div className="grading-information">
                 <h2>Grading Information</h2>
@@ -178,11 +173,7 @@ export default function SyllabusPreview(props) {
                     </li>
                 </ul>
                 <h3>Exam and Assignment Policies</h3>
-                <p>Aliquam a mauris ultricies, pellentesque leo sed, ornare orci. Fusce vitae tempus enim.
-                    Quisque nec neque quis arcu imperdiet rhoncus. Duis ornare feugiat molestie. Donec a
-                    ex vel lorem mollis vestibulum id at orci. Curabitur vestibulum ipsum vel orci fringilla,
-                    eget convallis lacus luctus.
-                </p>
+                {(includedContentCheck.exam_info.added) ? <div dangerouslySetInnerHTML={{__html: assessmentInfo.exam_info}}/> : details_needed}
             </div>
             <div id="policies">
                 <h2>University Policies</h2>

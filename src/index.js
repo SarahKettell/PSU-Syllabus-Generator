@@ -4,24 +4,11 @@ import './css/style.css';
 import './css/bootstrap.css';
 import './css/html-syllabus-styles.css';
 import './css/preview-styles.css';
-import {Editor, EditorState, RichUtils} from 'draft-js';
-import 'draft-js/dist/Draft.css';
 import RichTextEditor from 'react-rte';
 import SyllabusPreview from "./SyllabusPreview";
+import sanitizeHtml from 'sanitize-html';
+import RequirementsChecklist from "./RequirementsChecklist";
 
-//-------------------------------
-import Assignment from './components/Assignment';
-//-------------------------------
-
-class RteContent extends Component {
-	render() {
-		let parser = new DOMParser();
-		let doc = parser.parseFromString("<strong>Test</strong>", 'text/html');
-		return(
-			doc.body
-		);
-	}
-}
 
 // Uses Draft.js for functionality and renders content into HTML format
 class MyStatefulEditor extends Component {
@@ -39,11 +26,16 @@ class MyStatefulEditor extends Component {
 				value
 			);
 		}
-		let tempInfo = {
-			id: this.props.id,
-			value: value.toString('html')
+		let dirtyHTML = value.toString('html');
+		if (dirtyHTML !== "") {
+			if(dirtyHTML === "<p><br></p>"){dirtyHTML = ""}
+			let cleanHTML = sanitizeHtml(dirtyHTML);
+			let tempInfo = {
+				id: this.props.id,
+				value: cleanHTML
+			}
+			this.props.updateContent(tempInfo);
 		}
-		this.props.updateContent(tempInfo);
 	};
 
 	render () {
@@ -56,260 +48,6 @@ class MyStatefulEditor extends Component {
 	}
 }
 
-/**
- * Convert a template string into HTML DOM nodes
- * @param  {String} str The template string
- * @return {Node}       The template HTML
- */
-const stringToHTML = function (str) {
-	let parser = new DOMParser();
-	let doc = parser.parseFromString(str, 'text/html');
-	return doc.body;
-};
-
-// Used Draft.js library
-// Please read https://draftjs.org/docs/api-reference-content-state/#getplaintext for the API Information
-class RichEditorExample extends React.Component {
-  constructor(props) {
-	super(props);
-	this.state = {editorState: EditorState.createEmpty()};
-
-	this.focus = () => this.refs.editor.focus();
-	this.onChange = (editorState) => {
-		this.props.setPlainText(editorState.getCurrentContent().getPlainText())
-		this.setState({editorState})
-		console.log(editorState.getCurrentContent().convertToRaw);
-	};
-
-	this.handleKeyCommand = (command) => this._handleKeyCommand(command);
-	this.onTab = (e) => this._onTab(e);
-	this.toggleBlockType = (type) => this._toggleBlockType(type);
-	this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
-  }
-
-  _handleKeyCommand(command) {
-	const {editorState} = this.state;
-	const newState = RichUtils.handleKeyCommand(editorState, command);
-	if (newState) {
-	  this.onChange(newState);
-	  return true;
-	}
-	return false;
-  }
-
-  _onTab(e) {
-	const maxDepth = 4;
-	this.onChange(RichUtils.onTab(e, this.state.editorState, maxDepth));
-  }
-
-  _toggleBlockType(blockType) {
-	this.onChange(
-	  RichUtils.toggleBlockType(
-		this.state.editorState,
-		blockType
-	  )
-	);
-  }
-
-  _toggleInlineStyle(inlineStyle) {
-	this.onChange(
-	  RichUtils.toggleInlineStyle(
-		this.state.editorState,
-		inlineStyle
-	  )
-	);
-  }
-
-  render() {
-	const {editorState} = this.state;
-	// console.log(editorState);
-
-	// If the user changes block type before entering any text, we can
-	// either style the placeholder or hide it. Let's just hide it now.
-	let className = 'RichEditor-editor';
-	// console.log(className);
-	var contentState = editorState.getCurrentContent();
-	// console.log(contentState);
-	if (!contentState.hasText()) {
-	  if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-		className += ' RichEditor-hidePlaceholder';
-	  }
-	}
-
-	return (
-	  <div className="RichEditor-root">
-		<BlockStyleControls
-		  editorState={editorState}
-		  onToggle={this.toggleBlockType}
-		/>
-		<InlineStyleControls
-		  editorState={editorState}
-		  onToggle={this.toggleInlineStyle}
-		/>
-		<div className={className} onClick={this.focus}>
-		  <Editor
-			blockStyleFn={getBlockStyle}
-			customStyleMap={styleMap}
-			editorState={editorState}
-			handleKeyCommand={this.handleKeyCommand}
-			onChange={this.onChange}
-			onTab={this.onTab}
-			placeholder="Type here..."
-			ref="editor"
-			spellCheck={true}
-		  />
-		</div>
-	  </div>
-	);
-  }
-}
-
-// Custom overrides for "code" style.
-const styleMap = {
-  CODE: {
-	backgroundColor: 'rgba(0, 0, 0, 0.05)',
-	fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-	fontSize: 16,
-	padding: 2,
-  },
-};
-
-function getBlockStyle(block) {
-  switch (block.getType()) {
-	case 'blockquote': return 'RichEditor-blockquote';
-	default: return null;
-  }
-}
-
-class StyleButton extends React.Component {
-  constructor() {
-	super();
-	this.onToggle = (e) => {
-	  e.preventDefault();
-	  this.props.onToggle(this.props.style);
-	};
-  }
-
-  render() {
-	let className = 'RichEditor-styleButton';
-	if (this.props.active) {
-	  className += ' RichEditor-activeButton';
-	}
-
-	return (
-	  <span className={className} onMouseDown={this.onToggle}>
-		{this.props.label}
-	  </span>
-	);
-  }
-}
-
-const BLOCK_TYPES = [
-  {label: 'H1', style: 'header-one'},
-  {label: 'H2', style: 'header-two'},
-  {label: 'H3', style: 'header-three'},
-  {label: 'H4', style: 'header-four'},
-  {label: 'H5', style: 'header-five'},
-  {label: 'H6', style: 'header-six'},
-  {label: 'Blockquote', style: 'blockquote'},
-  {label: 'UL', style: 'unordered-list-item'},
-  {label: 'OL', style: 'ordered-list-item'},
-  {label: 'Code Block', style: 'code-block'},
-];
-
-const BlockStyleControls = (props) => {
-  const {editorState} = props;
-  const selection = editorState.getSelection();
-  const blockType = editorState
-	.getCurrentContent()
-	.getBlockForKey(selection.getStartKey())
-	.getType();
-
-  return (
-	<div className="RichEditor-controls">
-	  {BLOCK_TYPES.map((type) =>
-		<StyleButton
-		  key={type.label}
-		  active={type.style === blockType}
-		  label={type.label}
-		  onToggle={props.onToggle}
-		  style={type.style}
-		/>
-	  )}
-	</div>
-  );
-};
-
-var INLINE_STYLES = [
-  {label: 'Bold', style: 'BOLD'},
-  {label: 'Italic', style: 'ITALIC'},
-  {label: 'Underline', style: 'UNDERLINE'},
-  {label: 'Monospace', style: 'CODE'},
-];
-
-const InlineStyleControls = (props) => {
-  var currentStyle = props.editorState.getCurrentInlineStyle();
-  return (
-	<div className="RichEditor-controls">
-	  {INLINE_STYLES.map(type =>
-		<StyleButton
-		  key={type.label}
-		  active={currentStyle.has(type.style)}
-		  label={type.label}
-		  onToggle={props.onToggle}
-		  style={type.style}
-		/>
-	  )}
-	</div>
-  );
-};
-
-
-// //I left it for your reference when you implement dynamically generating buttons
-// function Button() {
-//
-//   const [inputs, setInputs] = React.useState([
-// 	  { id: 1, name: 'Input 1', value: '' },
-//   ])
-//
-//   const [testtt, setTesttt] = React.useState(0)
-//
-//   const handleChange = (evt) => {
-//
-// 	  let inputsState = inputs
-// 	  inputsState.forEach(input => {
-// 		  if (input.name === evt.target.name) {
-// 			  input.value = evt.target.value
-// 		  }
-// 	  })
-//
-// 	  setInputs(inputsState)
-//
-// 	  console.log(inputs)
-//   }
-//
-//   const handleAdd = () => {
-// 	  setInputs([...inputs, { id: new Date().getTime(), name: new Date().getTime().toString(), value: '' }])
-// 	  console.log(inputs)
-//   }
-//
-//
-//   const testt = () => {
-// 	  setTesttt(new Date().getTime())
-//   }
-//
-// return (
-//   <div className="App">
-// 	<header className="App-header">
-// 		{inputs.map(input => <InputComponent key={input.id} input={input} onChange={handleChange} />)}
-//
-// 		<button onClick={handleAdd}>Add more</button>
-// 		<button onClick={testt}>Test</button>
-//
-// 	</header>
-//   </div>
-// );
-//}
 
 //Main function that contains all the contents
 function App() {
@@ -429,9 +167,9 @@ function App() {
 
     // holds RTE formatted text for required materials
     const [requiredMaterials, setRequiredMaterials] = useState({
-        textbooks: "",
-        additional: "",
-        lab_info: "",
+        req_textbooks: "",
+		req_add_materials: "",
+        req_lab_info: "",
         has_no_required: false
     });
 
@@ -700,8 +438,6 @@ function App() {
   }
 
   function handleRichEditorChange(key, value) {
-	console.log(key);
-	console.log(value);
 	setState({
 	  ...state,
 	  [key]: value
@@ -715,8 +451,6 @@ function App() {
 		  ...state,
 		  [evt.target.name]: value
 		});
-		console.log(evt.target.name, value);
-		console.log(state);
 	}
 
 	const [includedContentCheck, setIncludedContentCheck] = useState({
@@ -730,7 +464,9 @@ function App() {
 		office_hours: 		{content: "Office Hours", added: false, required: true},
 		course_objectives: 	{content: "Course goals and objectives", added: false, required: true},
 		course_prereqs: 	{content: "Prerequisites", added: false, required: false},
-		req_materials: 		{content: "Required Materials", added: false, required: true},
+		req_textbooks: 		{content: "Required Textbooks", added: false, required: true},
+		req_add_materials: 	{content: "Additional Required Materials", added: false, required: true},
+		req_lab_info: 		{content: "Required Lab Info", added: false, required: true},
 		add_materials: 		{content: "Additional Materials", added: false, required: false},
 		assessment_info: 	{content: "Assessment and Grading Scale", added: false, required: true},
 		exam_info: 			{content: "Examination Policy/Schedule", added: false, required: true},
@@ -789,15 +525,11 @@ function App() {
 			...requiredMaterials,
 			[id]: value
 		})
-		if(value != "" && !includedContentCheck.req_materials.added){updateChecklist("req_materials", true);}
-		if(value === "" && includedContentCheck.req_materials.added){
-			// check if other required materials are added
-			if(!(requiredMaterials.textbooks.length > 0 ||
-				requiredMaterials.additional.length > 0 ||
-				requiredMaterials.lab_info.length > 0 ||
-				requiredMaterials.has_no_required)) {
-				updateChecklist("req_materials", false);
-			}
+		if(value != "" && !includedContentCheck[id].added){
+			updateChecklist(id, true);
+		}
+		if(value === "" && includedContentCheck[id].added){
+			updateChecklist(id, false);
 		}
 	}
 
@@ -832,18 +564,10 @@ function App() {
 	function updateChecklist(fieldName, isIncluded){
 		let tempContent = includedContentCheck[fieldName].content;
 		let tempReq = includedContentCheck[fieldName].required;
-		if(isIncluded) {
-			setIncludedContentCheck({
-				...includedContentCheck,
-				[fieldName]: {content: tempContent, added: true, required: tempReq}
-			});
-		}
-		else {
-			setIncludedContentCheck({
-				...includedContentCheck,
-				[fieldName]: {content: tempContent, added: false, required: tempReq}
-			});
-		}
+		setIncludedContentCheck({
+			...includedContentCheck,
+			[fieldName]: {content: tempContent, added: isIncluded, required: tempReq}
+		});
 	}
 
 	function toggleRequiredPolicies(info){
@@ -854,181 +578,6 @@ function App() {
 		// })
 	}
 
-	// Displays and manages the syllabus checklist module, which includes each type of content
-	// that can be added to the syllabus along with which ones are optional, required, and currently
-	// included
-	function SyllabusChecklistModule() {
-
-		return (
-			<div className="box">
-				<h2>Syllabus Checklist</h2>
-				<div className="checklist">
-					<ul>
-						<li>Course Information</li>
-						<ul>
-							<li className="check-item optional-symbol" name="course_num">{includedContentCheck.course_num.content} {includedContentCheck.course_num.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item optional-symbol" name="course_name">{includedContentCheck.course_name.content} {includedContentCheck.course_name.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item optional-symbol" name="meeting_location">{includedContentCheck.meeting_location.content} {includedContentCheck.meeting_location.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item optional-symbol" name="meeting_times">{includedContentCheck.meeting_times.content} {includedContentCheck.meeting_times.added && <span className="included-symbol"></span>}</li>
-						</ul>
-						<li>Contact information</li>
-						<ul>
-							<li className="check-item required-symbol" name="instructor_name">{includedContentCheck.instructor_name.content} {includedContentCheck.instructor_name.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="instructor_contact">{includedContentCheck.instructor_contact.content} {includedContentCheck.instructor_contact.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="office_hours">{includedContentCheck.office_hours.content} {includedContentCheck.office_hours.added && <span className="included-symbol"></span>}</li>
-						</ul>
-						<li>Course Description</li>
-						<ul>
-							<li className="check-item required-symbol" name="course_objectives">{includedContentCheck.course_objectives.content} {includedContentCheck.course_objectives.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item optional-symbol" name="course_prereqs">{includedContentCheck.course_prereqs.content} {includedContentCheck.course_prereqs.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="req_materials">{includedContentCheck.req_materials.content} {includedContentCheck.req_materials.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item optional-symbol" name="add_materials">{includedContentCheck.add_materials.content} {includedContentCheck.add_materials.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="assessment_info">{includedContentCheck.assessment_info.content} {includedContentCheck.assessment_info.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="exam_info">{includedContentCheck.exam_info.content} {includedContentCheck.exam_info.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item optional-symbol" name="detailed_sched">{includedContentCheck.detailed_sched.content} {includedContentCheck.detailed_sched.added && <span className="included-symbol"></span>}</li>
-						</ul>
-						<li>Additional Content</li>
-						<ul>
-							<li className="check-item optional-symbol" name="additional_content">{includedContentCheck.additional_content.content} {includedContentCheck.additional_content.added && <span className="included-symbol"></span>}</li>
-						</ul>
-						<li>Required Policies</li>
-						<ul>
-							<li className="check-item required-symbol" name="required_policies_0">{includedContentCheck.required_policies.content[0]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="required_policies_1">{includedContentCheck.required_policies.content[1]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="required_policies_2">{includedContentCheck.required_policies.content[2]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="required_policies_3">{includedContentCheck.required_policies.content[3]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="required_policies_4">{includedContentCheck.required_policies.content[4]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
-							<li className="check-item required-symbol" name="required_policies_5">{includedContentCheck.required_policies.content[5]} {includedContentCheck.required_policies.added && <span className="included-symbol"></span>}</li>
-						</ul>
-					</ul>
-				</div>
-			</div>
-		)
-	}
-
-	// Displays and manages the syllabus preview module, which includes the HTML formatted
-	// content of the syllabus. This content is updated live as the user adds to the form.
-	function SyllabusPreviewModule() {
-		return(
-			<div className="box">
-				<h2>Syllabus Preview</h2>
-				<div className="preview">
-					<div className="preview-box">
-
-						<div>
-							<h4>Course Information</h4>
-							<p>
-								Course Number: {courseInfo.course_num} <br/>
-								Course Name: {courseInfo.course_name} <br/>
-								Course Section: {courseInfo.course_section} <br/>
-								Meeting Location : {courseInfo.meeting_location} <br/>
-							</p>
-						</div>
-
-						{(state.course_start_date !== "" || state.course_end_date !== "" || state.course_meeting_type !== "" || state.meeting_mon || state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) && (
-							<div>
-								<h4>Course Schedule & Meeting Times</h4>
-								<p>
-									Course Start Date : {state.course_start_date} <br/>
-									Course End Date : {state.course_end_date} <br/>
-									Course Meeting Type : {state.course_meeting_type} <br/>
-									Course Meeting Days: {state.meeting_mon ? ("Mon ") : ("")}
-									{state.meeting_mon && (state.meeting_tues || state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_tues ? ("Tues ") : ("")}
-									{state.meeting_tues && (state.meeting_wed || state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_wed ? ("Wed ") : ("")}
-									{state.meeting_wed && (state.meeting_thurs || state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_thurs ? ("Thurs ") : ("")}
-									{state.meeting_thurs && (state.meeting_fri || state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_fri ? ("Fri ") : ("")}
-									{state.meeting_fri && (state.meeting_sat || state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_sat ? ("Sat ") : ("")}
-									{state.meeting_sat && (state.meeting_sun) ? (", ") : ("")}
-									{state.meeting_sun ? ("Sun ") : ("")} <br/>
-									Course Meeting Start Time : {state.course_start_times} <br/>
-									Course Meeting End Time: {state.course_end_times}
-								</p>
-							</div>
-						)}
-
-
-						<h4>Contact Information</h4>
-						<p>
-							Instructor Name : {contactInfo.instructor_name} <br/>
-							Email : {contactInfo.email} <br/>
-							Phone : {contactInfo.phone} <br/>
-							Office Location: {contactInfo.office_location} <br/>
-							Office Hour Days: {state.office_mon ? ("Mon ") : ("")}
-							{state.office_mon && (state.office_tues || state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_tues ? ("Tues ") : ("")}
-							{state.office_tues && (state.office_wed || state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_wed ? ("Wed ") : ("")}
-							{state.office_wed && (state.office_thurs || state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_thurs ? ("Thurs ") : ("")}
-							{state.office_thurs && (state.office_fri || state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_fri ? ("Fri ") : ("")}
-							{state.office_fri && (state.office_sat || state.office_sun) ? (", ") : ("")}
-							{state.office_sat ? ("Sat ") : ("")}
-							{state.office_sat && (state.office_sun) ? (", ") : ("")}
-							{state.office_sun ? ("Sun ") : ("")} <br/>
-							Office Hour: {state.office_start_time}
-							{state.office_start_time === "" ? ("") : (" ~ ")}
-							{state.office_end_time}
-						</p>
-
-						<div>
-							<h4>Course goals and objectives</h4>
-							<div dangerouslySetInnerHTML={{__html: courseObjectives}} />
-						</div>
-
-						{coursePrereqs !== "" && (
-							<div>
-								<h4>Prerequisites</h4>
-								<div dangerouslySetInnerHTML={{__html: coursePrereqs}} />
-							</div>
-						)}
-
-
-						<div>
-							<h4>Required Materials</h4>
-
-							<p>
-								Required Textbooks:
-								<div dangerouslySetInnerHTML={{__html: requiredMaterials.textbooks}} />
-								Additional Materials:
-								<div dangerouslySetInnerHTML={{__html: requiredMaterials.additional}} />
-								Lab Info:
-								<div dangerouslySetInnerHTML={{__html: requiredMaterials.lab_info}} />
-							</p>
-						</div>
-
-
-						{state.RichTextAdditionalMaterials !== "" && (
-							<div>
-								<h4>Additional Materials: </h4>
-								<div dangerouslySetInnerHTML={{__html: additionalMaterials}} />
-							</div>
-						)}
-						<div>
-							<h4>Assessment and Grading Scale: </h4>
-							<p>
-								Exam Information:
-								<div dangerouslySetInnerHTML={{__html: assessmentInfo.exam_info}} />
-							</p>
-						</div>
-
-
-						{state.RichTextAdditionalContent !== "" && (
-							<div>
-								<h4>Additional Syllabus Content </h4>
-								<div dangerouslySetInnerHTML={{__html: additionalContent}} />
-							</div>
-						)}
-					</div>
-				</div>
-			</div>
-		)
-	}
   return (
 	  <>
 		<div id="main-container">
@@ -1223,8 +772,6 @@ function App() {
 					</div>
 				</fieldset>
 
-
-
 				<fieldset>
 					<legend>Contact Information</legend>
 					<div class="form-section">
@@ -1376,16 +923,16 @@ function App() {
 						<p class="description">
 						Description for information in this section goes here.
 						</p>
-						<label for="textbooks">
+						<label for="req_textbooks">
 						Required Textbooks:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="textbooks"/>
-						<label for="additional">
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
+						<label for="req_add_materials">
 						Additional Required Materials:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="additional"/>
-						<label for="lab_info">
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
+						<label for="req_lab_info">
 						Lab Information:
 						</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="lab_info"/>
+						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
 
 						<div class="radio-set">
 							<div class="custom-control custom-checkbox custom-control-inline">
@@ -1648,8 +1195,7 @@ function App() {
 			</div>
 
 			<div id="results" class="col results">
-				<SyllabusChecklistModule />
-				<SyllabusPreviewModule />
+				<RequirementsChecklist requirementsInfo={includedContentCheck} />
 				<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
 											courseObjectives, assessmentInfo, requiredMaterials,
 											additionalMaterials ,coursePrereqs, additionalContent,
