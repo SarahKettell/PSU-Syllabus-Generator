@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Removed some dead code from previous rich text editor implementation">
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Material.io experimentation">
+      <change afterPath="$PROJECT_DIR$/src/SideNav.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/TopBar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/css/sidenav-styles.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/css/topbar-styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +21,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
         <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -95,6 +99,7 @@
       <workItem from="1611844119292" duration="10314000" />
       <workItem from="1612203365640" duration="8025000" />
       <workItem from="1612214219012" duration="471000" />
+      <workItem from="1612365270859" duration="13562000" />
     </task>
     <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
       <created>1609786050918</created>
@@ -236,7 +241,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612213390290</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Material.io experimentation">
+      <created>1612216847256</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1612216847256</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -271,6 +283,7 @@
     <MESSAGE value="Cleaned up code by removing previous syllabus preview" />
     <MESSAGE value="Moved checklist to separate JS module" />
     <MESSAGE value="Removed some dead code from previous rich text editor implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed some dead code from previous rich text editor implementation" />
+    <MESSAGE value="Material.io experimentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Material.io experimentation" />
   </component>
 </project>

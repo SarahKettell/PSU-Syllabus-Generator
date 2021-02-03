@@ -1,0 +1,31 @@
+.top-bar {
+    background: #314D64;
+    color: #fff;
+    padding: 10px;
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20);
+}
+
+.top-bar h1{
+    font-size: 18pt;
+    display: inline-block;
+    padding: 0 20px 0 20px;
+    margin: 0;
+}
+
+.top-bar .bar-left{
+    display: flex;
+    align-items: center;
+}
+
+.top-bar .bar-right{
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+}
+
+.top-bar button{
+}
+
+.top-bar .mdc-icon-button::before, .top-bar.mdc-icon-button::after{
+    background-color: #fff;
+}

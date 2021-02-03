@@ -8,8 +8,8 @@ import RichTextEditor from 'react-rte';
 import SyllabusPreview from "./SyllabusPreview";
 import sanitizeHtml from 'sanitize-html';
 import RequirementsChecklist from "./RequirementsChecklist";
-import {MDCTopAppBar} from '@material/top-app-bar';
-
+import TopBar from "./TopBar";
+import SideNav from "./SideNav";
 
 // Uses Draft.js for functionality and renders content into HTML format
 class MyStatefulEditor extends Component {
@@ -413,47 +413,30 @@ function App() {
 		// })
 	}
 
-  return (
-	  <>
-		  <header className="mdc-top-app-bar">
-			  <div className="mdc-top-app-bar__row">
-				  <section className="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-					  <button className="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button"
-							  aria-label="Open navigation menu">menu
-					  </button>
-					  <span className="mdc-top-app-bar__title">Page title</span>
-				  </section>
-				  <section className="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
-					  <button className="material-icons mdc-top-app-bar__action-item mdc-icon-button"
-							  aria-label="Favorite">favorite
-					  </button>
-					  <button className="material-icons mdc-top-app-bar__action-item mdc-icon-button"
-							  aria-label="Search">search
-					  </button>
-					  <button className="material-icons mdc-top-app-bar__action-item mdc-icon-button"
-							  aria-label="Options">more_vert
-					  </button>
-				  </section>
-			  </div>
-		  </header>
-		<div id="main-container">
-		<div class="container">
-		<div class="row intro">
-			<div class="col12">
-				<h1 id="title">Syllabus Generator</h1>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
-				<div class="intro-buttons">
-					<button type="button" class="btn btn-primary btn-lg">
-						Create a Syllabus
-					</button>
-					<button type="button" class="btn btn-primary btn-lg">
-						Generate a Template
-					</button>
-				</div>
-			</div>
-		</div>
 
-		<div class="row contents">
+
+  return (
+	  <><div id="app-container">
+		  <TopBar />
+		  <div className="main-container">
+		  	<SideNav />
+		  	<div class="content-container">
+				<div class="row intro">
+					<div class="col12">
+						<h1 id="title">Syllabus Generator</h1>
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
+						<div class="intro-buttons">
+							<button type="button" class="btn btn-primary btn-lg">
+								Create a Syllabus
+							</button>
+							<button type="button" class="btn btn-primary btn-lg">
+								Generate a Template
+							</button>
+						</div>
+					</div>
+				</div>
+
+			<div class="row contents">
 			<div class="col">
 			<div class="box">
 
@@ -1026,14 +1009,18 @@ function App() {
 											includedContentCheck, requiredPolicies}} />
 			</div>
 		</div>
-		</div>
-		<div class="footer">
-			<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
-		</div>
-		</div>
+				<div className="footer">
+					<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
+				</div>
+			</div>
+
+		  </div>
+	  </div>
 	  </>
   );
 }
+
+
 
 
 ReactDOM.render(

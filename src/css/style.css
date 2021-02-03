@@ -1,10 +1,19 @@
-body {
-    font-size: 1.1em;
+  body {
+      font-size: 1.1em;
+    }
+
+  #app-container {
+    background-color: white;
+    padding: 0;
   }
   
-  #main-container {
-    background-color: white;
-    padding: 30px 0px 30px 0px;
+  .main-container {
+    display: flex;
+  }
+
+  .content-container{
+    flex: 3;
+    padding: 30px;
   }
   
   h1 {
