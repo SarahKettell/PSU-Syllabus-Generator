@@ -9,12 +9,12 @@
 .preview .syllabus-container p{
     margin: 10px 0 10px 0;
 }
-.box .preview .syllabus-container h1,
-.box .preview .syllabus-container h2,
-.box .preview .syllabus-container h3,
-.box .preview .syllabus-container h4,
-.box .preview .syllabus-container h5,
-.box .preview .syllabus-container h6{
+.main-content-row .preview .syllabus-container h1,
+.main-content-row .preview .syllabus-container h2,
+.main-content-row .preview .syllabus-container h3,
+.main-content-row .preview .syllabus-container h4,
+.main-content-row .preview .syllabus-container h5,
+.main-content-row .preview .syllabus-container h6{
     font-family: Avenir, 'Roboto', sans-serif;
     background: none;
     color:black;
@@ -22,15 +22,15 @@
     font-size: 12pt;
     text-transform: uppercase;
 }
-.box .preview .syllabus-container h1 {
-    font-size: 17pt;
+.main-content-row .preview .syllabus-container h1 {
+    font-size: 21pt;
     padding: 0;
     background: none;
     color: black;
     text-transform: none;
 }
-.box .preview .syllabus-container h2 {
-    font-size: 15pt;
+.main-content-row .preview .syllabus-container h2 {
+    font-size: 17pt;
     margin-top: 1.5em;
     border-top: 1px solid #314d64;
     padding-top: 1em;

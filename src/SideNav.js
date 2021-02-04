@@ -8,13 +8,13 @@ function ExpandNav(){
 export default function SideNav(){
 
     return(
-        <aside className="side-nav">
+        <div className="side-nav">
             <div className="accordion" id="side-nav-menu">
                 <div className="card">
                     <div className="card-header" id="syllabusRequirements">
                         <h5 className="mb-0">
                             <a className="list-group-item list-group-item-action" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <i className="material-icons mdc-list-item__graphic" aria-hidden="true">rule</i>
+                                <i className="material-icons mdc-list-item__graphic" aria-hidden="true">policy</i>
                                 Syllabus Requirements
                                 <i className="material-icons mdc-list-item__graphic expand-icon" aria-hidden="true"></i>
                             </a>
@@ -47,19 +47,32 @@ export default function SideNav(){
                          data-parent="#buildSyllabus">
                         <div className="card-body">
                             <div className="list-group">
-                                <a href="#" className="list-group-item">Link item</a>
-                                <a href="#" className="list-group-item active">Active link item</a>
-                                <a href="#" className="list-group-item">Link item</a>
-                                <a href="#" className="list-group-item">Link item</a>
-                                <a href="#" className="list-group-item">Link item</a>
+                                <a href="#" className="list-group-item">Course Information</a>
+                                <a href="#" className="list-group-item">Contact Information</a>
+                                <a href="#" className="list-group-item">Goals & Objectives</a>
+                                <a href="#" className="list-group-item">Required Materials</a>
+                                <a href="#" className="list-group-item">Assessment and Grading</a>
+                                <a href="#" className="list-group-item">Course Schedule</a>
+                                <a href="#" className="list-group-item">Additional Content</a>
+                                <a href="#" className="list-group-item">Required Policies</a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="card">
+                    <div className="card-header" id="syllabusChecklist">
+                        <h5 className="mb-0">
+                            <a className="list-group-item list-group-item-action collapsed" href="#syllabus-checklist">
+                                <i className="material-icons mdc-list-item__graphic" aria-hidden="true">rule</i>
+                                Syllabus Checklist
+                            </a>
+                        </h5>
+                    </div>
+                </div>
+                <div className="card">
                     <div className="card-header" id="previewSyllabus">
                         <h5 className="mb-0">
-                            <a className="list-group-item list-group-item-action collapsed">
+                            <a className="list-group-item list-group-item-action collapsed" href="#syllabus-preview">
                                 <i className="material-icons mdc-list-item__graphic" aria-hidden="true">preview</i>
                                 Preview Syllabus
                             </a>
@@ -77,6 +90,6 @@ export default function SideNav(){
                     </div>
                 </div>
             </div>
-        </aside>
+        </div>
     );
 }

@@ -6,8 +6,8 @@ export default function RequirementsChecklist(props) {
     // Assign a shorthand reference to the requirements details sent in props
     const includedContentCheck = props.requirementsInfo;
     return (
-        <div className="box">
-            <h2>Syllabus Checklist</h2>
+        <div className="row main-content-row">
+            <h2 id="syllabus-checklist">Syllabus Checklist</h2>
             <div className="checklist">
                 <ul>
                     <li>Course Information</li>

@@ -420,26 +420,15 @@ function App() {
 		  <TopBar />
 		  <div className="main-container">
 		  	<SideNav />
-		  	<div class="content-container">
-				<div class="row intro">
-					<div class="col12">
-						<h1 id="title">Syllabus Generator</h1>
+		  	<main class="content-container">
+				<div class="row main-content-row requirements">
+						<h2 id="title">Syllabus Requirements</h2>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
-						<div class="intro-buttons">
-							<button type="button" class="btn btn-primary btn-lg">
-								Create a Syllabus
-							</button>
-							<button type="button" class="btn btn-primary btn-lg">
-								Generate a Template
-							</button>
-						</div>
-					</div>
 				</div>
 
 			<div class="row contents">
-			<div class="col">
-			<div class="box">
-
+			<div>
+			<div div class="row main-content-row">
 				<h2>Syllabus Contents</h2>
 				<div class="information">
 				<p id="description">
@@ -1001,18 +990,16 @@ function App() {
 			</div>
 			</div>
 
-			<div id="results" class="col results">
-				<RequirementsChecklist requirementsInfo={includedContentCheck} />
-				<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
-											courseObjectives, assessmentInfo, requiredMaterials,
-											additionalMaterials ,coursePrereqs, additionalContent,
-											includedContentCheck, requiredPolicies}} />
-			</div>
+			<RequirementsChecklist requirementsInfo={includedContentCheck} />
+			<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
+										courseObjectives, assessmentInfo, requiredMaterials,
+										additionalMaterials ,coursePrereqs, additionalContent,
+										includedContentCheck, requiredPolicies}} />
 		</div>
 				<div className="footer">
 					<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
 				</div>
-			</div>
+			</main>
 
 		  </div>
 	  </div>

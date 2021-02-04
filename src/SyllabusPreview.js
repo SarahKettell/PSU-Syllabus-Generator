@@ -37,8 +37,8 @@ export default function SyllabusPreview(props) {
     const textbooks = "[APA format - Author, A. A. (Year of publication). Title of work: Capital letter also for subtitle. Location (City, State): Publisher.]"
 
     return (
-        <div className="box">
-            <h2>Syllabus Preview</h2>
+        <div className="row main-content-row">
+            <h2 id="syllabus-preview">Syllabus Preview</h2>
             <div className="preview">
                 <div className="syllabus-container">
             <div className="header">
