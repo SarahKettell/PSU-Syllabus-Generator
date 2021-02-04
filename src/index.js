@@ -132,25 +132,13 @@ function App() {
 		},
 		meeting_start_time: "",
 		meeting_end_time: "",
-        add_meetings: []
 		
-		
-			// {
-            //     meeting_id: 0,
-            //     meeting_type: "",
-            //     days: [
-            //         {monday: false},
-            //         {tuesday: false},
-            //         {wednesday: false},
-            //         {thursday: false},
-            //         {friday: false},
-            //         {saturday: false},
-            //         {sunday: false}
-            //     ],
-            //     start_time: null,
-            //     end_time: null
-            // }
-    });
+	});
+	
+	// additional meetings state variables
+	const [addMeetingInfo, setAddMeetingInfo] = useState({
+		add_meetings: []
+	});
 
 	// contactInfo holds data related to contacting the instructor, including
     // office hours.
@@ -227,8 +215,12 @@ function App() {
 	//-----------------------------------------------
 
 	// handles input from the Meeting times section
+
+
+	// TODO: pretty sure once the input is fixed (where the new meetings aren't inputting for the original meeting), should fix the problem
 	function handleMeetingInfo(info) {
 		const name = info.target.name;
+		
 		if(info.target.type === "checkbox") {
 			const value = info.target.type === "checkbox" ? info.target.checked : info.target.value;
 			let temp = {
@@ -259,14 +251,75 @@ function App() {
 			});
 
 		}
-
 	}
 
 
+	function showState(evt) {
+		evt.preventDefault();
+		console.log(addMeetingInfo.add_meetings);
+		
+	}
+
+	function deleteAddMeeting(info, index) {
+		let add_meetings = addMeetingInfo.add_meetings;
+		add_meetings.splice(index, 1);
+
+
+		console.log("index to be deleted: " + index);
+		console.log(add_meetings)
+		
+		setAddMeetingInfo({
+			add_meetings
+		});
+	}
+
+	function handleAddMeetingInfo(info, i) {
+		let name = info.target.name;
+		if(info.target.type === "checkbox") {
+			
+			const value = info.target.checked;
+
+			let temp = {
+				add_meeting_mon: "monday",
+				add_meeting_tues: "tuesday",
+				add_meeting_wed: "wednesday",
+				add_meeting_thurs: "thursday",
+				add_meeting_fri: "friday",
+				add_meeting_sat: "saturday",
+				add_meeting_sun: "sunday"
+			};
+
+			let meeting_days = addMeetingInfo.add_meetings[i].add_meeting_days;
+			meeting_days[temp[name]] = value;
+			let temp_name = meeting_days;
+
+			setAddMeetingInfo({
+				...addMeetingInfo,
+				[temp_name]: meeting_days
+			});
+
+		} else {
+			
+			const value = info.target.value;
+
+			name = name.replace(/[0-9]/g, '');
+
+			let add_meeting = addMeetingInfo.add_meetings[i];
+			add_meeting[name] = value;
+
+			let add_meetings = addMeetingInfo.add_meetings;
+			add_meetings[i] = add_meeting;
+			
+			setAddMeetingInfo({
+				add_meetings
+			});
+
+		}
+
+	}
+
 	function addMeetingTime(evt) {
 		evt.preventDefault();
-		//console.log("ADD MEETING BUTTON HAS BEEN PUSHED!!")
-
 		let new_meeting = {
 			add_meeting_type: "",
 			add_meeting_days: {
@@ -279,12 +332,12 @@ function App() {
 				sunday: false
 			},
 			add_meeting_start_time: "",
-			add_meeting_end_time: ""
+			add_meeting_end_time: "",
 		};
 		
-		const add_meetings = meetingInfo.add_meetings.concat(new_meeting);
+		const add_meetings = addMeetingInfo.add_meetings.concat(new_meeting);
 		
-		setMeetingInfo({
+		setAddMeetingInfo({
 			add_meetings
 		});
 	}
@@ -548,6 +601,7 @@ function App() {
 		// })
 	}
 
+
   return (
 	  <>
 		<div id="main-container">
@@ -667,56 +721,49 @@ function App() {
 							<div class="form-group">
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-mon" name="meeting_mon" value="monday"
-								checked={true //meetingInfo.meeting_days.monday
-								}
+								checked={meetingInfo.meeting_days.monday}
 								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-mon" class="custom-control-label">Mon</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-tues" name="meeting_tues" value="tuesday"
-								checked={true //meetingInfo.meeting_days.monday
-								}
+								checked={meetingInfo.meeting_days.tuesday}
 								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-tues" class="custom-control-label">Tues</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-wed" name="meeting_wed" value="wednesday"
-								checked={true //meetingInfo.meeting_days.monday
-								}
+								checked={meetingInfo.meeting_days.wednesday}
 								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-wed" class="custom-control-label">Wed</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-thurs" name="meeting_thurs" value="thursday"
-								checked={true //meetingInfo.meeting_days.monday
-								}
+								checked={meetingInfo.meeting_days.thursday}
 								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-thurs" class="custom-control-label">Thurs</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-fri" name="meeting_fri" value="friday"
-								checked={true //meetingInfo.meeting_days.monday
-								}
+								checked={meetingInfo.meeting_days.friday}
 								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-fri" class="custom-control-label">Fri</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-sat" name="meeting_sat" value="saturday"
-								checked={true //meetingInfo.meeting_days.monday
-								}
+								checked={meetingInfo.meeting_days.saturday}
 								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-sat" class="custom-control-label">Sat</label>
 							</div>
 							<div class="custom-control custom-checkbox custom-control-inline">
 								<input type="checkbox" class="custom-control-input" id="meet-sun" name="meeting_sun" value="sunday"
-								checked={true //meetingInfo.meeting_days.monday
-								}
+								checked={meetingInfo.meeting_days.sunday}
 								onChange={handleMeetingInfo}
 								/>
 								<label for="meet-sun" class="custom-control-label">Sun</label>
@@ -744,16 +791,19 @@ function App() {
 						</div>
 						<h4>Additional Meetings</h4>
 						<div>
-							{meetingInfo.add_meetings.map((add_meetings, i) => {
+							{addMeetingInfo.add_meetings.map((add_meetings, i) => {
 								return (
-									<AdditionalMeetingTimes 
-										add_meeting_type={meetingInfo.add_meetings[i].add_meeting_type}
-										add_meeting_days={meetingInfo.add_meetings[i].add_meeting_days}
-										add_meeting_start_time={meetingInfo.add_meetings[i].add_meeting_start_time}
-										add_meeting_end_time={meetingInfo.add_meetings[i].add_meeting_end_time}
+									<AdditionalMeetingTimes
+										add_meeting_type={addMeetingInfo.add_meetings[i].add_meeting_type}
+										add_meeting_days={addMeetingInfo.add_meetings[i].add_meeting_days}
+										add_meeting_start_time={addMeetingInfo.add_meetings[i].add_meeting_start_time}
+										add_meeting_end_time={addMeetingInfo.add_meetings[i].add_meeting_end_time}
 										add_meeting_key={i}	
-										handleMeetingInfo={info => {
-											handleMeetingInfo(info, i);
+										handleAddMeetingInfo={info => {
+											handleAddMeetingInfo(info, i);
+										}}
+										deleteAddMeeting={(info) => {
+											deleteAddMeeting(info, i);
 										}}
 										
 									/>
@@ -765,6 +815,9 @@ function App() {
 							+ Add Another Meeting
 							</button>
 						</div>
+						<button onClick={showState}>
+							Show State
+						</button>
 						{/*--------------------------------------*/}
 					</div>
 				</fieldset>
