@@ -38,10 +38,12 @@
   
   a{
     color:#BF8226;
+    text-transform: none;
   }
   
   a:hover, a:focus{
     color: #E98300;
+    text-transform: none;
   }
   
   .footer {

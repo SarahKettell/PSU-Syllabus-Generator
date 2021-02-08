@@ -1,15 +1,20 @@
-.top-bar {
+.nav-wrapper {
     background: #314D64;
     color: #fff;
     padding: 10px;
     box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.20);
 }
 
+.row.top-bar{
+    margin-bottom: 0;
+}
+
 .top-bar h1{
     font-size: 18pt;
     display: inline-block;
-    padding: 0 20px 0 20px;
+    padding: 10px 0 0 20px;
     margin: 0;
+    align-self: stretch;
 }
 
 .top-bar .bar-left{
@@ -24,8 +29,13 @@
 }
 
 .top-bar button{
+    background: none;
+    border:none;
+    color: white;
+    padding: 10px;
 }
 
-.top-bar .mdc-icon-button::before, .top-bar.mdc-icon-button::after{
-    background-color: #fff;
+.top-bar button:hover{
+    background: rgba(250,250,250,0.1);
+    border-radius: 30px;
 }

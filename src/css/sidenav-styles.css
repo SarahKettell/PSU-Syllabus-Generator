@@ -40,9 +40,8 @@
     font-weight: 500;
 }
 
-.side-nav .card-header a:hover, .side-nav .card-body a:hover{
-    text-transform: none!important;
-    border-bottom: none;
+.side-nav .card-header a:hover, .side-nav .card-body .list-group a:hover{
+    text-transform: none;
     cursor: pointer;
     background: rgba(0, 0, 0, 0.05);
 }

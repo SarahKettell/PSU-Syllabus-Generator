@@ -53,6 +53,10 @@ class MyStatefulEditor extends Component {
 //Main function that contains all the contents
 function App() {
 
+	const[webView, setWebViewState] = React.useState( {
+		sideNavOpen: true
+	})
+
   const [state, setState] = React.useState({
 	//course info
 	course_num: "",
@@ -413,14 +417,32 @@ function App() {
 		// })
 	}
 
+	function toggleSideNav(){
+		let tmpOpenStatus = !webView.sideNavOpen;
+		setWebViewState({
+			sideNavOpen: tmpOpenStatus
+		});
+	}
 
 
   return (
 	  <><div id="app-container">
-		  <TopBar />
+		  <TopBar toggleNav={toggleSideNav} isOpen={webView.sideNavOpen} />
 		  <div className="main-container">
-		  	<SideNav />
+		  	<SideNav isOpen={webView.sideNavOpen}/>
 		  	<main class="content-container">
+				<div className="row main-content-row intro">
+					<h2 id="title">What is the Syllabus Generator?</h2>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris
+						magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur
+						tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus
+						magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis
+						quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis
+						lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad
+						litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et
+						sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae
+						dui.</p>
+				</div>
 				<div class="row main-content-row requirements">
 						<h2 id="title">Syllabus Requirements</h2>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
