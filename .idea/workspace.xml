@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Removed some dead code from previous rich text editor implementation" />
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Removed some dead code from previous rich text editor implementation">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_1_21__4_25_PM__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_1_21__4_25_PM__Default_Changelist_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="sarah" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -88,6 +93,11 @@
       <workItem from="1611844119292" duration="10314000" />
       <workItem from="1612203365640" duration="8025000" />
       <workItem from="1612214219012" duration="471000" />
+      <workItem from="1612561546523" duration="1258000" />
+      <workItem from="1612566258469" duration="1407000" />
+      <workItem from="1612737835829" duration="105000" />
+      <workItem from="1612738098360" duration="113000" />
+      <workItem from="1612738359791" duration="523000" />
     </task>
     <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
       <created>1609786050918</created>
