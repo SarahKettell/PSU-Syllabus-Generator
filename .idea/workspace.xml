@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Side nav opens and closes, though slide effect would be nice">
-      <change afterPath="$PROJECT_DIR$/src/css/main-content.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/css/sidenav-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/sidenav-styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-    </list>
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Rich text editor changed to one with more functionality." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,7 +95,7 @@
       <workItem from="1612902725964" duration="250000" />
       <workItem from="1612965145201" duration="2348000" />
       <workItem from="1612994559736" duration="784000" />
-      <workItem from="1613051106740" duration="3662000" />
+      <workItem from="1613051106740" duration="4036000" />
     </task>
     <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
       <created>1609786050918</created>
@@ -281,7 +272,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612815200072</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Rich text editor changed to one with more functionality.">
+      <created>1613055738525</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1613055738525</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -321,6 +319,7 @@
     <MESSAGE value="Update: Side Nav design updated" />
     <MESSAGE value="Update: Main content design update" />
     <MESSAGE value="Side nav opens and closes, though slide effect would be nice" />
-    <option name="LAST_COMMIT_MESSAGE" value="Side nav opens and closes, though slide effect would be nice" />
+    <MESSAGE value="Rich text editor changed to one with more functionality." />
+    <option name="LAST_COMMIT_MESSAGE" value="Rich text editor changed to one with more functionality." />
   </component>
 </project>
