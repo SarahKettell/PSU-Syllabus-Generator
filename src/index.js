@@ -4,30 +4,30 @@ import './css/style.css';
 import './css/bootstrap.css';
 import './css/html-syllabus-styles.css';
 import './css/preview-styles.css';
-import RichTextEditor from 'react-rte';
+import './css/main-content.css';
 import SyllabusPreview from "./SyllabusPreview";
 import sanitizeHtml from 'sanitize-html';
 import RequirementsChecklist from "./RequirementsChecklist";
 import TopBar from "./TopBar";
 import SideNav from "./SideNav";
+import { EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import {stateToHTML} from 'draft-js-export-html';
 
-// Uses Draft.js for functionality and renders content into HTML format
-class MyStatefulEditor extends Component {
-	state = {
-		value: RichTextEditor.createEmptyValue()
+class ControlledEditor extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			editorState: EditorState.createEmpty(),
+		};
 	}
 
-	onChange = (value) => {
-		this.setState({value});
-		if (this.props.onChange) {
-			// Send the changes up to the parent component as an HTML string.
-			// This is here to demonstrate using `.toString()` but in a real app it
-			// would be better to avoid generating a string on each change.
-			this.props.onChange(
-				value
-			);
-		}
-		let dirtyHTML = value.toString('html');
+	onEditorStateChange: function = (editorState) => {
+		this.setState({
+			editorState,
+		});
+		let dirtyHTML = stateToHTML(editorState.getCurrentContent());
 		if (dirtyHTML !== "") {
 			if(dirtyHTML === "<p><br></p>"){dirtyHTML = ""}
 			let cleanHTML = sanitizeHtml(dirtyHTML);
@@ -39,13 +39,16 @@ class MyStatefulEditor extends Component {
 		}
 	};
 
-	render () {
+	render() {
+		const { editorState } = this.state;
 		return (
-			<RichTextEditor
-				value={this.state.value}
-				onChange={this.onChange}
+			<Editor
+				editorState={editorState}
+				wrapperClassName="demo-wrapper"
+				editorClassName="demo-editor"
+				onEditorStateChange={this.onEditorStateChange}
 			/>
-		);
+		)
 	}
 }
 
@@ -430,470 +433,290 @@ function App() {
 		  <TopBar toggleNav={toggleSideNav} isOpen={webView.sideNavOpen} />
 		  <div className="main-container">
 		  	<SideNav isOpen={webView.sideNavOpen}/>
-		  	<main class="content-container">
-				<div className="row main-content-row intro">
-					<h2 id="title">What is the Syllabus Generator?</h2>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris
-						magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur
-						tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus
-						magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis
-						quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis
-						lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad
-						litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et
-						sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae
-						dui.</p>
-				</div>
-				<div class="row main-content-row requirements">
-						<h2 id="title">Syllabus Requirements</h2>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
-				</div>
-
-			<div class="row contents">
-			<div>
-			<div div class="row main-content-row">
-				<h2>Syllabus Contents</h2>
-				<div class="information">
-				<p id="description">
-					Fill in the sections below to create a syllabus.
-				</p>
-
-				<form id="syllabus-generator">
-
-				<fieldset>
-					<legend>Course Information</legend>
-					<div class="form-section">
-					<p class="description">Description for information in this section goes here.</p>
-					<div class="form-field-inline">
-					  <label for="course_name">Course Number:</label>
-					  <input type="text" id="course_name" placeholder="EDUC 305"
-		  name="course_num"
-		  value={courseInfo.course_num}
-		  onChange={handleCourseInfo} />
+		  	<main class="container content-container">
+				<section className="row section">
+					<div className="col s12 intro">
+						<h2 id="title">What is the Syllabus Generator?</h2>
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris
+							magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur
+							tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus
+							magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis
+							quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis
+							lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad
+							litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et
+							sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae
+							dui.</p>
 					</div>
-					  <div class="form-field-inline">
-					  <label for="course_name">Course Name:</label>
-					  <input type="text" id="course_name" placeholder="Creative Arts"
-		  name="course_name"
-		  value={courseInfo.course_name}
-		  onChange={handleCourseInfo}/>
+				</section>
+				<section className="row section">
+					<div class="col s12 requirements">
+							<h2 id="title">Syllabus Requirements</h2>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
 					</div>
-					<div class="form-field-inline">
-					  <label id="course_section">Section:</label>
-					  <input type="email" id="course_section" placeholder="001"
-		  name="course_section"
-		  value={courseInfo.course_section}
-		  onChange={handleCourseInfo}/>
-					</div>
-					<div class="form-field-inline">
-					  <label for="meeting_location">Meeting Location:</label>
-					  <input type="text" id="meeting_location" placeholder="Olmsted 205"
-		  name="meeting_location"
-		  value={courseInfo.meeting_location}
-		  onChange={handleCourseInfo}/>
-					</div>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Course Meeting Times & Location</legend>
-					<div class="form-section">
-						<p class="description">Description for information in this section goes here.</p>
-						<div class="form-field-inline">
-							<label for="start-date">Course Start Date:</label>
-							<input id="end-date" type="date"
-							  name="course_start_date"
-							  value={state.course_start_date}
-							  onChange={handleChange}/>
+				</section>
+				<section className="row section">
+					<div className="col s12">
+						<div className="row">
+							<h2>Build a Syllabus</h2>
+							<p id="description">Fill in the sections below to create a syllabus.</p>
 						</div>
-						<div class="form-field-inline">
-							<label for="end-date">Course End Date:</label>
-							<input id="end-date" type="date"
-							name="course_end_date"
-							value={state.course_end_date}
-							onChange={handleChange}
-							/>
-						</div>
-						<h4>Meeting Times</h4>
-							<div class="radio-set">
-								<span class="title">Meeting Type:</span>
-								<div class="form-group" >
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-class" name="course_meeting_type" value="class" class="custom-control-input"
-									checked={state.course_meeting_type === "class"}
+
+						<form id="syllabus-generator" className="col s12">
+
+						<fieldset className="row">
+							<legend>Course Information</legend>
+							<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<div class="input-field col s12 m6">
+							  <label for="course_name">Course Number:</label>
+							  <input type="text" id="course_name" placeholder="EDUC 305"
+								 name="course_num"
+								 value={courseInfo.course_num}
+								 onChange={handleCourseInfo} />
+							</div>
+							  <div class="input-field col s12 m6">
+							  <label for="course_name">Course Name:</label>
+							  <input type="text" id="course_name" placeholder="Creative Arts"
+								  name="course_name"
+								  value={courseInfo.course_name}
+								  onChange={handleCourseInfo}/>
+							</div>
+							<div class="input-field col s12 m6">
+							  <label id="course_section">Section:</label>
+							  <input type="email" id="course_section" placeholder="001"
+								  name="course_section"
+								  value={courseInfo.course_section}
+								  onChange={handleCourseInfo}/>
+							</div>
+							<div class="input-field col s12 m6">
+							  <label for="meeting_location">Meeting Location:</label>
+							  <input type="text" id="meeting_location" placeholder="Olmsted 205"
+								  name="meeting_location"
+								  value={courseInfo.meeting_location}
+								  onChange={handleCourseInfo}/>
+							</div>
+							</div>
+						</fieldset>
+
+						<fieldset className="row">
+							<legend>Course Meeting Times & Location</legend>
+							<div class="form-section">
+								<p>Description for information in this section goes here.</p>
+								<div class="input-field col s12 m6">
+
+									<input id="end-date" type="date"
+									  name="course_start_date"
+									  value={state.course_start_date}
+									  onChange={handleChange}/>
+									<label className="active" htmlFor="start-date">Course Start Date:</label>
+								</div>
+								<div class="input-field col s12 m6">
+
+									<input id="end-date" type="date"
+									name="course_end_date"
+									value={state.course_end_date}
 									onChange={handleChange}
 									/>
-									<label for="meeting-class" class="custom-control-label">Class</label>
+									<label htmlFor="end-date" className="active">Course End Date:</label>
 								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-lab" name="course_meeting_type" value="lab" class="custom-control-input"
-									checked={state.course_meeting_type === "lab"}
-									onChange={handleChange}
+							</div>
+						</fieldset>
+
+						<fieldset className="row">
+							<legend>Contact Information</legend>
+							<div className="form-section">
+								<p>Description for information in this section goes here.</p>
+								<div class="input-field col s12 m6">
+									<label for="name">Instructor Name:</label>
+									<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
+									name="instructor_name"
+									value={contactInfo.instructor_name}
+									onChange={handleContactInfo}
 									/>
-									<label for="meeting-lab" class="custom-control-label">Lab</label>
 								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-other" name="course_meeting_type" value="other" class="custom-control-input"
-									checked={state.course_meeting_type === "other"}
-									onChange={handleChange}
-									/>
-									<label for="meeting-other" class="custom-control-label">Other</label>
+								<div class="input-field col s12 m6">
+								  <label for="email">Email:</label>
+								  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
+								  name="email"
+								  value={contactInfo.email}
+								  onChange={handleContactInfo}
+								  />
 								</div>
+								<div class="input-field col s12 m6">
+								  <label for="phone">Phone:</label>
+								  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
+								  name="phone"
+								  value={contactInfo.phone}
+								  onChange={handleContactInfo}
+								  />
+								</div>
+								<div class="input-field col s12 m6">
+								  <label for="office">Office Location:</label>
+								  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
+								  name="office_location"
+								  value={contactInfo.office_location}
+								  onChange={handleContactInfo}
+								  />
 								</div>
 							</div>
+							<div className="form-section">
+								<h4>Office Hours</h4>
+							</div>
+						</fieldset>
 
-						<div class="radio-set">
-							<span class="title">Day(s):</span>
-							<div class="form-group">
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-mon" name="meeting_mon" value="monday"
-								checked={state.meeting_mon}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="meet-mon" class="custom-control-label">Mon</label>
+						<fieldset className="row">
+							<legend>Course Goals & Objectives</legend>
+							<div class="form-section">
+								<p>Description for information in this section goes here.</p>
+								<label for="objectives">Course Goals and Objectives:</label>
+								<ControlledEditor updateContent={handleCourseObjectives} id="course_objectives" />
 							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-tues" name="meeting_tues" value="tuesday"
-								checked={state.meeting_tues}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="meet-tues" class="custom-control-label">Tues</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-wed" name="meeting_wed" value="wednesday"
-								checked={state.meeting_wed}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="meet-wed" class="custom-control-label">Wed</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-thurs" name="meeting_thurs" value="thursday"
-								checked={state.meeting_thurs}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="meet-thurs" class="custom-control-label">Thurs</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-fri" name="meeting_fri" value="friday"
-								checked={state.meeting_fri}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="meet-fri" class="custom-control-label">Fri</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-sat" name="meeting_sat" value="saturday"
-								checked={state.meeting_sat}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="meet-sat" class="custom-control-label">Sat</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-sun" name="meeting_sun" value="sunday"
-								checked={state.meeting_sun}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="meet-sun" class="custom-control-label">Sun</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-row">
-							<div class="col">
-							<label id="start-time">Start Time:</label>
-							<input type="time" id="start-time"
-							name="course_start_times"
-							value={state.course_start_times}
-							onChange={handleChange}
-							/>
+						</fieldset>
 
+						<fieldset>
+							<legend>Prerequisites</legend>
+							<div class="form-section">
+								<p class="description">
+								Description for information in this section goes here.
+								</p>
+								<label for="prerequisites">Prerequisites:</label>
+								<ControlledEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
 							</div>
-							<div class="col">
-							<label id="end-time">End Time:</label>
-							<input type="time" id="end-time"
-							name="course_end_times"
-							value={state.course_end_times}
-							onChange={handleChange}
-							/>
-							</div>  
-						</div>
-						<div class="add-another">
-							<button class="btn btn-outline-secondary btn-sm" >
-							+ Add Another Meeting
-							</button>
-						</div>
-					</div>
-				</fieldset>
+						</fieldset>
 
-				<fieldset>
-					<legend>Contact Information</legend>
-					<div class="form-section">
-						<p class="description">Description for information in this section goes here.</p>
-						<div class="form-field-inline">
-							<label for="name">Instructor Name:</label>
-							<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
-							name="instructor_name"
-							value={contactInfo.instructor_name}
-							onChange={handleContactInfo}
-							/> 
-						</div>
-						<div class="form-field-inline">
-						  <label for="email">Email:</label>
-						  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
-						  name="email"
-						  value={contactInfo.email}
-						  onChange={handleContactInfo}
-						  />
-						</div>
-						<div class="form-field-inline">
-						  <label for="phone">Phone:</label>
-						  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
-						  name="phone"
-						  value={contactInfo.phone}
-						  onChange={handleContactInfo}
-						  />  
-						</div>
-						<div class="form-field-inline">
-						  <label for="office">Office Location:</label>
-						  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
-						  name="office_location"
-						  value={contactInfo.office_location}
-						  onChange={handleContactInfo}
-						  />
-						</div>
-						<h4>Office Hours</h4>
-						<div class="radio-set">
-							<span class="title">Day(s):</span>
-							<div class="form-group">
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-mon" name="office_mon" value="monday"
-								checked={state.office_mon}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-mon" class="custom-control-label">Mon</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-tues" name="office_tues" value="tuesday"
-								checked={state.office_tues}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-tues" class="custom-control-label">Tues</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-wed" name="office_wed" value="wednesday"
-								checked={state.office_wed}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-wed" class="custom-control-label">Wed</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-thurs" name="office_thurs" value="thursday"
-								checked={state.office_thurs}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-thurs" class="custom-control-label">Thurs</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-fri" name="office_fri" value="friday"
-								checked={state.office_fri}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-fri" class="custom-control-label">Fri</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-sat" name="office_sat" value="saturday"
-								checked={state.office_sat}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-sat" class="custom-control-label">Sat</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-sun" name="office_sun" value="sunday"
-								checked={state.office_sun}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-sun" class="custom-control-label">Sun</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-row">
-							<div class="col">
-							<label id="oh-start-time">Start Time:</label>
-							<input type="time" id="oh-start-time"
-							name="office_start_time"
-							value={state.office_start_time}
-							onChange={handleChange}
-							/>
-							</div>
-							<div class="col">
-							<label id="oh-end-time">End Time:</label>
-							<input type="time" id="oh-end-time"
-							name="office_end_time"
-							value={state.office_end_time}
-							onChange={handleChange}
-							/>
-							</div>  
-						</div>
-						<div class="add-another">
-							<button class="btn btn-outline-secondary btn-sm">
-							+ Add Another Office Hours Timeslot
-							</button>
-						</div>
-					</div>
-				</fieldset>
+						<fieldset>
+							<legend>Required Materials</legend>
 
-				<fieldset>
-					<legend>Course Goals & Objectives</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="objectives">Course Goals and Objectives:</label>
-						<MyStatefulEditor updateContent={handleCourseObjectives} id="course_objectives"/>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Prerequisites</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="prerequisites">Prerequisites:</label>
-						<MyStatefulEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Required Materials</legend>
-
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="req_textbooks">
-						Required Textbooks:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
-						<label for="req_add_materials">
-						Additional Required Materials:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
-						<label for="req_lab_info">
-						Lab Information:
-						</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
-
-						<div class="radio-set">
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" id="has_no_required" class="custom-control-input"
-									   checked={requiredMaterials.has_no_required}
-									   onChange={handleNoReqMaterials}
-								/>
-								<label for="has_no_required" class="custom-control-label">
-									There are no required materials for this course.
+							<div class="form-section">
+								<p class="description">
+								Description for information in this section goes here.
+								</p>
+								<label for="req_textbooks">
+								Required Textbooks:</label>
+								<ControlledEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
+								<label for="req_add_materials">
+								Additional Required Materials:</label>
+								<ControlledEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
+								<label for="req_lab_info">
+								Lab Information:
 								</label>
-							</div>
-						</div>
-					</div>
-				</fieldset>
+								<ControlledEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
 
-				 <fieldset>
-					<legend>Additional Materials</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="additional-materials">
-						Additional Materials:</label>
-						<MyStatefulEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Assessment and Grading Scale</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-					<div>
-						<label for="exam_info">Exam Policies:</label>
-						<MyStatefulEditor updateContent={handleExamInfo} id="exam_info"/>
-					</div>
-					<div>
-						<h4>Grading Scale</h4>
-						<div class="radio-set">
-							<span class="title">Type of Grade: </span>
-							<div class="form-group">
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="percent-grade" name="grade-type" value="percent" class="custom-control-input" checked/>
-									<label for="percent-grade" class="custom-control-label">Percent</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="point-grade" name="grade-type" value="point" class="custom-control-input"/>
-									<label for="point-grade" class="custom-control-label">Points</label>
+								<div class="radio-set">
+									<div class="custom-control custom-checkbox custom-control-inline">
+										<input type="checkbox" id="has_no_required" class="custom-control-input"
+											   checked={requiredMaterials.has_no_required}
+											   onChange={handleNoReqMaterials}
+										/>
+										<label for="has_no_required" class="custom-control-label">
+											There are no required materials for this course.
+										</label>
+									</div>
 								</div>
 							</div>
-						</div>
-						<>
-						<div class="grade-scale">
-						<ul>
-							<li>
-								<label class="letter">A</label>
-								<span class="range"> <input type="number" min="0" value="94"/>  to <input type="number" min="0" value="100"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">A-</label>
-								<span class="range">
-									<input type="number" min="0"/>  to <input type="number" min="0" value="94"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">B+</label>
-								<span class="range">
-									<input type="number" min="0" value="87"/>  to <input type="number" min="0" value="90"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">B</label>
-								<span class="range">
-									<input type="number" min="0" value="83"/>  to <input type="number" min="0" value="87"/>
-								</span>
-							 </li>
-							<li>
-								<label class="letter">B-</label>
-								<span class="range">
-									<input type="number" min="0" value="80"/>  to <input type="number" min="0" value="83"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">C+</label>
-								<span class="range">
-									<input type="number" min="0" value="77"/> to <input type="number" min="0" value="80"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">C</label>
-								<span class="range">
-									<input type="number" min="0" value="70"/>  to <input type="number" min="0" value="77"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">D</label>
-								<span class="range">
-									<input type="number" min="0" value="60"/>  to <input type="number" min="0" value="70"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">F</label>
-								<span class="range">
-									<span> below </span>
-									<input type="number" min="0" value="60"/>
-								</span>
-							</li>
-						</ul>
-						</div>
-					  </>
-					</div>
-				</div>
+						</fieldset>
 
-				</fieldset>
+						 <fieldset>
+							<legend>Additional Materials</legend>
+							<div class="form-section">
+								<p class="description">
+								Description for information in this section goes here.
+								</p>
+								<label for="additional-materials">
+								Additional Materials:</label>
+								<ControlledEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
+							</div>
+						</fieldset>
+
+						<fieldset>
+							<legend>Assessment and Grading Scale</legend>
+							<div class="form-section">
+								<p class="description">
+								Description for information in this section goes here.
+								</p>
+							<div>
+								<label for="exam_info">Exam Policies:</label>
+								<ControlledEditor updateContent={handleExamInfo} id="exam_info"/>
+							</div>
+							<div>
+								<h4>Grading Scale</h4>
+								<div class="radio-set">
+									<span class="title">Type of Grade: </span>
+									<div class="form-group">
+										<div class="custom-control custom-radio custom-control-inline">
+											<input type="radio" id="percent-grade" name="grade-type" value="percent" class="custom-control-input" checked/>
+											<label for="percent-grade" class="custom-control-label">Percent</label>
+										</div>
+										<div class="custom-control custom-radio custom-control-inline">
+											<input type="radio" id="point-grade" name="grade-type" value="point" class="custom-control-input"/>
+											<label for="point-grade" class="custom-control-label">Points</label>
+										</div>
+									</div>
+								</div>
+								<>
+								<div class="grade-scale">
+								<ul>
+									<li>
+										<label class="letter">A</label>
+										<span class="range"> <input type="number" min="0" value="94"/>  to <input type="number" min="0" value="100"/>
+										</span>
+									</li>
+									<li>
+										<label class="letter">A-</label>
+										<span class="range">
+											<input type="number" min="0"/>  to <input type="number" min="0" value="94"/>
+										</span>
+									</li>
+									<li>
+										<label class="letter">B+</label>
+										<span class="range">
+											<input type="number" min="0" value="87"/>  to <input type="number" min="0" value="90"/>
+										</span>
+									</li>
+									<li>
+										<label class="letter">B</label>
+										<span class="range">
+											<input type="number" min="0" value="83"/>  to <input type="number" min="0" value="87"/>
+										</span>
+									 </li>
+									<li>
+										<label class="letter">B-</label>
+										<span class="range">
+											<input type="number" min="0" value="80"/>  to <input type="number" min="0" value="83"/>
+										</span>
+									</li>
+									<li>
+										<label class="letter">C+</label>
+										<span class="range">
+											<input type="number" min="0" value="77"/> to <input type="number" min="0" value="80"/>
+										</span>
+									</li>
+									<li>
+										<label class="letter">C</label>
+										<span class="range">
+											<input type="number" min="0" value="70"/>  to <input type="number" min="0" value="77"/>
+										</span>
+									</li>
+									<li>
+										<label class="letter">D</label>
+										<span class="range">
+											<input type="number" min="0" value="60"/>  to <input type="number" min="0" value="70"/>
+										</span>
+									</li>
+									<li>
+										<label class="letter">F</label>
+										<span class="range">
+											<span> below </span>
+											<input type="number" min="0" value="60"/>
+										</span>
+									</li>
+								</ul>
+								</div>
+							  </>
+							</div>
+						</div>
+
+						</fieldset>
 
 				<fieldset>
 					<legend>Detailed Course Schedule</legend>
@@ -930,7 +753,7 @@ function App() {
 						Include any additional content you would like in the syllabus here.
 						</p>
 						<label for="additional-content">Additional Content:</label>
-						<MyStatefulEditor updateContent={handleAdditionalContent} id="additional_content"/>
+						<ControlledEditor updateContent={handleAdditionalContent} id="additional_content"/>
 					</div>
 				</fieldset>
 
@@ -1005,19 +828,16 @@ function App() {
 							Generate a full syllabus
 						</button>  
 					</div>
-				</form>
+					</form>
+					</div>
+				</section>
 
-
-				</div>
-			</div>
-			</div>
-
-			<RequirementsChecklist requirementsInfo={includedContentCheck} />
-			<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
+				<RequirementsChecklist requirementsInfo={includedContentCheck} />
+				<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
 										courseObjectives, assessmentInfo, requiredMaterials,
 										additionalMaterials ,coursePrereqs, additionalContent,
 										includedContentCheck, requiredPolicies}} />
-		</div>
+
 				<div className="footer">
 					<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
 				</div>

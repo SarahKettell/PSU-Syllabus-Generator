@@ -9,6 +9,7 @@
 
 .side-nav .card{
     box-shadow: none;
+    margin: 0;
 }
 
 .side-nav .card-body{
