@@ -988,6 +988,7 @@ function App() {
                                     </div>
                                 </>
                             </div>
+							</div>
 
                         </fieldset>
 
