@@ -104,8 +104,22 @@ function App() {
 	office_sat: false,
 	office_sun: false,
 
-	office_start_time : "",
-	office_end_time : "",
+		office_start_time : "",
+		office_end_time : "",
+
+      //Grading Scale
+      //JP_Changes
+      grade_percentage : false,
+      grade_points: false,
+      grade_A: [94, 100, 940, 1000],
+      grade_A_minus: [90, 93, 900, 930],
+      grade_B_plus: [87, 89, 970, 890],
+      grade_B: [83, 86, 830, 860],
+      grade_B_minus: [80, 82, 800, 820],
+      grade_C_plus: [77, 79, 770, 790],
+      grade_C: [70, 76, 700, 760],
+      grade_D: [60, 69, 600, 690],
+      grade_F: [59, 590],
 
 	disability_statement : false
   })
@@ -388,6 +402,24 @@ function App() {
 		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
 	}
 
+    //JP_Changes
+    //added a function to save the states of the different grades:
+    //A, A_minus, B_plus, B, B_minus, C_plus, C, D, F
+    function handleGradeOnChange(evt, grade_state, indx)
+    {
+        const value = evt.target.value
+        const new_grade_state = grade_state.slice()
+        new_grade_state[indx] = value
+
+        setState({
+            ...state,
+            [evt.target.name]: new_grade_state
+        });
+
+        console.log(evt.target.name, value);
+        console.log(state);
+    }
+
 	function handleExamInfo(info){
 		setAssessmentInfo({
 			...assessmentInfo,
@@ -639,84 +671,325 @@ function App() {
 								<ControlledEditor updateContent={handleExamInfo} id="exam_info"/>
 							</div>
 							<div>
-								<h4>Grading Scale</h4>
-								<div class="radio-set">
-									<span class="title">Type of Grade: </span>
-									<div class="form-group">
-										<div class="custom-control custom-radio custom-control-inline">
-											<input type="radio" id="percent-grade" name="grade-type" value="percent" class="custom-control-input" checked/>
-											<label for="percent-grade" class="custom-control-label">Percent</label>
-										</div>
-										<div class="custom-control custom-radio custom-control-inline">
-											<input type="radio" id="point-grade" name="grade-type" value="point" class="custom-control-input"/>
-											<label for="point-grade" class="custom-control-label">Points</label>
-										</div>
-									</div>
-								</div>
-								<>
-								<div class="grade-scale">
-								<ul>
-									<li>
-										<label class="letter">A</label>
-										<span class="range"> <input type="number" min="0" value="94"/>  to <input type="number" min="0" value="100"/>
-										</span>
-									</li>
-									<li>
-										<label class="letter">A-</label>
-										<span class="range">
-											<input type="number" min="0"/>  to <input type="number" min="0" value="94"/>
-										</span>
-									</li>
-									<li>
-										<label class="letter">B+</label>
-										<span class="range">
-											<input type="number" min="0" value="87"/>  to <input type="number" min="0" value="90"/>
-										</span>
-									</li>
-									<li>
-										<label class="letter">B</label>
-										<span class="range">
-											<input type="number" min="0" value="83"/>  to <input type="number" min="0" value="87"/>
-										</span>
-									 </li>
-									<li>
-										<label class="letter">B-</label>
-										<span class="range">
-											<input type="number" min="0" value="80"/>  to <input type="number" min="0" value="83"/>
-										</span>
-									</li>
-									<li>
-										<label class="letter">C+</label>
-										<span class="range">
-											<input type="number" min="0" value="77"/> to <input type="number" min="0" value="80"/>
-										</span>
-									</li>
-									<li>
-										<label class="letter">C</label>
-										<span class="range">
-											<input type="number" min="0" value="70"/>  to <input type="number" min="0" value="77"/>
-										</span>
-									</li>
-									<li>
-										<label class="letter">D</label>
-										<span class="range">
-											<input type="number" min="0" value="60"/>  to <input type="number" min="0" value="70"/>
-										</span>
-									</li>
-									<li>
-										<label class="letter">F</label>
-										<span class="range">
-											<span> below </span>
-											<input type="number" min="0" value="60"/>
-										</span>
-									</li>
-								</ul>
-								</div>
-							  </>
-							</div>
-						</div>
+                                <h4>Grading Scale</h4>
+                                <div class="radio-set">
+                                    <span class="title">Type of Grade: </span>
+                                    {/*JP_Changes*/}
+                                    {/*saved the state of percent-grade checkbox*/}
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox custom-control-inline">
+                                            <input type="checkbox" class="custom-control-input" id="percent-grade" name="grade_percentage" value="percent"
+                                                   defaultChecked={state.grade_percentage}
+                                                   onChange={handleChangeCheckbox}
+                                            />
+                                            <label for="percent-grade" class="custom-control-label">Percent</label>
+                                        </div>
+                                        {/*JP_Changes*/}
+                                        {/*saved the state of point-grade checkbox*/}
+                                        <div class="custom-control custom-checkbox custom-control-inline">
+                                            <input type="checkbox" class="custom-control-input" id="point-grade" name="grade_points" value="point"
+                                                   defaultChecked={state.grade_points}
+                                                   onChange={handleChangeCheckbox}
+                                            />
+                                            <label for="point-grade" class="custom-control-label">Points</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <>
+                                    <div class="grade-scale">
+                                        {/*JP_Changes*/}
+                                        {/*Added state values to each letter grade state*/}
+                                        <ul>
+                                            <li>
+                                                <label class="letter">A</label>
+                                                {/*JP_Changes*/}
+                                                {/*percentage*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_A" min="0" max ="100"
+                                           defaultValue={state.grade_A[0]}
+                                           onChange={e => handleGradeOnChange(e,state.grade_A, 0)}
+                                    />  to
+                                    <input type="number" name="grade_A" min="0" max ="100"
+                                           defaultValue={state.grade_A[1]}
+                                           onChange={e => handleGradeOnChange(e,state.grade_A, 1)}
+                                    />
+                                    </span> :
+                                                    <></>
+                                                }
 
-						</fieldset>
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_A" min="0"
+                                           defaultValue={state.grade_A[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_A, 2)}
+                                    />  to
+                                    <input type="number" name="grade_A" min="0"
+                                           defaultValue={state.grade_A[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_A, 3)}
+                                    />
+                                </span> :
+                                                    <></>
+                                                }
+
+                                            </li>
+                                            <li>
+                                                <label class="letter">A-</label>
+                                                {/*JP_Changes*/}
+                                                {/*percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_A_minus" min="0" max="100"
+                                           defaultValue={state.grade_A_minus[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 0)}
+                                    />  to
+                                    <input type="number" name="grade_A_minus" min="0" max="100"
+                                           defaultValue={state.grade_A_minus[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 1)}
+                                    />
+                                </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_A_minus" min="0"
+                                           defaultValue={state.grade_A_minus[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 2)}
+                                    />  to
+                                    <input type="number" name="grade_A_minus" min="0"
+                                           defaultValue={state.grade_A_minus[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 3)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                            <li>
+                                                <label class="letter">B+</label>
+                                                {/*JP_Changes*/}
+                                                {/*Percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_B_plus" min="0" max="100"
+                                           defaultValue={state.grade_B_plus[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 0)}
+                                    />  to
+                                    <input type="number" name="grade_B_plus" min="0" max="100"
+                                           defaultValue={state.grade_B_plus[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 1)}
+                                    />
+                                </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_B_plus" min="0"
+                                           defaultValue={state.grade_B_plus[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 2)}
+                                    />  to
+                                    <input type="number" name="grade_B_plus" min="0"
+                                           defaultValue={state.grade_B_plus[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 3)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                            <li>
+                                                <label class="letter">B</label>
+                                                {/*JP_Changes*/}
+                                                {/*percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_B" min="0" max="100"
+                                           defaultValue={state.grade_B[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B, 0)}
+                                    />  to
+                                    <input type="number" name="grade_B" min="0" max="100"
+                                           defaultValue={state.grade_B[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B, 1)}
+                                    />
+                                </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_B" min="0"
+                                           defaultValue={state.grade_B[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B, 2)}
+                                    />  to
+                                    <input type="number" name="grade_B" min="0"
+                                           defaultValue={state.grade_B[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B, 3)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                            <li>
+                                                <label class="letter">B-</label>
+                                                {/*percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_B_minus" min="0" max="100"
+                                           defaultValue={state.grade_B_minus[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 0)}
+                                    />  to
+                                    <input type="number" name="grade_B_minus" min="0" max="100"
+                                           defaultValue={state.grade_B_minus[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 1)}
+                                    />
+                                    </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_B_minus" min="0"
+                                           defaultValue={state.grade_B_minus[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 2)}
+                                    />  to
+                                    <input type="number" name="grade_B_minus" min="0"
+                                           defaultValue={state.grade_B_minus[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 3)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                            <li>
+                                                <label class="letter">C+</label>
+                                                {/*JP_Changes*/}
+                                                {/*percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_C_plus" min="0" max="100"
+                                           defaultValue={state.grade_C_plus[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 0)}
+                                    /> to
+                                    <input type="number" name="grade_C_plus" min="0" max="100"
+                                           defaultValue={state.grade_C_plus[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 1)}
+                                    />
+                                </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_C_plus" min="0"
+                                           defaultValue={state.grade_C_plus[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 2)}
+                                    />  to
+                                    <input type="number" name="grade_C_plus" min="0"
+                                           defaultValue={state.grade_C_plus[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 3)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                            <li>
+                                                <label class="letter">C</label>
+                                                {/*JP_Changes*/}
+                                                {/*percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_C" min="0" max="100"
+                                           defaultValue={state.grade_C[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C, 0)}
+                                    />  to
+                                    <input type="number" name="grade_C" min="0" max="100"
+                                           defaultValue={state.grade_C[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C, 1)}
+                                    />
+                                </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_C" min="0"
+                                           defaultValue={state.grade_C[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C, 2)}
+                                    />  to
+                                    <input type="number" name="grade_C" min="0"
+                                           defaultValue={state.grade_C[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_C, 3)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                            <li>
+                                                <label class="letter">D</label>
+                                                {/*JP_Changes*/}
+                                                {/*percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <input type="number" name="grade_D" min="0" max="100"
+                                           defaultValue={state.grade_D[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_D, 0)}
+                                    />  to
+                                    <input type="number" name="grade_D" min="0" max="100"
+                                           defaultValue={state.grade_D[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_D, 1)}
+                                    />
+                                </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <input type="number" name="grade_D" min="0"
+                                           defaultValue={state.grade_D[2]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_D, 2)}
+                                    />  to
+                                    <input type="number" name="grade_D" min="0"
+                                           defaultValue={state.grade_D[3]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_D, 3)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                            <li>
+                                                <label class="letter">F</label>
+                                                {/*JP_Changes*/}
+                                                {/*percentages*/}
+                                                {state.grade_percentage ?
+                                                    <span class="range">
+                                    <span> below </span>
+                                    <input type="number" name="grade_F" min="0" max="100"
+                                           defaultValue={state.grade_F[0]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_F, 0)}
+                                    />
+                                </span> : <></>
+                                                }
+
+                                                {/*JP_Changes*/}
+                                                {/*points*/}
+                                                {state.grade_points ?
+                                                    <span className="range">
+                                    <span> below </span>
+                                    <input type="number" name="grade_F" min="0"
+                                           defaultValue={state.grade_F[1]}
+                                           onChange={e => handleGradeOnChange(e, state.grade_F, 1)}
+                                    />
+                                </span> : <></>
+                                                }
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </>
+                            </div>
+
+                        </fieldset>
 
 				<fieldset>
 					<legend>Detailed Course Schedule</legend>
@@ -848,8 +1121,6 @@ function App() {
 	  </>
   );
 }
-
-
 
 
 ReactDOM.render(
