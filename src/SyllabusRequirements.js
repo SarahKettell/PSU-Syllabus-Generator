@@ -5,7 +5,7 @@ export default function SyllabusRequirements(){
     return (
         <div className="requirements">
             <div className="row">
-                <h2 className="col-sm-12" id="title">Syllabus Requirements</h2>
+                <h2 className="col-sm-12" id="syllabus-requirements">Syllabus Requirements</h2>
             </div>
             <div className="row">
                 <p className="col-sm-12">

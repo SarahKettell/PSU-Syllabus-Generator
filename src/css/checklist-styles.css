@@ -42,13 +42,14 @@
 }
 
 .checklist ul{
-    padding-left: 0;
+    padding: 0 15px 0 15px;
     margin-left: 0;
 }
 
 .checklist ul li {
     font-weight: 400;
-    margin-left: 0;
+    margin-left: 25px;
+    padding-left:10px;
     line-height: 24pt;
     font-size: 12pt;
 }
@@ -71,4 +72,19 @@
 .checklist li i{
     font-size: 1.2rem;
     line-height: 24pt;
+    margin-left: -35px;
+}
+
+.checklist-sublist{
+    margin-bottom: 30px;
+    border:1px solid  rgba(49,77,100,0.2);
+}
+
+.checklist-sublist h5{
+    color: #314D64;
+    margin-bottom: 15px;
+    font-size: 16pt;
+    text-transform: none;
+    background: rgba(49,77,100,0.05);
+    padding: 15px;
 }

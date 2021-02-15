@@ -8,26 +8,12 @@ function SideNavContent(){
                 <div className="card">
                     <div className="card-header" id="syllabusRequirements">
                         <h5 className="mb-0">
-                            <a className="list-group-item list-group-item-action" data-toggle="collapse"
-                               data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <a className="list-group-item list-group-item-action collapsed"
+                               href="#syllabus-requirements">
                                 <i className="material-icons mdc-list-item__graphic" aria-hidden="true">policy</i>
                                 Syllabus Requirements
-                                <i className="material-icons mdc-list-item__graphic expand-icon"
-                                   aria-hidden="true"></i>
                             </a>
                         </h5>
-                    </div>
-                    <div id="collapseOne" className="collapse show" aria-labelledby="syllabusRequirements"
-                         data-parent="#syllabusRequirements">
-                        <div className="card-body">
-                            <div className="list-group">
-                                <a href="#" className="list-group-item">Link item</a>
-                                <a href="#" className="list-group-item active">Active link item</a>
-                                <a href="#" className="list-group-item">Link item</a>
-                                <a href="#" className="list-group-item">Link item</a>
-                                <a href="#" className="list-group-item">Link item</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div className="card">
