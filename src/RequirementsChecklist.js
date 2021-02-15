@@ -6,10 +6,20 @@ export default function RequirementsChecklist(props) {
     // Assign a shorthand reference to the requirements details sent in props
     const includedContentCheck = props.requirementsInfo;
     return (
-        <div className="row main-content-row">
-            <h2 id="syllabus-checklist">Syllabus Checklist</h2>
+        <div className="row">
+            <h2 id="syllabus-checklist">Syllabus Checklist for 2020-2021</h2>
+
             <div className="checklist">
+                <h4>Primary Course Information</h4>
+                <div className="col s6 m4">
                 <ul>
+                    <li className="check-item optional-symbol" name="course_num">{includedContentCheck.course_num.content} {includedContentCheck.course_num.added && <span className="included-symbol"></span>}</li>
+                    <li className="check-item optional-symbol" name="course_name">{includedContentCheck.course_name.content} {includedContentCheck.course_name.added && <span className="included-symbol"></span>}</li>
+                    <li className="check-item optional-symbol" name="meeting_location">{includedContentCheck.meeting_location.content} {includedContentCheck.meeting_location.added && <span className="included-symbol"></span>}</li>
+                    <li className="check-item optional-symbol" name="meeting_times">{includedContentCheck.meeting_times.content} {includedContentCheck.meeting_times.added && <span className="included-symbol"></span>}</li>
+                </ul>
+                </div>
+                <ul className="main-list">
                     <li>Course Information</li>
                     <ul>
                         <li className="check-item optional-symbol" name="course_num">{includedContentCheck.course_num.content} {includedContentCheck.course_num.added && <span className="included-symbol"></span>}</li>

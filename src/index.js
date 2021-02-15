@@ -5,6 +5,7 @@ import './css/bootstrap.css';
 import './css/html-syllabus-styles.css';
 import './css/preview-styles.css';
 import './css/main-content.css';
+import './css/checklist-styles.css';
 import SyllabusPreview from "./SyllabusPreview";
 import sanitizeHtml from 'sanitize-html';
 import RequirementsChecklist from "./RequirementsChecklist";
@@ -14,6 +15,7 @@ import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {stateToHTML} from 'draft-js-export-html';
+import SyllabusRequirements from "./SyllabusRequirements";
 
 class ControlledEditor extends Component {
 	constructor(props) {
@@ -44,8 +46,9 @@ class ControlledEditor extends Component {
 		return (
 			<Editor
 				editorState={editorState}
-				wrapperClassName="demo-wrapper"
-				editorClassName="demo-editor"
+				wrapperClassName="rte-editor-full"
+				editorClassName="rte-editor"
+				toolbarClassName="rte-editor-toolbar"
 				onEditorStateChange={this.onEditorStateChange}
 			/>
 		)
@@ -462,12 +465,12 @@ function App() {
 
   return (
 	  <><div id="app-container">
-		  <TopBar toggleNav={toggleSideNav} isOpen={webView.sideNavOpen} />
-		  <div className="main-container">
-		  	<SideNav isOpen={webView.sideNavOpen}/>
-		  	<main class="container content-container">
-				<section className="row section">
-					<div className="col s12 intro">
+			<SideNav isOpen={webView.sideNavOpen}/>
+			<div className="main-content">
+				<TopBar toggleNav={toggleSideNav} isOpen={webView.sideNavOpen} />
+				<main class="content-container container">
+				<section className="section ">
+					<div className="intro">
 						<h2 id="title">What is the Syllabus Generator?</h2>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris
 							magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur
@@ -480,644 +483,626 @@ function App() {
 							dui.</p>
 					</div>
 				</section>
-				<section className="row section">
-					<div class="col s12 requirements">
-							<h2 id="title">Syllabus Requirements</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
-					</div>
+				<section className="section">
+					<SyllabusRequirements />
 				</section>
-				<section className="row section">
+				<section className="section">
+					<RequirementsChecklist requirementsInfo={includedContentCheck} />
+				</section>
+				<section className="section">
 					<div className="col s12">
-						<div className="row">
-							<h2>Build a Syllabus</h2>
-							<p id="description">Fill in the sections below to create a syllabus.</p>
+					<div className="row">
+						<h2>Build a Syllabus</h2>
+						<p id="description">Fill in the sections below to create a syllabus.</p>
+					</div>
+					<form id="syllabus-generator" className="col s12">
+
+					<fieldset className="row">
+						<legend>Course Information</legend>
+						<div class="form-section">
+						<p>Description for information in this section goes here.</p>
+						<div class="input-field col s12 m6">
+						  <label for="course_name">Course Number:</label>
+						  <input type="text" id="course_name" placeholder="EDUC 305"
+							 name="course_num"
+							 value={courseInfo.course_num}
+							 onChange={handleCourseInfo} />
 						</div>
+						  <div class="input-field col s12 m6">
+						  <label for="course_name">Course Name:</label>
+						  <input type="text" id="course_name" placeholder="Creative Arts"
+							  name="course_name"
+							  value={courseInfo.course_name}
+							  onChange={handleCourseInfo}/>
+						</div>
+						<div class="input-field col s12 m6">
+						  <label id="course_section">Section:</label>
+						  <input type="email" id="course_section" placeholder="001"
+							  name="course_section"
+							  value={courseInfo.course_section}
+							  onChange={handleCourseInfo}/>
+						</div>
+						<div class="input-field col s12 m6">
+						  <label for="meeting_location">Meeting Location:</label>
+						  <input type="text" id="meeting_location" placeholder="Olmsted 205"
+							  name="meeting_location"
+							  value={courseInfo.meeting_location}
+							  onChange={handleCourseInfo}/>
+						</div>
+						</div>
+					</fieldset>
 
-						<form id="syllabus-generator" className="col s12">
-
-						<fieldset className="row">
-							<legend>Course Information</legend>
-							<div class="form-section">
+					<fieldset className="row">
+						<legend>Course Meeting Times & Location</legend>
+						<div class="form-section">
 							<p>Description for information in this section goes here.</p>
 							<div class="input-field col s12 m6">
-							  <label for="course_name">Course Number:</label>
-							  <input type="text" id="course_name" placeholder="EDUC 305"
-								 name="course_num"
-								 value={courseInfo.course_num}
-								 onChange={handleCourseInfo} />
-							</div>
-							  <div class="input-field col s12 m6">
-							  <label for="course_name">Course Name:</label>
-							  <input type="text" id="course_name" placeholder="Creative Arts"
-								  name="course_name"
-								  value={courseInfo.course_name}
-								  onChange={handleCourseInfo}/>
+
+								<input id="end-date" type="date"
+								  name="course_start_date"
+								  value={state.course_start_date}
+								  onChange={handleChange}/>
+								<label className="active" htmlFor="start-date">Course Start Date:</label>
 							</div>
 							<div class="input-field col s12 m6">
-							  <label id="course_section">Section:</label>
-							  <input type="email" id="course_section" placeholder="001"
-								  name="course_section"
-								  value={courseInfo.course_section}
-								  onChange={handleCourseInfo}/>
+
+								<input id="end-date" type="date"
+								name="course_end_date"
+								value={state.course_end_date}
+								onChange={handleChange}
+								/>
+								<label htmlFor="end-date" className="active">Course End Date:</label>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset className="row">
+						<legend>Contact Information</legend>
+						<div className="form-section">
+							<p>Description for information in this section goes here.</p>
+							<div class="input-field col s12 m6">
+								<label for="name">Instructor Name:</label>
+								<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
+								name="instructor_name"
+								value={contactInfo.instructor_name}
+								onChange={handleContactInfo}
+								/>
 							</div>
 							<div class="input-field col s12 m6">
-							  <label for="meeting_location">Meeting Location:</label>
-							  <input type="text" id="meeting_location" placeholder="Olmsted 205"
-								  name="meeting_location"
-								  value={courseInfo.meeting_location}
-								  onChange={handleCourseInfo}/>
+							  <label for="email">Email:</label>
+							  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
+							  name="email"
+							  value={contactInfo.email}
+							  onChange={handleContactInfo}
+							  />
 							</div>
+							<div class="input-field col s12 m6">
+							  <label for="phone">Phone:</label>
+							  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
+							  name="phone"
+							  value={contactInfo.phone}
+							  onChange={handleContactInfo}
+							  />
 							</div>
-						</fieldset>
-
-						<fieldset className="row">
-							<legend>Course Meeting Times & Location</legend>
-							<div class="form-section">
-								<p>Description for information in this section goes here.</p>
-								<div class="input-field col s12 m6">
-
-									<input id="end-date" type="date"
-									  name="course_start_date"
-									  value={state.course_start_date}
-									  onChange={handleChange}/>
-									<label className="active" htmlFor="start-date">Course Start Date:</label>
-								</div>
-								<div class="input-field col s12 m6">
-
-									<input id="end-date" type="date"
-									name="course_end_date"
-									value={state.course_end_date}
-									onChange={handleChange}
-									/>
-									<label htmlFor="end-date" className="active">Course End Date:</label>
-								</div>
+							<div class="input-field col s12 m6">
+							  <label for="office">Office Location:</label>
+							  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
+							  name="office_location"
+							  value={contactInfo.office_location}
+							  onChange={handleContactInfo}
+							  />
 							</div>
-						</fieldset>
+						</div>
+						<div className="form-section">
+							<h4>Office Hours</h4>
+						</div>
+					</fieldset>
 
-						<fieldset className="row">
-							<legend>Contact Information</legend>
+					<fieldset className="row">
+						<legend>Course Goals & Objectives</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<label for="objectives">Course Goals and Objectives:</label>
+							<ControlledEditor updateContent={handleCourseObjectives} id="course_objectives" />
+						</div>
+					</fieldset>
+
+					<fieldset className="row">
+						<legend>Prerequisites</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<label for="prerequisites">Prerequisites:</label>
+							<ControlledEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
+						</div>
+					</fieldset>
+
+					<fieldset className="row">
+						<legend>Required Materials</legend>
 							<div className="form-section">
 								<p>Description for information in this section goes here.</p>
-								<div class="input-field col s12 m6">
-									<label for="name">Instructor Name:</label>
-									<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
-									name="instructor_name"
-									value={contactInfo.instructor_name}
-									onChange={handleContactInfo}
-									/>
-								</div>
-								<div class="input-field col s12 m6">
-								  <label for="email">Email:</label>
-								  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
-								  name="email"
-								  value={contactInfo.email}
-								  onChange={handleContactInfo}
-								  />
-								</div>
-								<div class="input-field col s12 m6">
-								  <label for="phone">Phone:</label>
-								  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
-								  name="phone"
-								  value={contactInfo.phone}
-								  onChange={handleContactInfo}
-								  />
-								</div>
-								<div class="input-field col s12 m6">
-								  <label for="office">Office Location:</label>
-								  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
-								  name="office_location"
-								  value={contactInfo.office_location}
-								  onChange={handleContactInfo}
-								  />
-								</div>
-							</div>
-							<div className="form-section">
-								<h4>Office Hours</h4>
-							</div>
-						</fieldset>
-
-						<fieldset className="row">
-							<legend>Course Goals & Objectives</legend>
-							<div class="form-section">
-								<p>Description for information in this section goes here.</p>
-								<label for="objectives">Course Goals and Objectives:</label>
-								<ControlledEditor updateContent={handleCourseObjectives} id="course_objectives" />
-							</div>
-						</fieldset>
-
-						<fieldset>
-							<legend>Prerequisites</legend>
-							<div class="form-section">
-								<p class="description">
-								Description for information in this section goes here.
-								</p>
-								<label for="prerequisites">Prerequisites:</label>
-								<ControlledEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
-							</div>
-						</fieldset>
-
-						<fieldset>
-							<legend>Required Materials</legend>
-
-							<div class="form-section">
-								<p class="description">
-								Description for information in this section goes here.
-								</p>
-								<label for="req_textbooks">
-								Required Textbooks:</label>
+								<label for="req_textbooks">Required Textbooks:</label>
 								<ControlledEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
-								<label for="req_add_materials">
-								Additional Required Materials:</label>
+							</div>
+							<div className="form-section">
+								<label for="req_add_materials">Additional Required Materials:</label>
 								<ControlledEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
-								<label for="req_lab_info">
-								Lab Information:
-								</label>
+							</div>
+							<div className="form-section">
+								<label for="req_lab_info">Lab Information:</label>
 								<ControlledEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
+							</div>
 
-								<div class="radio-set">
+							<div class="form-section radio-set">
+								<div class="custom-control custom-checkbox custom-control-inline">
+									<input type="checkbox" id="has_no_required" class="custom-control-input"
+										   checked={requiredMaterials.has_no_required}
+										   onChange={handleNoReqMaterials}
+									/>
+									<label for="has_no_required" class="custom-control-label">
+										There are no required materials for this course.
+									</label>
+								</div>
+						</div>
+					</fieldset>
+
+					 <fieldset className="row">
+						<legend>Additional Materials</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<label for="additional-materials">Additional Materials:</label>
+							<ControlledEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
+						</div>
+					</fieldset>
+
+					<fieldset className="row">
+						<legend>Assessment and Grading Scale</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+						<div>
+							<label for="exam_info">Exam Policies:</label>
+							<ControlledEditor updateContent={handleExamInfo} id="exam_info"/>
+						</div>
+						<div>
+							<h4>Grading Scale</h4>
+							<div class="radio-set">
+								<span class="title">Type of Grade: </span>
+								{/*JP_Changes*/}
+								{/*saved the state of percent-grade checkbox*/}
+								<div class="form-group">
 									<div class="custom-control custom-checkbox custom-control-inline">
-										<input type="checkbox" id="has_no_required" class="custom-control-input"
-											   checked={requiredMaterials.has_no_required}
-											   onChange={handleNoReqMaterials}
+										<input type="checkbox" class="custom-control-input" id="percent-grade" name="grade_percentage" value="percent"
+											   defaultChecked={state.grade_percentage}
+											   onChange={handleChangeCheckbox}
 										/>
-										<label for="has_no_required" class="custom-control-label">
-											There are no required materials for this course.
-										</label>
+										<label for="percent-grade" class="custom-control-label">Percent</label>
+									</div>
+									{/*JP_Changes*/}
+									{/*saved the state of point-grade checkbox*/}
+									<div class="custom-control custom-checkbox custom-control-inline">
+										<input type="checkbox" class="custom-control-input" id="point-grade" name="grade_points" value="point"
+											   defaultChecked={state.grade_points}
+											   onChange={handleChangeCheckbox}
+										/>
+										<label for="point-grade" class="custom-control-label">Points</label>
 									</div>
 								</div>
 							</div>
-						</fieldset>
+							<>
+								<div class="grade-scale">
+									{/*JP_Changes*/}
+									{/*Added state values to each letter grade state*/}
+									<ul>
+										<li>
+											<label class="letter">A</label>
+											{/*JP_Changes*/}
+											{/*percentage*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_A" min="0" max ="100"
+									   defaultValue={state.grade_A[0]}
+									   onChange={e => handleGradeOnChange(e,state.grade_A, 0)}
+								/>  to
+								<input type="number" name="grade_A" min="0" max ="100"
+									   defaultValue={state.grade_A[1]}
+									   onChange={e => handleGradeOnChange(e,state.grade_A, 1)}
+								/>
+								</span> :
+												<></>
+											}
 
-						 <fieldset>
-							<legend>Additional Materials</legend>
-							<div class="form-section">
-								<p class="description">
-								Description for information in this section goes here.
-								</p>
-								<label for="additional-materials">
-								Additional Materials:</label>
-								<ControlledEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
-							</div>
-						</fieldset>
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_A" min="0"
+									   defaultValue={state.grade_A[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A, 2)}
+								/>  to
+								<input type="number" name="grade_A" min="0"
+									   defaultValue={state.grade_A[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A, 3)}
+								/>
+							</span> :
+												<></>
+											}
 
-						<fieldset>
-							<legend>Assessment and Grading Scale</legend>
-							<div class="form-section">
-								<p class="description">
-								Description for information in this section goes here.
-								</p>
-							<div>
-								<label for="exam_info">Exam Policies:</label>
-								<ControlledEditor updateContent={handleExamInfo} id="exam_info"/>
-							</div>
-							<div>
-                                <h4>Grading Scale</h4>
-                                <div class="radio-set">
-                                    <span class="title">Type of Grade: </span>
-                                    {/*JP_Changes*/}
-                                    {/*saved the state of percent-grade checkbox*/}
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox custom-control-inline">
-                                            <input type="checkbox" class="custom-control-input" id="percent-grade" name="grade_percentage" value="percent"
-                                                   defaultChecked={state.grade_percentage}
-                                                   onChange={handleChangeCheckbox}
-                                            />
-                                            <label for="percent-grade" class="custom-control-label">Percent</label>
-                                        </div>
-                                        {/*JP_Changes*/}
-                                        {/*saved the state of point-grade checkbox*/}
-                                        <div class="custom-control custom-checkbox custom-control-inline">
-                                            <input type="checkbox" class="custom-control-input" id="point-grade" name="grade_points" value="point"
-                                                   defaultChecked={state.grade_points}
-                                                   onChange={handleChangeCheckbox}
-                                            />
-                                            <label for="point-grade" class="custom-control-label">Points</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <>
-                                    <div class="grade-scale">
-                                        {/*JP_Changes*/}
-                                        {/*Added state values to each letter grade state*/}
-                                        <ul>
-                                            <li>
-                                                <label class="letter">A</label>
-                                                {/*JP_Changes*/}
-                                                {/*percentage*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_A" min="0" max ="100"
-                                           defaultValue={state.grade_A[0]}
-                                           onChange={e => handleGradeOnChange(e,state.grade_A, 0)}
-                                    />  to
-                                    <input type="number" name="grade_A" min="0" max ="100"
-                                           defaultValue={state.grade_A[1]}
-                                           onChange={e => handleGradeOnChange(e,state.grade_A, 1)}
-                                    />
-                                    </span> :
-                                                    <></>
-                                                }
+										</li>
+										<li>
+											<label class="letter">A-</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_A_minus" min="0" max="100"
+									   defaultValue={state.grade_A_minus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 0)}
+								/>  to
+								<input type="number" name="grade_A_minus" min="0" max="100"
+									   defaultValue={state.grade_A_minus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 1)}
+								/>
+							</span> : <></>
+											}
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_A" min="0"
-                                           defaultValue={state.grade_A[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_A, 2)}
-                                    />  to
-                                    <input type="number" name="grade_A" min="0"
-                                           defaultValue={state.grade_A[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_A, 3)}
-                                    />
-                                </span> :
-                                                    <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_A_minus" min="0"
+									   defaultValue={state.grade_A_minus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 2)}
+								/>  to
+								<input type="number" name="grade_A_minus" min="0"
+									   defaultValue={state.grade_A_minus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">B+</label>
+											{/*JP_Changes*/}
+											{/*Percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_B_plus" min="0" max="100"
+									   defaultValue={state.grade_B_plus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 0)}
+								/>  to
+								<input type="number" name="grade_B_plus" min="0" max="100"
+									   defaultValue={state.grade_B_plus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 1)}
+								/>
+							</span> : <></>
+											}
 
-                                            </li>
-                                            <li>
-                                                <label class="letter">A-</label>
-                                                {/*JP_Changes*/}
-                                                {/*percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_A_minus" min="0" max="100"
-                                           defaultValue={state.grade_A_minus[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 0)}
-                                    />  to
-                                    <input type="number" name="grade_A_minus" min="0" max="100"
-                                           defaultValue={state.grade_A_minus[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 1)}
-                                    />
-                                </span> : <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_B_plus" min="0"
+									   defaultValue={state.grade_B_plus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 2)}
+								/>  to
+								<input type="number" name="grade_B_plus" min="0"
+									   defaultValue={state.grade_B_plus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">B</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_B" min="0" max="100"
+									   defaultValue={state.grade_B[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 0)}
+								/>  to
+								<input type="number" name="grade_B" min="0" max="100"
+									   defaultValue={state.grade_B[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 1)}
+								/>
+							</span> : <></>
+											}
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_A_minus" min="0"
-                                           defaultValue={state.grade_A_minus[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 2)}
-                                    />  to
-                                    <input type="number" name="grade_A_minus" min="0"
-                                           defaultValue={state.grade_A_minus[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_A_minus, 3)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                            <li>
-                                                <label class="letter">B+</label>
-                                                {/*JP_Changes*/}
-                                                {/*Percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_B_plus" min="0" max="100"
-                                           defaultValue={state.grade_B_plus[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 0)}
-                                    />  to
-                                    <input type="number" name="grade_B_plus" min="0" max="100"
-                                           defaultValue={state.grade_B_plus[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 1)}
-                                    />
-                                </span> : <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_B" min="0"
+									   defaultValue={state.grade_B[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 2)}
+								/>  to
+								<input type="number" name="grade_B" min="0"
+									   defaultValue={state.grade_B[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">B-</label>
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_B_minus" min="0" max="100"
+									   defaultValue={state.grade_B_minus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 0)}
+								/>  to
+								<input type="number" name="grade_B_minus" min="0" max="100"
+									   defaultValue={state.grade_B_minus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 1)}
+								/>
+								</span> : <></>
+											}
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_B_plus" min="0"
-                                           defaultValue={state.grade_B_plus[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 2)}
-                                    />  to
-                                    <input type="number" name="grade_B_plus" min="0"
-                                           defaultValue={state.grade_B_plus[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_plus, 3)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                            <li>
-                                                <label class="letter">B</label>
-                                                {/*JP_Changes*/}
-                                                {/*percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_B" min="0" max="100"
-                                           defaultValue={state.grade_B[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B, 0)}
-                                    />  to
-                                    <input type="number" name="grade_B" min="0" max="100"
-                                           defaultValue={state.grade_B[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B, 1)}
-                                    />
-                                </span> : <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_B_minus" min="0"
+									   defaultValue={state.grade_B_minus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 2)}
+								/>  to
+								<input type="number" name="grade_B_minus" min="0"
+									   defaultValue={state.grade_B_minus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">C+</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_C_plus" min="0" max="100"
+									   defaultValue={state.grade_C_plus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 0)}
+								/> to
+								<input type="number" name="grade_C_plus" min="0" max="100"
+									   defaultValue={state.grade_C_plus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 1)}
+								/>
+							</span> : <></>
+											}
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_B" min="0"
-                                           defaultValue={state.grade_B[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B, 2)}
-                                    />  to
-                                    <input type="number" name="grade_B" min="0"
-                                           defaultValue={state.grade_B[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B, 3)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                            <li>
-                                                <label class="letter">B-</label>
-                                                {/*percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_B_minus" min="0" max="100"
-                                           defaultValue={state.grade_B_minus[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 0)}
-                                    />  to
-                                    <input type="number" name="grade_B_minus" min="0" max="100"
-                                           defaultValue={state.grade_B_minus[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 1)}
-                                    />
-                                    </span> : <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_C_plus" min="0"
+									   defaultValue={state.grade_C_plus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 2)}
+								/>  to
+								<input type="number" name="grade_C_plus" min="0"
+									   defaultValue={state.grade_C_plus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">C</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_C" min="0" max="100"
+									   defaultValue={state.grade_C[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 0)}
+								/>  to
+								<input type="number" name="grade_C" min="0" max="100"
+									   defaultValue={state.grade_C[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 1)}
+								/>
+							</span> : <></>
+											}
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_B_minus" min="0"
-                                           defaultValue={state.grade_B_minus[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 2)}
-                                    />  to
-                                    <input type="number" name="grade_B_minus" min="0"
-                                           defaultValue={state.grade_B_minus[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_B_minus, 3)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                            <li>
-                                                <label class="letter">C+</label>
-                                                {/*JP_Changes*/}
-                                                {/*percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_C_plus" min="0" max="100"
-                                           defaultValue={state.grade_C_plus[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 0)}
-                                    /> to
-                                    <input type="number" name="grade_C_plus" min="0" max="100"
-                                           defaultValue={state.grade_C_plus[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 1)}
-                                    />
-                                </span> : <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_C" min="0"
+									   defaultValue={state.grade_C[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 2)}
+								/>  to
+								<input type="number" name="grade_C" min="0"
+									   defaultValue={state.grade_C[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">D</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_D" min="0" max="100"
+									   defaultValue={state.grade_D[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 0)}
+								/>  to
+								<input type="number" name="grade_D" min="0" max="100"
+									   defaultValue={state.grade_D[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 1)}
+								/>
+							</span> : <></>
+											}
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_C_plus" min="0"
-                                           defaultValue={state.grade_C_plus[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 2)}
-                                    />  to
-                                    <input type="number" name="grade_C_plus" min="0"
-                                           defaultValue={state.grade_C_plus[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C_plus, 3)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                            <li>
-                                                <label class="letter">C</label>
-                                                {/*JP_Changes*/}
-                                                {/*percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_C" min="0" max="100"
-                                           defaultValue={state.grade_C[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C, 0)}
-                                    />  to
-                                    <input type="number" name="grade_C" min="0" max="100"
-                                           defaultValue={state.grade_C[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C, 1)}
-                                    />
-                                </span> : <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_D" min="0"
+									   defaultValue={state.grade_D[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 2)}
+								/>  to
+								<input type="number" name="grade_D" min="0"
+									   defaultValue={state.grade_D[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">F</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<span> below </span>
+								<input type="number" name="grade_F" min="0" max="100"
+									   defaultValue={state.grade_F[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_F, 0)}
+								/>
+							</span> : <></>
+											}
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_C" min="0"
-                                           defaultValue={state.grade_C[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C, 2)}
-                                    />  to
-                                    <input type="number" name="grade_C" min="0"
-                                           defaultValue={state.grade_C[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_C, 3)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                            <li>
-                                                <label class="letter">D</label>
-                                                {/*JP_Changes*/}
-                                                {/*percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <input type="number" name="grade_D" min="0" max="100"
-                                           defaultValue={state.grade_D[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_D, 0)}
-                                    />  to
-                                    <input type="number" name="grade_D" min="0" max="100"
-                                           defaultValue={state.grade_D[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_D, 1)}
-                                    />
-                                </span> : <></>
-                                                }
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<span> below </span>
+								<input type="number" name="grade_F" min="0"
+									   defaultValue={state.grade_F[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_F, 1)}
+								/>
+							</span> : <></>
+											}
+										</li>
+									</ul>
+								</div>
+							</>
+						</div>
+						</div>
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <input type="number" name="grade_D" min="0"
-                                           defaultValue={state.grade_D[2]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_D, 2)}
-                                    />  to
-                                    <input type="number" name="grade_D" min="0"
-                                           defaultValue={state.grade_D[3]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_D, 3)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                            <li>
-                                                <label class="letter">F</label>
-                                                {/*JP_Changes*/}
-                                                {/*percentages*/}
-                                                {state.grade_percentage ?
-                                                    <span class="range">
-                                    <span> below </span>
-                                    <input type="number" name="grade_F" min="0" max="100"
-                                           defaultValue={state.grade_F[0]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_F, 0)}
-                                    />
-                                </span> : <></>
-                                                }
+					</fieldset>
 
-                                                {/*JP_Changes*/}
-                                                {/*points*/}
-                                                {state.grade_points ?
-                                                    <span className="range">
-                                    <span> below </span>
-                                    <input type="number" name="grade_F" min="0"
-                                           defaultValue={state.grade_F[1]}
-                                           onChange={e => handleGradeOnChange(e, state.grade_F, 1)}
-                                    />
-                                </span> : <></>
-                                                }
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </>
-                            </div>
-							</div>
-
-                        </fieldset>
-
-				<fieldset>
-					<legend>Detailed Course Schedule</legend>
-					<div class="form-section">
-						<p class="description">
-						A course schedule can be automatically generated based on meeting times and days. You can choose to fill it in later or use this app to do so.</p>
-						<div class="form-group">
-							<div class="custom-control custom-radio not-inline">
-								<input type="radio" id="include-schedule" value="include-schedule" name="schedule-type" class="custom-control-input" checked/>
-								<label for="include-schedule" class="custom-control-label">
-									Include empty weekly schedule in syllabus
-								</label>
-							</div>
-							<div class="custom-control custom-radio not-inline">
-								<input type="radio" id="separate-schedule" value="separate-schedule" name="schedule-type" class="custom-control-input"/>
-								<label for="separate-schedule" class="custom-control-label">
-									Generate empty weekly schedule in a separate file
-								</label>
-							</div>
-							<div class="custom-control custom-radio not-inline">
-								<input type="radio" id="build-schedule" value="build-schedule" name="schedule-type" class="custom-control-input"/>
-								<label for="build-schedule" class="custom-control-label">
-									Build schedule with app
-								</label>
-							</div>
+			<fieldset className="row">
+				<legend>Detailed Course Schedule</legend>
+				<div class="form-section">
+					<p>A course schedule can be automatically generated based on meeting times and days.
+						You can choose to fill it in later or use this app to do so.
+					</p>
+					<div class="form-group">
+						<div class="custom-control custom-radio not-inline">
+							<input type="radio" id="include-schedule" value="include-schedule" name="schedule-type" class="custom-control-input" checked/>
+							<label for="include-schedule" class="custom-control-label">
+								Include empty weekly schedule in syllabus
+							</label>
+						</div>
+						<div class="custom-control custom-radio not-inline">
+							<input type="radio" id="separate-schedule" value="separate-schedule" name="schedule-type" class="custom-control-input"/>
+							<label for="separate-schedule" class="custom-control-label">
+								Generate empty weekly schedule in a separate file
+							</label>
+						</div>
+						<div class="custom-control custom-radio not-inline">
+							<input type="radio" id="build-schedule" value="build-schedule" name="schedule-type" class="custom-control-input"/>
+							<label for="build-schedule" class="custom-control-label">
+								Build schedule with app
+							</label>
 						</div>
 					</div>
-				</fieldset>
+				</div>
+			</fieldset>
 
-				<fieldset>
-					<legend>Additional Syllabus Content</legend>
-					<div class="form-section">
-						<p class="description">
-						Include any additional content you would like in the syllabus here.
-						</p>
-						<label for="additional-content">Additional Content:</label>
-						<ControlledEditor updateContent={handleAdditionalContent} id="additional_content"/>
-					</div>
-				</fieldset>
+			<fieldset className="row">
+				<legend>Additional Syllabus Content</legend>
+				<div class="form-section">
+					<p class="description">
+					Include any additional content you would like in the syllabus here.
+					</p>
+					<label for="additional-content">Additional Content:</label>
+					<ControlledEditor updateContent={handleAdditionalContent} id="additional_content"/>
+				</div>
+			</fieldset>
 
-				<fieldset disabled="">
-					<legend>Required Policies</legend>
-					<div class="form-section">
-						<p class="description">
-						These policies will be included in the generated syllabus. Click on a policy to see a preview of it.
-						</p>
-						<div class="form-group">
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-ai" value="academic-integrity" class="custom-control-input" checked/>
-								<label for="policy-ai" class="custom-control-label">
-									<div >
-										<a className="read-more-link" name="academic_integrity"><span>{requiredPolicies.academic_integrity.title}</span></a>
-											{requiredPolicies.academic_integrity.preview && requiredPolicies.academic_integrity.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-da" value="disability-access" class="custom-control-input" checked/>
-								<label for="policy-da" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.disability_access.title}</span></a>
-											{requiredPolicies.disability_access.preview && requiredPolicies.disability_access.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-cs" value="counseling-services" class="custom-control-input" checked/>
-								<label for="policy-cs" class="custom-control-label">
-								  <div >
-										<a className="read-more-link"><span>{requiredPolicies.counseling_statement.title}</span></a>
-											{requiredPolicies.counseling_statement.preview && requiredPolicies.counseling_statement.content }
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-ee" value="educational-equity" class="custom-control-input" checked/>
-								<label for="policy-ee" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.educational_equity.title}</span></a>
-											{requiredPolicies.educational_equity.preview && requiredPolicies.educational_equity.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-mr" value="mandated-reporting" class="custom-control-input" checked/>
-								<label for="policy-mr" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.mandated_reporting.title}</span></a>
-											{requiredPolicies.mandated_reporting.preview && requiredPolicies.mandated_reporting.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-c19" value="covid-19-statements" class="custom-control-input" checked/>
-								<label for="policy-c19" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.covid_statements.title}</span></a>
-											{requiredPolicies.covid_statements.preview && requiredPolicies.covid_statements.content}
-									</div>
-								</label>
-							</div>
+			<fieldset className="row" disabled="">
+				<legend>Required Policies</legend>
+				<div class="form-section">
+					<p class="description">
+					These policies will be included in the generated syllabus. Click on a policy to see a preview of it.
+					</p>
+					<div class="form-group">
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-ai" value="academic-integrity" class="custom-control-input" checked/>
+							<label for="policy-ai" class="custom-control-label">
+								<div >
+									<a className="read-more-link" name="academic_integrity"><span>{requiredPolicies.academic_integrity.title}</span></a>
+										{requiredPolicies.academic_integrity.preview && requiredPolicies.academic_integrity.content}
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-da" value="disability-access" class="custom-control-input" checked/>
+							<label for="policy-da" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.disability_access.title}</span></a>
+										{requiredPolicies.disability_access.preview && requiredPolicies.disability_access.content}
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-cs" value="counseling-services" class="custom-control-input" checked/>
+							<label for="policy-cs" class="custom-control-label">
+							  <div >
+									<a className="read-more-link"><span>{requiredPolicies.counseling_statement.title}</span></a>
+										{requiredPolicies.counseling_statement.preview && requiredPolicies.counseling_statement.content }
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-ee" value="educational-equity" class="custom-control-input" checked/>
+							<label for="policy-ee" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.educational_equity.title}</span></a>
+										{requiredPolicies.educational_equity.preview && requiredPolicies.educational_equity.content}
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-mr" value="mandated-reporting" class="custom-control-input" checked/>
+							<label for="policy-mr" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.mandated_reporting.title}</span></a>
+										{requiredPolicies.mandated_reporting.preview && requiredPolicies.mandated_reporting.content}
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-c19" value="covid-19-statements" class="custom-control-input" checked/>
+							<label for="policy-c19" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.covid_statements.title}</span></a>
+										{requiredPolicies.covid_statements.preview && requiredPolicies.covid_statements.content}
+								</div>
+							</label>
 						</div>
 					</div>
-				</fieldset>
-				<div class="line-break"></div>
-
-					<div id="submitbutton">
-						<button type="submit" id="submit" class="btn btn-primary btn-lg">
-							Generate a full syllabus
-						</button>  
-					</div>
-					</form>
+				</div>
+			</fieldset>
+				</form>
 					</div>
 				</section>
 
-				<RequirementsChecklist requirementsInfo={includedContentCheck} />
-				<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
-										courseObjectives, assessmentInfo, requiredMaterials,
-										additionalMaterials ,coursePrereqs, additionalContent,
-										includedContentCheck, requiredPolicies}} />
 
-				<div className="footer">
-					<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
-				</div>
-			</main>
+		<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
+								courseObjectives, assessmentInfo, requiredMaterials,
+								additionalMaterials ,coursePrereqs, additionalContent,
+								includedContentCheck, requiredPolicies}} />
 
-		  </div>
+		<div className="footer">
+			<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
+		</div>
+	</main>
+			</div>
 	  </div>
 	  </>
   );

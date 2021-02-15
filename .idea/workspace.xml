@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Rich text editor changed to one with more functionality.">
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Updated with JP's content">
+      <change afterPath="$PROJECT_DIR$/src/SyllabusRequirements.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/css/checklist-styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/RequirementsChecklist.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/RequirementsChecklist.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TopBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/TopBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/css/main-content.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/main-content.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/css/sidenav-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/sidenav-styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/css/topbar-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/topbar-styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,6 +34,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -100,6 +109,8 @@
       <workItem from="1612965145201" duration="2348000" />
       <workItem from="1612994559736" duration="784000" />
       <workItem from="1613051106740" duration="5126000" />
+      <workItem from="1613099247957" duration="1591000" />
+      <workItem from="1613397418849" duration="5887000" />
     </task>
     <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
       <created>1609786050918</created>

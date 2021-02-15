@@ -6,7 +6,7 @@ export default function TopBar(props){
     let menuButton = props.isOpen ? "menu_open" : "menu";
 
     return(
-            <header className="row top-bar">
+            <header className="top-bar">
                 <nav>
                 <div className="nav-wrapper">
                     <button className="material-icons" onClick={props.toggleNav}
