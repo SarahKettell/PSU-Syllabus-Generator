@@ -9,30 +9,15 @@
     text-transform: none;
 }
 
-.required-symbol:before{
+.required-symbol:after{
     content:"R";
     width:3em;
     height:3em;
     position: relative;
-    margin-right:0.5em;
+    margin-left:0.5em;
     font-weight: 600;
     color:white;
     background-color: #BC204B;
-    font-size: 0.6em;
-    padding: 0.25em 0.5em 0.25em 0.5em;
-    border-radius: .5em;
-    top: -0.25em;
-}
-
-.optional-symbol:before{
-    content:"O";
-    width:3em;
-    height:3em;
-    position: relative;
-    margin-right:0.5em;
-    font-weight: 600;
-    color:white;
-    background-color: #96BEE6;
     font-size: 0.6em;
     padding: 0.25em 0.5em 0.25em 0.5em;
     border-radius: .5em;

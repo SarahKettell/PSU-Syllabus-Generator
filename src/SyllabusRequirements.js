@@ -5,18 +5,19 @@ export default function SyllabusRequirements(){
     return (
         <div className="requirements">
             <div className="row">
-                <h2 className="col 12" id="title">Syllabus Requirements</h2>
+                <h2 className="col col-sm-12" id="title">Syllabus Requirements</h2>
             </div>
             <div className="row">
-                <p className="col s12">
+                <p className="col-sm-12">
                     <a href="http://senate.psu.edu/policies-and-rules-for-undergraduate-students/43-00-syllabus/">Faculty
                     Senate Policy 43-00</a> requires that a written (paper or electronic form) syllabus must be distributed
                     to students in each course on or before the first class meeting. Changes to the syllabus shall also be
                     given to the student in written (paper or electronic) form. In addition to course content, expectations,
-                    and location of the program, the syllabus must include the following information:</p>
-                </div>
+                    and location of the program, the syllabus must include the following information:
+                </p>
+            </div>
             <div className="row">
-                <ul className="col s10">
+                <ul className="col-sm-12 col-md-8">
                     <li>Contact information for all course instructors</li>
                     <li>Required course materials</li>
                     <li>Course content and expectations</li>
@@ -28,7 +29,11 @@ export default function SyllabusRequirements(){
                     <li>Reporting Educational Equity Concerns through the Report Bias site</li>
                     <li>Mandated Reporting Statement</li>
                 </ul>
-                <div className="col s2 info-box offset-s1">
+                <div className="col-sm-12 col-md-4 info-box">
+                    <div className="info-box-title">
+                        <i className="material-icons left">lightbulb_outline</i>
+                        Tip
+                    </div>
                     <p>
                         <h6>Prefer to have an offline version for reference?</h6>
                         Download a copy of the 2020-2021 syllabus requirements and policies.
@@ -39,9 +44,6 @@ export default function SyllabusRequirements(){
                         </button>
                     </p>
                 </div>
-            </div>
-            <div className="row center offset-2">
-
             </div>
         </div>
     )

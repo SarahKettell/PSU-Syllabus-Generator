@@ -16,6 +16,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {stateToHTML} from 'draft-js-export-html';
 import SyllabusRequirements from "./SyllabusRequirements";
+import SyllabusGeneratorInfo from "./SyllabusGeneratorInfo";
 
 class ControlledEditor extends Component {
 	constructor(props) {
@@ -468,21 +469,7 @@ function App() {
 			<SideNav isOpen={webView.sideNavOpen}/>
 			<div className="main-content">
 				<TopBar toggleNav={toggleSideNav} isOpen={webView.sideNavOpen} />
-				<main class="content-container container">
-				<section className="section ">
-					<div className="intro">
-						<h2 id="title">What is the Syllabus Generator?</h2>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris
-							magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur
-							tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus
-							magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis
-							quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis
-							lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad
-							litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et
-							sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae
-							dui.</p>
-					</div>
-				</section>
+				<main class="content-container container-fluid">
 				<section className="section">
 					<SyllabusRequirements />
 				</section>
