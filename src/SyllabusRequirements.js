@@ -5,7 +5,7 @@ export default function SyllabusRequirements(){
     return (
         <div className="requirements">
             <div className="row">
-                <h2 className="col col-sm-12" id="title">Syllabus Requirements</h2>
+                <h2 className="col-sm-12" id="title">Syllabus Requirements</h2>
             </div>
             <div className="row">
                 <p className="col-sm-12">
@@ -34,7 +34,7 @@ export default function SyllabusRequirements(){
                         <i className="material-icons left">lightbulb_outline</i>
                         Tip
                     </div>
-                    <p>
+                    <p className="info-box-content">
                         <h6>Prefer to have an offline version for reference?</h6>
                         Download a copy of the 2020-2021 syllabus requirements and policies.
                         <br />

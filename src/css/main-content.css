@@ -104,6 +104,10 @@
     padding: 0!important;
     margin: 0!important;
 }
+
+.info-box .info-box-content{
+    padding: 20px 20px 10px 20px;
+}
 .info-box i{
     font-size: 1.4rem;
 }
