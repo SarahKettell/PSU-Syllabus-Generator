@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Checklist design!">
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Fixed resizing">
+      <change afterPath="$PROJECT_DIR$/src/FormComponents.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RequirementsChecklist.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/RequirementsChecklist.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/css/checklist-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/checklist-styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SyllabusPreview.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SyllabusPreview.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/css/preview-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/preview-styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -315,7 +317,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613423910057</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Fixed resizing">
+      <created>1613424250843</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1613424250843</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -359,6 +368,7 @@
     <MESSAGE value="Design updates" />
     <MESSAGE value="Changes to checklist" />
     <MESSAGE value="Checklist design!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Checklist design!" />
+    <MESSAGE value="Fixed resizing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed resizing" />
   </component>
 </project>

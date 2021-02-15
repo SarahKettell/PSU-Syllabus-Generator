@@ -17,6 +17,11 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {stateToHTML} from 'draft-js-export-html';
 import SyllabusRequirements from "./SyllabusRequirements";
 import SyllabusGeneratorInfo from "./SyllabusGeneratorInfo";
+import {
+	BasicCourseInfo, InstructorInfo, CourseMaterials,
+	CourseDescriptions, CoursePolicies, CourseSchedule,
+	AvailableStudentServices}
+	from "./FormComponents";
 
 class ControlledEditor extends Component {
 	constructor(props) {
@@ -477,12 +482,20 @@ function App() {
 					<RequirementsChecklist requirementsInfo={includedContentCheck} />
 				</section>
 				<section className="section">
-					<div className="col s12">
 					<div className="row">
-						<h2>Build a Syllabus</h2>
+							<h2 className="col s12">Build a Syllabus</h2>
+					</div>
+					<div className="row">
 						<p id="description">Fill in the sections below to create a syllabus.</p>
 					</div>
-					<form id="syllabus-generator" className="col s12">
+					<form id="syllabus-generator" className="row">
+						<BasicCourseInfo />
+						<InstructorInfo />
+						<CourseMaterials />
+						<CourseDescriptions />
+						<CoursePolicies />
+						<CourseSchedule />
+						<AvailableStudentServices />
 
 					<fieldset className="row">
 						<legend>Course Information</legend>
@@ -518,7 +531,6 @@ function App() {
 						</div>
 						</div>
 					</fieldset>
-
 					<fieldset className="row">
 						<legend>Course Meeting Times & Location</legend>
 						<div class="form-section">
@@ -542,7 +554,6 @@ function App() {
 							</div>
 						</div>
 					</fieldset>
-
 					<fieldset className="row">
 						<legend>Contact Information</legend>
 						<div className="form-section">
@@ -584,7 +595,6 @@ function App() {
 							<h4>Office Hours</h4>
 						</div>
 					</fieldset>
-
 					<fieldset className="row">
 						<legend>Course Goals & Objectives</legend>
 						<div class="form-section">
@@ -593,7 +603,6 @@ function App() {
 							<ControlledEditor updateContent={handleCourseObjectives} id="course_objectives" />
 						</div>
 					</fieldset>
-
 					<fieldset className="row">
 						<legend>Prerequisites</legend>
 						<div class="form-section">
@@ -602,7 +611,6 @@ function App() {
 							<ControlledEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
 						</div>
 					</fieldset>
-
 					<fieldset className="row">
 						<legend>Required Materials</legend>
 							<div className="form-section">
@@ -631,8 +639,7 @@ function App() {
 								</div>
 						</div>
 					</fieldset>
-
-					 <fieldset className="row">
+					<fieldset className="row">
 						<legend>Additional Materials</legend>
 						<div class="form-section">
 							<p>Description for information in this section goes here.</p>
@@ -640,7 +647,6 @@ function App() {
 							<ControlledEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
 						</div>
 					</fieldset>
-
 					<fieldset className="row">
 						<legend>Assessment and Grading Scale</legend>
 						<div class="form-section">
@@ -970,37 +976,35 @@ function App() {
 						</div>
 
 					</fieldset>
-
-			<fieldset className="row">
-				<legend>Detailed Course Schedule</legend>
-				<div class="form-section">
-					<p>A course schedule can be automatically generated based on meeting times and days.
-						You can choose to fill it in later or use this app to do so.
-					</p>
-					<div class="form-group">
-						<div class="custom-control custom-radio not-inline">
-							<input type="radio" id="include-schedule" value="include-schedule" name="schedule-type" class="custom-control-input" checked/>
-							<label for="include-schedule" class="custom-control-label">
-								Include empty weekly schedule in syllabus
-							</label>
+					<fieldset className="row">
+						<legend>Detailed Course Schedule</legend>
+						<div class="form-section">
+							<p>A course schedule can be automatically generated based on meeting times and days.
+								You can choose to fill it in later or use this app to do so.
+							</p>
+							<div class="form-group">
+								<div class="custom-control custom-radio not-inline">
+									<input type="radio" id="include-schedule" value="include-schedule" name="schedule-type" class="custom-control-input" checked/>
+									<label for="include-schedule" class="custom-control-label">
+										Include empty weekly schedule in syllabus
+									</label>
+								</div>
+								<div class="custom-control custom-radio not-inline">
+									<input type="radio" id="separate-schedule" value="separate-schedule" name="schedule-type" class="custom-control-input"/>
+									<label for="separate-schedule" class="custom-control-label">
+										Generate empty weekly schedule in a separate file
+									</label>
+								</div>
+								<div class="custom-control custom-radio not-inline">
+									<input type="radio" id="build-schedule" value="build-schedule" name="schedule-type" class="custom-control-input"/>
+									<label for="build-schedule" class="custom-control-label">
+										Build schedule with app
+									</label>
+								</div>
+							</div>
 						</div>
-						<div class="custom-control custom-radio not-inline">
-							<input type="radio" id="separate-schedule" value="separate-schedule" name="schedule-type" class="custom-control-input"/>
-							<label for="separate-schedule" class="custom-control-label">
-								Generate empty weekly schedule in a separate file
-							</label>
-						</div>
-						<div class="custom-control custom-radio not-inline">
-							<input type="radio" id="build-schedule" value="build-schedule" name="schedule-type" class="custom-control-input"/>
-							<label for="build-schedule" class="custom-control-label">
-								Build schedule with app
-							</label>
-						</div>
-					</div>
-				</div>
-			</fieldset>
-
-			<fieldset className="row">
+					</fieldset>
+					<fieldset className="row">
 				<legend>Additional Syllabus Content</legend>
 				<div class="form-section">
 					<p class="description">
@@ -1010,8 +1014,7 @@ function App() {
 					<ControlledEditor updateContent={handleAdditionalContent} id="additional_content"/>
 				</div>
 			</fieldset>
-
-			<fieldset className="row" disabled="">
+					<fieldset className="row" disabled="">
 				<legend>Required Policies</legend>
 				<div class="form-section">
 					<p class="description">
@@ -1076,14 +1079,14 @@ function App() {
 				</div>
 			</fieldset>
 				</form>
-					</div>
 				</section>
 
-
-		<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
-								courseObjectives, assessmentInfo, requiredMaterials,
-								additionalMaterials ,coursePrereqs, additionalContent,
-								includedContentCheck, requiredPolicies}} />
+		<section>
+			<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
+									courseObjectives, assessmentInfo, requiredMaterials,
+									additionalMaterials ,coursePrereqs, additionalContent,
+									includedContentCheck, requiredPolicies}} />
+		</section>
 
 		<div className="footer">
 			<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
