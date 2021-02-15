@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Changes to checklist">
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Checklist design!">
       <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/RequirementsChecklist.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/RequirementsChecklist.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SideNav.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SideNav.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SyllabusRequirements.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SyllabusRequirements.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/css/checklist-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/checklist-styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -310,7 +308,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613421979330</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Checklist design!">
+      <created>1613423910057</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1613423910057</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -353,6 +358,7 @@
     <MESSAGE value="Rich text editor changed to one with more functionality." />
     <MESSAGE value="Design updates" />
     <MESSAGE value="Changes to checklist" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes to checklist" />
+    <MESSAGE value="Checklist design!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Checklist design!" />
   </component>
 </project>

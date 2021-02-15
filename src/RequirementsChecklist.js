@@ -8,7 +8,7 @@ export default function RequirementsChecklist(props) {
     return (
         <div className="checklist-section">
             <div className="row">
-            <div className="col-sm-8">
+            <div className="col-sm-12 col-md-8">
                 <h2 id="syllabus-checklist">Syllabus Checklist</h2>
                 <p>A syllabus is a roadmap that students follow in order to be successful in a course. A thorough syllabus
                     will contain most or all of the following items. To help you keep track of what is required, those
@@ -28,12 +28,12 @@ export default function RequirementsChecklist(props) {
             </div>
             </div>
             <div className="checklist row">
-                <div className="col-sm-6">
+                <div className="col-sm-12 col-md-6">
                     <div className="checklist-sublist">
                         <h5>Basic Course Information</h5>
                         <ul>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Course ID, Name, Number/Section title</li>
-                            <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Credit hours</li>
+                            <li className="check-item"><i className="material-icons left item-checked">check</i>Credit hours</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Prerequisites (courses, skills, experience)</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Permission from instructor required to register</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Classroom location and time</li>
@@ -78,7 +78,7 @@ export default function RequirementsChecklist(props) {
                         </ul>
                     </div>
                 </div>
-                <div className="col-sm-6">
+                <div className="col-sm-12 col-md-6">
                     <div className="checklist-sublist">
                         <h5>Course Policies</h5>
                         <ul>

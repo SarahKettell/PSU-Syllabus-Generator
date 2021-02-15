@@ -88,3 +88,8 @@
     background: rgba(49,77,100,0.05);
     padding: 15px;
 }
+
+.checklist-sublist .item-checked{
+    color: #3EA39E;
+    font-weight: bolder;
+}
