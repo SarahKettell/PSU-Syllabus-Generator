@@ -36,7 +36,7 @@ export default function SyllabusRequirements(){
                     </div>
                     <p className="info-box-content">
                         <h6>Prefer to have an offline version for reference?</h6>
-                        Download a copy of the 2020-2021 syllabus requirements and policies.
+                        Download a copy of the 2020-2021 syllabus requirements, policies, and checklist.
                         <br />
                         <button className="btn-small waves-effect waves-light">
                             <i className="material-icons left">download</i>

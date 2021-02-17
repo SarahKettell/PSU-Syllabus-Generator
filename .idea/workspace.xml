@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Fixed resizing">
-      <change afterPath="$PROJECT_DIR$/src/FormComponents.js" afterDir="false" />
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Initial form component separation began">
+      <change afterPath="$PROJECT_DIR$/src/ExportBuilder.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SideNav.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SideNav.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SyllabusPreview.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SyllabusPreview.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/css/preview-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/preview-styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SyllabusRequirements.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SyllabusRequirements.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/css/sidenav-styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/sidenav-styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,6 +42,9 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
   </component>
   <component name="ProjectId" id="1mbn2fQpSCaUfpRho0AXJwp4Cbo" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -106,6 +113,8 @@
       <workItem from="1613051106740" duration="5126000" />
       <workItem from="1613099247957" duration="1591000" />
       <workItem from="1613397418849" duration="5887000" />
+      <workItem from="1613429582490" duration="3000" />
+      <workItem from="1613569916776" duration="7695000" />
     </task>
     <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
       <created>1609786050918</created>
@@ -324,7 +333,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613424250843</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Initial form component separation began">
+      <created>1613426142578</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1613426142578</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -344,7 +360,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Update: Breakdown of content state into logical sections for cleaner data management" />
     <MESSAGE value="Update: Working checklist and update for Course Content" />
     <MESSAGE value="Update: RTE is *dangerously* previewing" />
     <MESSAGE value="Update: RTE content loaded in and displayed&#10;TODO: Need to handle data sanitization" />
@@ -369,6 +384,7 @@
     <MESSAGE value="Changes to checklist" />
     <MESSAGE value="Checklist design!" />
     <MESSAGE value="Fixed resizing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed resizing" />
+    <MESSAGE value="Initial form component separation began" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial form component separation began" />
   </component>
 </project>

@@ -1,10 +1,12 @@
 import React, {useEffect, useState, Component} from 'react';
 import './css/sidenav-styles.css';
+import {docxExport} from "./ExportBuilder";
+import {htmlExport} from "./ExportBuilder";
 
 function SideNavContent(){
     return (
         <div className="side-nav">
-            <div className="accordion" id="side-nav-menu">
+                <div className="accordion" id="side-nav-menu">
                 <div className="card">
                     <div className="card-header" id="syllabusRequirements">
                         <h5 className="mb-0">
@@ -69,7 +71,7 @@ function SideNavContent(){
                 <div className="card">
                     <div className="card-header" id="downloadTemplate">
                         <h5 className="mb-0">
-                            <a className="list-group-item list-group-item-action collapsed">
+                            <a className="list-group-item list-group-item-action collapsed" onClick={htmlExport}>
                                 <i className="material-icons mdc-list-item__graphic"
                                    aria-hidden="true">download_for_offline</i>
                                 Download a Template

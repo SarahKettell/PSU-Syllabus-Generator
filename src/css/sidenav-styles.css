@@ -4,8 +4,12 @@
     max-width: 350px;
     min-width: 275px;
     box-shadow:0 1px 5px 0 rgba(0,0,0,0.20);
-
 }
+
+/*.side-nav-sticky{*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*}*/
 
 .side-nav .card{
     box-shadow: none;
@@ -90,8 +94,6 @@
 .side-nav .card-header .list-group-item.collapsed:hover{
     background: rgba(0, 0, 0, 0.05);
 }
-
-
 
 .side-nav .list-group-item:hover {
     background-color: rgba(0, 0, 0, 0.25);

@@ -47,7 +47,7 @@ export default function SyllabusPreview(props) {
                     this to use as your class syllabus or download it incomplete and fill it in as a template.
                 </p>
             </div>
-            <div className="row">
+            <div id="html-preview" className="row">
                 <div className="syllabus-container col-sm-12">
                     <div className="header">
                             <div className="header-text">

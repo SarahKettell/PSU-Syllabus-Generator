@@ -17,6 +17,9 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {stateToHTML} from 'draft-js-export-html';
 import SyllabusRequirements from "./SyllabusRequirements";
 import SyllabusGeneratorInfo from "./SyllabusGeneratorInfo";
+
+
+
 import {
 	BasicCourseInfo, InstructorInfo, CourseMaterials,
 	CourseDescriptions, CoursePolicies, CourseSchedule,
