@@ -58,7 +58,7 @@ export function htmlExport(){
     const innerBlob = new Blob([newHTML], {type: 'text/html'});
 
     console.log(innerBlob);
-    saveAs(innerBlob, "html-example.html");
+    saveAs(innerBlob, "syllabus.html");
 }
 
 

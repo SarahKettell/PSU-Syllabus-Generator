@@ -34,7 +34,7 @@ function SideNavContent(){
                          data-parent="#buildSyllabus">
                         <div className="card-body">
                             <div className="list-group">
-                                <a href="#" className="list-group-item">Course Information</a>
+                                <a href="#basic-course-info" className="list-group-item">Basic Course Information</a>
                                 <a href="#" className="list-group-item">Contact Information</a>
                                 <a href="#" className="list-group-item">Goals & Objectives</a>
                                 <a href="#" className="list-group-item">Required Materials</a>
