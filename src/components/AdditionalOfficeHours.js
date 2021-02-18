@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 
 export default function AdditionalOfficeHours(props) {
 
-    //console.log("props: " + JSON.stringify(props));
-
     let add_office_hours_days = props.add_office_hours_days;
     let add_office_hours_start_time = props.add_office_hours_start_time;
     let add_office_hours_end_time = props.add_office_hours_end_time;
@@ -12,8 +10,6 @@ export default function AdditionalOfficeHours(props) {
 
     let handleAddOfficeHoursInfo = props.handleAddOfficeHoursInfo;
     //let deleteAddOfficeHours = props.deleteAddOfficeHours;
-
-    //console.log("Days: " + add_office_hours_days);
 
     return (
         <div>
