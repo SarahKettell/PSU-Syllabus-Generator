@@ -69,7 +69,7 @@
 .rte-editor-full{
     border: 1px solid #A2AAAD;
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .rte-editor{
@@ -136,4 +136,25 @@
 }
 
 .requirements i{
+}
+
+
+.simple-radio-group{
+    display: inline-block;
+    margin: 20px 0 20px 0;
+    font-weight: 500;
+    padding-left:0!important;
+}
+
+.simple-radio-group .radio-title{
+    display: inline-block;
+    margin-right:20px;
+}
+
+.simple-radio-group label{
+    margin-right:20px;
+}
+
+.form-divider{
+    height: 30px;
 }

@@ -36,9 +36,9 @@ export default function RequirementsChecklist(props) {
                             <li className="check-item"><i className="material-icons left item-checked">check</i>Credit hours</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Prerequisites (courses, skills, experience)</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Permission from instructor required to register</li>
-                            <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Classroom location and time</li>
+                            <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Classroom location</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Lab/Recitation location and time</li>
-                            <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Class meeting days</li>
+                            <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Class meeting days and times</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>CANVAS information</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Course start/end dates</li>
                         </ul>

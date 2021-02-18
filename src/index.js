@@ -17,6 +17,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {stateToHTML} from 'draft-js-export-html';
 import SyllabusRequirements from "./SyllabusRequirements";
 import SyllabusGeneratorInfo from "./SyllabusGeneratorInfo";
+import ControlledEditor from "./ControlledEditor";
 
 
 
@@ -25,44 +26,6 @@ import {
 	CourseDescriptions, CoursePolicies, CourseSchedule,
 	AvailableStudentServices}
 	from "./FormComponents";
-
-class ControlledEditor extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			editorState: EditorState.createEmpty(),
-		};
-	}
-
-	onEditorStateChange: function = (editorState) => {
-		this.setState({
-			editorState,
-		});
-		let dirtyHTML = stateToHTML(editorState.getCurrentContent());
-		if (dirtyHTML !== "") {
-			if(dirtyHTML === "<p><br></p>"){dirtyHTML = ""}
-			let cleanHTML = sanitizeHtml(dirtyHTML);
-			let tempInfo = {
-				id: this.props.id,
-				value: cleanHTML
-			}
-			this.props.updateContent(tempInfo);
-		}
-	};
-
-	render() {
-		const { editorState } = this.state;
-		return (
-			<Editor
-				editorState={editorState}
-				wrapperClassName="rte-editor-full"
-				editorClassName="rte-editor"
-				toolbarClassName="rte-editor-toolbar"
-				onEditorStateChange={this.onEditorStateChange}
-			/>
-		)
-	}
-}
 
 
 //Main function that contains all the contents
