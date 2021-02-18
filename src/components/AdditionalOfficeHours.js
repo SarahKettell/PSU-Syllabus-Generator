@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 export default function AdditionalOfficeHours(props) {
 
+    //console.log("props: " + JSON.stringify(props));
+
     let add_office_hours_days = props.add_office_hours_days;
     let add_office_hours_start_time = props.add_office_hours_start_time;
     let add_office_hours_end_time = props.add_office_hours_end_time;
@@ -11,6 +13,7 @@ export default function AdditionalOfficeHours(props) {
     let handleAddOfficeHoursInfo = props.handleAddOfficeHoursInfo;
     //let deleteAddOfficeHours = props.deleteAddOfficeHours;
 
+    //console.log("Days: " + add_office_hours_days);
 
     return (
         <div>
@@ -70,16 +73,16 @@ export default function AdditionalOfficeHours(props) {
             </div>
             <div class="form-row">
                 <div class="col">
-                    <label id={add_office_hours_key + "_add_oh-start-time"}>Start Time:</label>
-                    <input type="time" id={add_office_hours_key + "_add_oh-start-time"}
+                    <label id="add_oh-start-time">Start Time:</label>
+                    <input type="time" id="add_oh-start-time"
                     name="add_office_start_time"
                     value={add_office_hours_start_time}
                     onChange={handleAddOfficeHoursInfo}
                     />
                 </div>
                 <div class="col">
-                    <label id={add_office_hours_key + "_add_oh-end-time"}>End Time:</label>
-                    <input type="time" id={add_office_hours_key + "_add_oh-end-time"}
+                    <label id="add_oh-end-time">End Time:</label>
+                    <input type="time" id="add_oh-end-time"
                     name="add_office_end_time"
                     value={add_office_hours_end_time}
                     onChange={handleAddOfficeHoursInfo}

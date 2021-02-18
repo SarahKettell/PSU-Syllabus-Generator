@@ -226,16 +226,14 @@ function App() {
 		if(info.target == "checkbox") {
 			const value = info.target.checked;
 
-
-
 			let temp = {
-				add_office_mon: "monday",
-				add_office_tues: "tuesday",
-				add_office_wed: "wednesday",
-				add_office_thurs: "thursday",
-				add_office_fri: "friday",
-				add_office_sat: "saturday",
-				add_office_sun: "sunday"
+				office_mon: "monday",
+				office_tues: "tuesday",
+				office_wed: "wednesday",
+				office_thurs: "thursday",
+				office_fri: "friday",
+				office_sat: "saturday",
+				office_sun: "sunday"
 			}
 
 			let add_office_hours = addOfficeHours.add_office_hours[i].add_office_hours_days;
@@ -247,10 +245,13 @@ function App() {
 				[temp_name]: add_office_hours
 			});
 		} else {
+
 			const value = info.target.value;
+			
+			name = name.replace(/[0-9]/g, '');
 
 			let add_office_hour = addOfficeHours.add_office_hours[i];
-			add_office_hours[name] = value;
+			add_office_hour[name] = value;
 
 			let add_office_hours = addOfficeHours.add_office_hours;
 			add_office_hours[i] = add_office_hour;
@@ -265,16 +266,16 @@ function App() {
 		evt.preventDefault();
 
 		let new_add_office_hours = {
-			add_office_hours_start_time: "",
-			add_offie_hours_end_time: "",
+			add_office_start_time: "",
+			add_office_end_time: "",
 			add_office_hours_days: {
-				office_mon: false,
-				office_tues: false,
-				office_wed: false,
-				office_thurs: false,
-				office_fri: false,
-				office_sat: false,
-				office_sun: false
+				monday: false,
+				tuesday: false,
+				wednesday: false,
+				thursday: false,
+				friday: false,
+				saturday: false,
+				sunday: false
 			}
 		}
 
@@ -421,56 +422,6 @@ function App() {
 	
 
 	//-----------------------------------
-
-	function handleAddOfficeHours(info, i) {
-		const name = info.target.name;
-		if(info.target.type === "checkbox") {
-			const value = info.target.checked;
-
-			let temp = {
-				add_office_mon: "office_mon",
-				add_offie_tues: "office_tues",
-				add_office_wed: "office_wed",
-				add_office_thurs: "office_thurs",
-				add_office_fri: "office_fri",
-				add_office_sat: "office_sat",
-				add_office_sun: "office_sun"
-			};
-
-			let add_days = addOfficeHours.add_office_hours[i].add_days;
-			add_days[temp[name]] = value;
-			//let temp_name = add_office_hours;
-			let temp_name = add_days;
-
-			setAddOfficeHours({
-				...addAddOfficeHours,
-				[temp_name]: add_days
-			});
-		}
-	}
-
-	function addAddOfficeHours(evt) {
-		evt.preventDefault();
-		let new_office_hour = {
-			add_days: {
-				monday: false,
-				tuesday: false,
-				wednesday: false,
-				thursday: false,
-				friday: false,
-				saturday: false,
-				sunday: false
-			},
-			add_start_time: "",
-			add_end_time: ""
-		};
-
-		const add_office_hours = addOfficeHours.add_office_hours.concat(new_office_hour);
-		
-		setAddOfficeHours({
-			add_office_hours
-		});
-	}
 
 	//-----------------------------------
 
@@ -1066,12 +1017,12 @@ function App() {
 							{addOfficeHours.add_office_hours.map((add_office_hours, i) => {
 								return (
 									<AdditionalOfficeHours
-										add_office_hours_days = {addOfficeHours.add_office_hours[i].add_office_hours_days}
-										add_office_hours_start_time = {addOfficeHours.add_office_hours[i].add_office_hours_start_time}
-										add_office_hours_end_time = {addOfficeHours.add_office_hours[i].add_office_hours_end_time}
-										add_office_hours_key = {i}
-										handleAddOfficeHours={info => {
-											handleAddOfficeHours(info, i);
+										add_office_hours_days={addOfficeHours.add_office_hours[i].add_office_hours_days}
+										add_office_hours_start_time={addOfficeHours.add_office_hours[i].add_office_hours_start_time}
+										add_office_hours_end_time={addOfficeHours.add_office_hours[i].add_office_hours_end_time}
+										add_office_hours_key={i}
+										handleAddOfficeHoursInfo={info => {
+											handleAddOfficeHoursInfo(info, i);
 										}}
 									/>
 								);
@@ -1080,7 +1031,7 @@ function App() {
                     </div>
                     {/*--------------------*/}
 						<div class="add-another">
-							<button class="btn btn-outline-secondary btn-sm">
+							<button onClick={addAddOfficeHours} class="btn btn-outline-secondary btn-sm">
 							+ Add Another Office Hours Timeslot
 							</button>
 						</div>
