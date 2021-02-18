@@ -384,11 +384,7 @@ export default function SyllabusPreview(props) {
                     <div className="course-schedule">
                         <h2 id="schedule">Course Schedule</h2>
                         <h3>Week 1: [Optional Topic] [Date]</h3>
-                        <ul>
-                            <li>List item of things to do this week</li>
-                            <li>List item of things to do this week</li>
-                            <li>List item of things to do this week</li>
-                        </ul>
+                        <p>Enter details here</p>
                         <h3>Week 2: [Optional Topic] [Date]</h3>
                         <ul>
                             <li>List item of things to do this week</li>

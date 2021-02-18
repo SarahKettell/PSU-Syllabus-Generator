@@ -3,19 +3,19 @@ import ControlledEditor from "./ControlledEditor";
 
 export function BasicCourseInfo(){
     const [courseInfo, setCourseInfo] = useState( {
-        course_num:         {content: "", req: false},
-        course_name:        {content: "", req: false},
-        course_section:     {content: "", req: false},
-        num_credits:   {content: "", req: false},
-        prerequisites:      {content: "", req: false},
-        permission_req:     {content: false, req: false},
-        class_location:     {content: [], req: false},
-        class_time:         {content: [], req: false},
-        class_days:         {content: [], req: false},
-        lab_location:       {content: [], req: false},
-        lab_time:           {content: [], req: false},
-        canvas_info:        {content: "", req: false},
-        start_date:         {content: "", req: false},
+            course_num:         {content: "", req: false},
+            course_name:        {content: "", req: false},
+            course_section:     {content: "", req: false},
+            num_credits:   {content: "", req: false},
+            prerequisites:      {content: "", req: false},
+            permission_req:     {content: false, req: false},
+            class_location:     {content: [], req: false},
+            class_time:         {content: [], req: false},
+            class_days:         {content: [], req: false},
+            lab_location:       {content: [], req: false},
+            lab_time:           {content: [], req: false},
+            canvas_info:        {content: "", req: false},
+            start_date:         {content: "", req: false},
         end_date:           {content: "", req: false}
     });
 
@@ -126,7 +126,7 @@ export function InstructorInfo(){
             <div className="form-section">
                 <p>Description for information in this section goes here.</p>
                 <div className="input-field col s12 m6">
-                    <label htmlFor="name">Instructor Name:</label>
+                    <label htmlFor="name"><span className="required-symbol">Instructor Name:</span></label>
                     <input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
                            name="instructor_name"
                            value={instructorInfo.instructor_name.content}
@@ -158,7 +158,7 @@ export function InstructorInfo(){
                     />
                 </div>
                 <div className="col s12 m12">
-                    <label htmlFor="contact_info">Contact Information and Preferences:</label>
+                    <label htmlFor="contact_info"><span className="required-symbol">Contact Information and Preferences:</span></label>
                     <ControlledEditor updateContent={handleInstructorInfo()} id="contact_info"/>
                 </div>
                 <div className="col s12 m12">
@@ -179,10 +179,42 @@ export function CourseMaterials(){
         textbook_info:      {content: "", req: true},
         add_material_info:  {content: "", req: true},
         supp_material_info: {content: "", req: false},
+        has_no_required:    {content: false, req: true}
     });
 
+    function handleCourseMaterials(){
+
+    }
     return(
-        <div>Test</div>
+        <fieldset className="row">
+            <legend id="course-materials">Required Materials</legend>
+            <div className="form-section">
+                <p>Description for information in this section goes here.</p>
+            <div className="col s12">
+                <label htmlFor="textbook_info"><span className="required-symbol">Required Textbooks:</span></label>
+                <ControlledEditor updateContent={handleCourseMaterials} id="textbook_info"/>
+            </div>
+            <div className="col s12">
+                <label htmlFor="add_material_info"><span className="required-symbol">Additional Required Materials:</span></label>
+                <ControlledEditor updateContent={handleCourseMaterials} id="add_material_info"/>
+            </div>
+            <div className="col s12">
+                <label htmlFor="supp_material_info">Supplementary Readings:</label>
+                <ControlledEditor updateContent={handleCourseMaterials} id="supp_material_info"/>
+            </div>
+            <div className="col s12">
+                <div className="simple-radio-group">
+                    <label>
+                        <input type="checkbox" className="filled-in" id="has_no_required"
+                               checked={courseMaterials.has_no_required.content}
+                               onChange={handleCourseMaterials}
+                        />
+                        <span>There are no required materials for this course.</span>
+                    </label>
+                </div>
+            </div>
+            </div>
+        </fieldset>
     )
 }
 
