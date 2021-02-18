@@ -13,6 +13,7 @@ import RequirementsChecklist from "./RequirementsChecklist";
 //--------------------------------
 import Assignment from './components/Assignment';
 import AdditionalMeetingTimes from './components/AdditionalMeetingTimes';
+import AdditionalOfficeHours from './components/AdditionalOfficeHours';
 
 //--------------------------------
 
@@ -166,6 +167,11 @@ function App() {
         ]
     });
 
+	// additional office hours state
+	const [addOfficeHours, setAddOfficeHours] = useState({
+		add_office_hours: []
+	});
+
     // holds RTE formatted text for course goals and objectives
     const [courseObjectives, setCourseObjectives] = useState("");
 
@@ -214,6 +220,75 @@ function App() {
 
 	//-----------------------------------------------
 
+	function handleAddOfficeHoursInfo(info, i) {
+		let name = info.target.name;
+
+		if(info.target == "checkbox") {
+			const value = info.target.checked;
+
+
+
+			let temp = {
+				add_office_mon: "monday",
+				add_office_tues: "tuesday",
+				add_office_wed: "wednesday",
+				add_office_thurs: "thursday",
+				add_office_fri: "friday",
+				add_office_sat: "saturday",
+				add_office_sun: "sunday"
+			}
+
+			let add_office_hours = addOfficeHours.add_office_hours[i].add_office_hours_days;
+			add_office_hours[temp[name]] = value;
+			let temp_name = add_office_hours;
+
+			setAddOfficeHours({
+				...addOfficeHours,
+				[temp_name]: add_office_hours
+			});
+		} else {
+			const value = info.target.value;
+
+			let add_office_hour = addOfficeHours.add_office_hours[i];
+			add_office_hours[name] = value;
+
+			let add_office_hours = addOfficeHours.add_office_hours;
+			add_office_hours[i] = add_office_hour;
+
+			setAddOfficeHours({
+				add_office_hours
+			});
+		}
+	}
+
+	function addAddOfficeHours(evt) {
+		evt.preventDefault();
+
+		let new_add_office_hours = {
+			add_office_hours_start_time: "",
+			add_offie_hours_end_time: "",
+			add_office_hours_days: {
+				office_mon: false,
+				office_tues: false,
+				office_wed: false,
+				office_thurs: false,
+				office_fri: false,
+				office_sat: false,
+				office_sun: false
+			}
+		}
+
+		const add_office_hours = addOfficeHours.add_office_hours.concat(new_add_office_hours);
+		
+		setAddOfficeHours({
+			add_office_hours
+		});
+	}
+
+
+
+
+
 	// handles input from the Meeting times section
 
 
@@ -253,20 +328,15 @@ function App() {
 		}
 	}
 
-
-	function showState(evt) {
+	// delete button doesn't delete the one that you select, need to investigate
+	function deleteAddMeeting(evt, index) {
 		evt.preventDefault();
-		console.log(addMeetingInfo.add_meetings);
-		
-	}
-
-	function deleteAddMeeting(info, index) {
 		let add_meetings = addMeetingInfo.add_meetings;
+		//console.log("BEFORE: " + JSON.stringify(add_meetings));
 		add_meetings.splice(index, 1);
 
-
 		console.log("index to be deleted: " + index);
-		console.log(add_meetings)
+		//console.log("AFTER: " + JSON.stringify(add_meetings));
 		
 		setAddMeetingInfo({
 			add_meetings
@@ -275,9 +345,15 @@ function App() {
 
 	function handleAddMeetingInfo(info, i) {
 		let name = info.target.name;
+
 		if(info.target.type === "checkbox") {
 			
 			const value = info.target.checked;
+			console.log("name: " + name);
+			
+			name = name.replace(/[0-9]/g, '');
+
+			//console.log("name: " + name);
 
 			let temp = {
 				add_meeting_mon: "monday",
@@ -321,6 +397,7 @@ function App() {
 	function addMeetingTime(evt) {
 		evt.preventDefault();
 		let new_meeting = {
+			add_meeting_id: addMeetingInfo.add_meetings.length,
 			add_meeting_type: "",
 			add_meeting_days: {
 				monday: false,
@@ -343,6 +420,59 @@ function App() {
 	}
 	
 
+	//-----------------------------------
+
+	function handleAddOfficeHours(info, i) {
+		const name = info.target.name;
+		if(info.target.type === "checkbox") {
+			const value = info.target.checked;
+
+			let temp = {
+				add_office_mon: "office_mon",
+				add_offie_tues: "office_tues",
+				add_office_wed: "office_wed",
+				add_office_thurs: "office_thurs",
+				add_office_fri: "office_fri",
+				add_office_sat: "office_sat",
+				add_office_sun: "office_sun"
+			};
+
+			let add_days = addOfficeHours.add_office_hours[i].add_days;
+			add_days[temp[name]] = value;
+			//let temp_name = add_office_hours;
+			let temp_name = add_days;
+
+			setAddOfficeHours({
+				...addAddOfficeHours,
+				[temp_name]: add_days
+			});
+		}
+	}
+
+	function addAddOfficeHours(evt) {
+		evt.preventDefault();
+		let new_office_hour = {
+			add_days: {
+				monday: false,
+				tuesday: false,
+				wednesday: false,
+				thursday: false,
+				friday: false,
+				saturday: false,
+				sunday: false
+			},
+			add_start_time: "",
+			add_end_time: ""
+		};
+
+		const add_office_hours = addOfficeHours.add_office_hours.concat(new_office_hour);
+		
+		setAddOfficeHours({
+			add_office_hours
+		});
+	}
+
+	//-----------------------------------
 
 
     //-----------------------------------------------
@@ -383,8 +513,9 @@ function App() {
         });
     }
 
-    function deleteAssignment(index) {
-        let assignments = assessmentInfo.assignments;
+    function deleteAssignment(evt, index) {
+        evt.preventDefault();
+		let assignments = assessmentInfo.assignments;
         assignments.splice(index, 1);
 
         setAssessmentInfo({
@@ -798,11 +929,11 @@ function App() {
 										add_meeting_days={addMeetingInfo.add_meetings[i].add_meeting_days}
 										add_meeting_start_time={addMeetingInfo.add_meetings[i].add_meeting_start_time}
 										add_meeting_end_time={addMeetingInfo.add_meetings[i].add_meeting_end_time}
-										add_meeting_key={i}	
+										add_meeting_key={i}
 										handleAddMeetingInfo={info => {
 											handleAddMeetingInfo(info, i);
 										}}
-										deleteAddMeeting={(info) => {
+										deleteAddMeeting={info => {
 											deleteAddMeeting(info, i);
 										}}
 										
@@ -815,9 +946,6 @@ function App() {
 							+ Add Another Meeting
 							</button>
 						</div>
-						<button onClick={showState}>
-							Show State
-						</button>
 						{/*--------------------------------------*/}
 					</div>
 				</fieldset>
@@ -933,7 +1061,22 @@ function App() {
 					</div>
                     {/*------------------*/}
                     <div>
-                        <h1>Hello</h1>
+                        <h4>Additional Office Hours</h4>
+						<div>
+							{addOfficeHours.add_office_hours.map((add_office_hours, i) => {
+								return (
+									<AdditionalOfficeHours
+										add_office_hours_days = {addOfficeHours.add_office_hours[i].add_office_hours_days}
+										add_office_hours_start_time = {addOfficeHours.add_office_hours[i].add_office_hours_start_time}
+										add_office_hours_end_time = {addOfficeHours.add_office_hours[i].add_office_hours_end_time}
+										add_office_hours_key = {i}
+										handleAddOfficeHours={info => {
+											handleAddOfficeHours(info, i);
+										}}
+									/>
+								);
+							})}
+						</div>
                     </div>
                     {/*--------------------*/}
 						<div class="add-another">
@@ -1035,7 +1178,7 @@ function App() {
                                         handleAssessmentInfo={info => {
                                             handleAssessmentInfo(info, i);
                                         }}
-                                        deleteAssignment={() => {deleteAssignment(i);}}
+                                        deleteAssignment={info => {deleteAssignment(info, i);}}
                                     />
                                 )
                             })}
