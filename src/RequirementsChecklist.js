@@ -53,7 +53,6 @@ export default function RequirementsChecklist(props) {
                             <li className="check-item required-symbol"><i className="material-icons left">check_box_outline_blank</i>Contact information</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Teaching Assistants’ names, locations, and phone numbers</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Department location and phone number</li>
-                            <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Chat and/or Twitter account</li>
                             <li className="check-item"><i className="material-icons left">check_box_outline_blank</i>Educational Philosophy</li>
                         </ul>
                     </div>

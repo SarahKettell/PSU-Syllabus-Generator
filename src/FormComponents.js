@@ -114,12 +114,63 @@ export function InstructorInfo(){
         contact_info:       {content: "", req: true},
         ta_info:            {content: "", req: false},
         department_info:    {content: "", req: false},
-        social_info:        {content: "", req: false},
         educational_phil:   {content: "", req: false}
     });
 
+    function handleInstructorInfo(){
+    }
+
     return(
-        <div>Test</div>
+        <fieldset className="row">
+            <legend id="instructor-information">Instructor Information</legend>
+            <div className="form-section">
+                <p>Description for information in this section goes here.</p>
+                <div className="input-field col s12 m6">
+                    <label htmlFor="name">Instructor Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
+                           name="instructor_name"
+                           value={instructorInfo.instructor_name.content}
+                           onChange={handleInstructorInfo}
+                    />
+                </div>
+                <div className="input-field col s12 m6">
+                    <label htmlFor="department_info">Department:</label>
+                    <input type="text" id="department_info" name="department_info" placeholder="School of Humanities" required=""
+                           name="department_info"
+                           value={instructorInfo.department_info.content}
+                           onChange={handleInstructorInfo}
+                    />
+                </div>
+                <div className="input-field col s12 m6">
+                    <label htmlFor="office">Office Location:</label>
+                    <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
+                           name="office_location"
+                           value={instructorInfo.office_location.content}
+                           onChange={handleInstructorInfo}
+                    />
+                </div>
+                <div className="input-field col s12 m6">
+                    <label htmlFor="phone">Office Phone:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
+                           name="phone"
+                           value={instructorInfo.office_phone.content}
+                           onChange={handleInstructorInfo}
+                    />
+                </div>
+                <div className="col s12 m12">
+                    <label htmlFor="contact_info">Contact Information and Preferences:</label>
+                    <ControlledEditor updateContent={handleInstructorInfo()} id="contact_info"/>
+                </div>
+                <div className="col s12 m12">
+                    <label htmlFor="ta_info">Teaching Assistant(s) Information:</label>
+                    <ControlledEditor updateContent={handleInstructorInfo()} id="ta_info"/>
+                </div>
+                <div className="col s12 m12">
+                    <label htmlFor="educational_phil">Educational Philosophy:</label>
+                    <ControlledEditor updateContent={handleInstructorInfo()} id="educational_phil"/>
+                </div>
+            </div>
+        </fieldset>
     )
 }
 

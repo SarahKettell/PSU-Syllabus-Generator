@@ -35,7 +35,7 @@ function SideNavContent(){
                         <div className="card-body">
                             <div className="list-group">
                                 <a href="#basic-course-info" className="list-group-item">Basic Course Information</a>
-                                <a href="#" className="list-group-item">Contact Information</a>
+                                <a href="#instructor-information" className="list-group-item">Instructor Information</a>
                                 <a href="#" className="list-group-item">Goals & Objectives</a>
                                 <a href="#" className="list-group-item">Required Materials</a>
                                 <a href="#" className="list-group-item">Assessment and Grading</a>

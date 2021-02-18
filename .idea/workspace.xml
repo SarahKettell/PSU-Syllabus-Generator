@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="states added to new components">
-      <change afterPath="$PROJECT_DIR$/src/ControlledEditor.js" afterDir="false" />
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Basic course info set up">
       <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/FormComponents.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/FormComponents.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/RequirementsChecklist.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/RequirementsChecklist.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SideNav.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SideNav.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/css/main-content.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/css/main-content.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +112,7 @@
       <workItem from="1613429582490" duration="3000" />
       <workItem from="1613569916776" duration="9576000" />
       <workItem from="1613597456797" duration="1690000" />
-      <workItem from="1613655214891" duration="4001000" />
+      <workItem from="1613655214891" duration="5329000" />
     </task>
     <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
       <created>1609786050918</created>
@@ -353,7 +352,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613599207107</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Basic course info set up">
+      <created>1613659998765</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1613659998765</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -373,7 +379,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Update: RTE content loaded in and displayed&#10;TODO: Need to handle data sanitization" />
     <MESSAGE value="Update: RTE fields update properly. Working on HTML display/design of syllabus." />
     <MESSAGE value="Update: Syllabus HTML template built. Design may change a bit but HTML structure should largely stay the same.&#10;TODO: Still need to build course schedule." />
     <MESSAGE value="Update: Added sample course schedule to syllabus template at public/sample-syllabus-html-format.html" />
@@ -398,7 +403,8 @@
     <MESSAGE value="Initial form component separation began" />
     <MESSAGE value="Working on HTML output" />
     <MESSAGE value="states added to new components" />
-    <option name="LAST_COMMIT_MESSAGE" value="states added to new components" />
+    <MESSAGE value="Basic course info set up" />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic course info set up" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
