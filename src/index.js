@@ -450,50 +450,6 @@ function App() {
 		});
 	}
 
-	//-----------------------------------------------
-
-	function handleAddOfficeHoursInfo(info, i) {
-		let name = info.target.name;
-
-		if(info.target == "checkbox") {
-			const value = info.target.checked;
-
-			let temp = {
-				office_mon: "monday",
-				office_tues: "tuesday",
-				office_wed: "wednesday",
-				office_thurs: "thursday",
-				office_fri: "friday",
-				office_sat: "saturday",
-				office_sun: "sunday"
-			}
-
-			let add_office_hours = addOfficeHours.add_office_hours[i].add_office_hours_days;
-			add_office_hours[temp[name]] = value;
-			let temp_name = add_office_hours;
-
-			setAddOfficeHours({
-				...addOfficeHours,
-				[temp_name]: add_office_hours
-			});
-		} else {
-
-			const value = info.target.value;
-
-			name = name.replace(/[0-9]/g, '');
-
-			let add_office_hour = addOfficeHours.add_office_hours[i];
-			add_office_hour[name] = value;
-
-			let add_office_hours = addOfficeHours.add_office_hours;
-			add_office_hours[i] = add_office_hour;
-
-			setAddOfficeHours({
-				add_office_hours
-			});
-		}
-	}
-
 	function addAddOfficeHours(evt) {
 		evt.preventDefault();
 
@@ -517,10 +473,6 @@ function App() {
 			add_office_hours
 		});
 	}
-
-
-
-
 
 	// handles input from the Meeting times section
 
@@ -738,153 +690,11 @@ function App() {
 						<AvailableStudentServices />
 
 					<fieldset className="row">
-						<legend>Course Information</legend>
-						<div class="form-section">
-						<p>Description for information in this section goes here.</p>
-						<div class="input-field col s12 m6">
-						  <label for="course_name">Course Number:</label>
-						  <input type="text" id="course_name" placeholder="EDUC 305"
-							 name="course_num"
-							 value={courseInfo.course_num}
-							 onChange={handleCourseInfo} />
-						</div>
-						  <div class="input-field col s12 m6">
-						  <label for="course_name">Course Name:</label>
-						  <input type="text" id="course_name" placeholder="Creative Arts"
-							  name="course_name"
-							  value={courseInfo.course_name}
-							  onChange={handleCourseInfo}/>
-						</div>
-						<div class="input-field col s12 m6">
-						  <label id="course_section">Section:</label>
-						  <input type="email" id="course_section" placeholder="001"
-							  name="course_section"
-							  value={courseInfo.course_section}
-							  onChange={handleCourseInfo}/>
-						</div>
-						<div class="input-field col s12 m6">
-						  <label for="meeting_location">Meeting Location:</label>
-						  <input type="text" id="meeting_location" placeholder="Olmsted 205"
-							  name="meeting_location"
-							  value={courseInfo.meeting_location}
-							  onChange={handleCourseInfo}/>
-						</div>
-						</div>
-					</fieldset>
-					<fieldset className="row">
-						<legend>Course Meeting Times & Location</legend>
-						<div class="form-section">
-							<p>Description for information in this section goes here.</p>
-							<div class="input-field col s12 m6">
-
-								<input id="end-date" type="date"
-								  name="course_start_date"
-								  value={state.course_start_date}
-								  onChange={handleChange}/>
-								<label className="active" htmlFor="start-date">Course Start Date:</label>
-							</div>
-							<div class="input-field col s12 m6">
-
-								<input id="end-date" type="date"
-								name="course_end_date"
-								value={state.course_end_date}
-								onChange={handleChange}
-								/>
-								<label htmlFor="end-date" className="active">Course End Date:</label>
-							</div>
-						</div>
-					</fieldset>
-					<fieldset className="row">
-						<legend>Contact Information</legend>
-						<div className="form-section">
-							<p>Description for information in this section goes here.</p>
-							<div class="input-field col s12 m6">
-								<label for="name">Instructor Name:</label>
-								<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
-								name="instructor_name"
-								value={contactInfo.instructor_name}
-								onChange={handleContactInfo}
-								/>
-							</div>
-							<div class="input-field col s12 m6">
-							  <label for="email">Email:</label>
-							  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
-							  name="email"
-							  value={contactInfo.email}
-							  onChange={handleContactInfo}
-							  />
-							</div>
-							<div class="input-field col s12 m6">
-							  <label for="phone">Phone:</label>
-							  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
-							  name="phone"
-							  value={contactInfo.phone}
-							  onChange={handleContactInfo}
-							  />
-							</div>
-							<div class="input-field col s12 m6">
-							  <label for="office">Office Location:</label>
-							  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
-							  name="office_location"
-							  value={contactInfo.office_location}
-							  onChange={handleContactInfo}
-							  />
-							</div>
-						</div>
-						<div className="form-section">
-							<h4>Office Hours</h4>
-						</div>
-					</fieldset>
-					<fieldset className="row">
 						<legend>Course Goals & Objectives</legend>
 						<div class="form-section">
 							<p>Description for information in this section goes here.</p>
 							<label for="objectives">Course Goals and Objectives:</label>
 							<ControlledEditor updateContent={handleCourseObjectives} id="course_objectives" />
-						</div>
-					</fieldset>
-					<fieldset className="row">
-						<legend>Prerequisites</legend>
-						<div class="form-section">
-							<p>Description for information in this section goes here.</p>
-							<label for="prerequisites">Prerequisites:</label>
-							<ControlledEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
-						</div>
-					</fieldset>
-					<fieldset className="row">
-						<legend>Required Materials</legend>
-							<div className="form-section">
-								<p>Description for information in this section goes here.</p>
-								<label for="req_textbooks">Required Textbooks:</label>
-								<ControlledEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
-							</div>
-							<div className="form-section">
-								<label for="req_add_materials">Additional Required Materials:</label>
-								<ControlledEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
-							</div>
-							<div className="form-section">
-								<label for="req_lab_info">Lab Information:</label>
-								<ControlledEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
-							</div>
-
-							<div class="form-section radio-set">
-								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" id="has_no_required" class="custom-control-input"
-										   checked={requiredMaterials.has_no_required}
-										   onChange={handleNoReqMaterials}
-									/>
-									<label for="has_no_required" class="custom-control-label">
-										There are no required materials for this course.
-									</label>
-								</div>
-						</div>
-					</fieldset>
-					<fieldset className="row">
-						<legend>Additional Materials</legend>
-						<div class="form-section">
-							<p>Description for information in this section goes here.</p>
-							<label for="additional-materials">Additional Materials:</label>
-							<ControlledEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
 						</div>
 					</fieldset>
 					<fieldset className="row">

@@ -83,7 +83,7 @@ export default function AdditionalOfficeHours(props) {
                     value={add_office_hours_end_time}
                     onChange={handleAddOfficeHoursInfo}
                     />
-                </div>  
+                </div>
             </div>
         </div>
     );

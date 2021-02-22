@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import ControlledEditor from "./ControlledEditor";
+import Assignment from './Assignment';
+import AdditionalMeetingTimes from './AdditionalMeetingTimes';
+import AdditionalOfficeHours from './AdditionalOfficeHours';
 
 export function BasicCourseInfo(){
     const [courseInfo, setCourseInfo] = useState( {
@@ -117,6 +120,77 @@ export function InstructorInfo(){
         educational_phil:   {content: "", req: false}
     });
 
+    // additional office hours state
+    const [addOfficeHours, setAddOfficeHours] = useState({
+        add_office_hours: []
+    });
+
+    function handleAddOfficeHoursInfo(info, i) {
+        let name = info.target.name;
+
+        if(info.target == "checkbox") {
+            const value = info.target.checked;
+
+            let temp = {
+                office_mon: "monday",
+                office_tues: "tuesday",
+                office_wed: "wednesday",
+                office_thurs: "thursday",
+                office_fri: "friday",
+                office_sat: "saturday",
+                office_sun: "sunday"
+            }
+
+            let add_office_hours = addOfficeHours.add_office_hours[i].add_office_hours_days;
+            add_office_hours[temp[name]] = value;
+            let temp_name = add_office_hours;
+
+            setAddOfficeHours({
+                ...addOfficeHours,
+                [temp_name]: add_office_hours
+            });
+        } else {
+
+            const value = info.target.value;
+
+            name = name.replace(/[0-9]/g, '');
+
+            let add_office_hour = addOfficeHours.add_office_hours[i];
+            add_office_hour[name] = value;
+
+            let add_office_hours = addOfficeHours.add_office_hours;
+            add_office_hours[i] = add_office_hour;
+
+            setAddOfficeHours({
+                add_office_hours
+            });
+        }
+    }
+
+    function addAddOfficeHours(evt) {
+        evt.preventDefault();
+
+        let new_add_office_hours = {
+            add_office_start_time: "",
+            add_office_end_time: "",
+            add_office_hours_days: {
+                monday: false,
+                tuesday: false,
+                wednesday: false,
+                thursday: false,
+                friday: false,
+                saturday: false,
+                sunday: false
+            }
+        }
+
+        const add_office_hours = addOfficeHours.add_office_hours.concat(new_add_office_hours);
+
+        setAddOfficeHours({
+            add_office_hours
+        });
+    }
+
     function handleInstructorInfo(){
     }
 
@@ -168,6 +242,30 @@ export function InstructorInfo(){
                 <div className="col s12 m12">
                     <label htmlFor="educational_phil">Educational Philosophy:</label>
                     <ControlledEditor updateContent={handleInstructorInfo()} id="educational_phil"/>
+                </div>
+
+                <div className="col s12 m12">
+                    <label htmlFor="prerequisites">Office Hours</label>
+                    <div className="col s12 m12">
+                        {addOfficeHours.add_office_hours.map((add_office_hours, i) => {
+                            return (
+                                <AdditionalOfficeHours
+                                    add_office_hours_days={addOfficeHours.add_office_hours[i].add_office_hours_days}
+                                    add_office_hours_start_time={addOfficeHours.add_office_hours[i].add_office_hours_start_time}
+                                    add_office_hours_end_time={addOfficeHours.add_office_hours[i].add_office_hours_end_time}
+                                    add_office_hours_key={i}
+                                    handleAddOfficeHoursInfo={info => {
+                                        handleAddOfficeHoursInfo(info, i);
+                                    }}
+                                />
+                            );
+                        })}
+                    </div>
+                    <div className="col s12 m12 add-another">
+                        <button className="btn-small waves-effect waves-light" onClick={addAddOfficeHours} class="btn btn-outline-secondary btn-sm">
+                            + Add Another Office Hours Timeslot
+                        </button>
+                    </div>
                 </div>
             </div>
         </fieldset>
