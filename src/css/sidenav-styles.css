@@ -1,0 +1,130 @@
+.side-nav{
+    padding: 0 0 20px 0;
+    position: relative;
+    max-width: 350px;
+    min-width: 275px;
+    box-shadow:0 1px 5px 0 rgba(0,0,0,0.20);
+}
+
+/*.side-nav-sticky{*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*}*/
+
+.side-nav .card{
+    box-shadow: none;
+    margin: 0;
+}
+
+.side-nav .card-body{
+    padding: 10px 0 10px 0;
+    border-top: 2px inset rgba(0,0,0,0.05);
+    border-bottom: 2px inset rgba(0,0,0,0.05);
+}
+
+.side-nav .card-header{
+    border-bottom: none;
+    justify-content: start;
+    color: #000321;
+    position: relative;
+    padding: 0;
+    width: 100%;
+    background-color: transparent;
+}
+
+.side-nav .card-header a{
+    border-bottom: none;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    color: #000321;
+    position: relative;
+    text-transform: none;
+    padding: 15px;
+    font-size: 12pt;
+    font-weight: 500;
+}
+
+.side-nav .card-header a:hover, .side-nav .card-body .list-group a:hover{
+    text-transform: none;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.side-nav .card-body a{
+    border-bottom: none;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    color: #000321;
+    position: relative;
+    text-transform: none;
+    font-size: 11pt;
+    font-weight: 400;
+    padding: 10px 10px 10px 30px;
+}
+
+.side-nav .card{
+    border-radius: 0;
+    border: 0;
+}
+
+.side-nav .list-group-item{
+    border: none;
+    display: flex;
+    justify-content: start;
+    color: #000321;
+    position: relative;
+    background: transparent;
+}
+
+.side-nav .card-header .list-group-item{
+    border: none;
+    display: flex;
+    justify-content: start;
+    color: #000321;
+    position: relative;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.side-nav .card-header .list-group-item.collapsed{
+    background: #fff;
+}
+
+.side-nav .card-header .list-group-item.collapsed:hover{
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.side-nav .list-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+    border: none;
+}
+
+.side-nav .list-group-item.active {
+    background-color: #E4E5E7;
+    border: none;
+}
+
+.side-nav .list-group-item .expand-icon:after {
+    content: 'expand_less';
+}
+
+.side-nav .list-group-item.collapsed .expand-icon:after {
+    content: 'expand_more';
+}
+
+.side-nav .list-group-item:first-child, .side-nav .card-header:first-child{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.side-nav .mdc-list-item__graphic{
+    margin-right: 15px;
+}
+
+.side-nav .mdc-list-item__graphic.expand-icon{
+    margin-right: 0;
+    margin-left: 5px;
+    position: absolute;
+    right: 10px;
+}

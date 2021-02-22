@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Removed some dead code from previous rich text editor implementation">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_1_21__4_25_PM__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_1_21__4_25_PM__Default_Changelist_.xml" afterDir="false" />
+    <list default="true" id="6c2fb888-786d-4817-8987-d66bc5c4b0e0" name="Default Changelist" comment="Instructor information set up">
+      <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/FormComponents.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/FormComponents.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SideNav.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SideNav.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/SyllabusPreview.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/SyllabusPreview.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,10 +24,11 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="sarah" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -35,6 +37,9 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
   </component>
   <component name="ProjectId" id="1mbn2fQpSCaUfpRho0AXJwp4Cbo" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -93,11 +98,20 @@
       <workItem from="1611844119292" duration="10314000" />
       <workItem from="1612203365640" duration="8025000" />
       <workItem from="1612214219012" duration="471000" />
-      <workItem from="1612561546523" duration="1258000" />
-      <workItem from="1612566258469" duration="1407000" />
-      <workItem from="1612737835829" duration="105000" />
-      <workItem from="1612738098360" duration="113000" />
-      <workItem from="1612738359791" duration="523000" />
+      <workItem from="1612365270859" duration="33010000" />
+      <workItem from="1612485110626" duration="13000" />
+      <workItem from="1612569092695" duration="1037000" />
+      <workItem from="1612808553202" duration="10527000" />
+      <workItem from="1612902725964" duration="250000" />
+      <workItem from="1612965145201" duration="2348000" />
+      <workItem from="1612994559736" duration="784000" />
+      <workItem from="1613051106740" duration="5126000" />
+      <workItem from="1613099247957" duration="1591000" />
+      <workItem from="1613397418849" duration="5887000" />
+      <workItem from="1613429582490" duration="3000" />
+      <workItem from="1613569916776" duration="9576000" />
+      <workItem from="1613597456797" duration="1690000" />
+      <workItem from="1613655214891" duration="9034000" />
     </task>
     <task id="LOCAL-00001" summary="Update: Breakdown of content state into logical sections for cleaner data management">
       <created>1609786050918</created>
@@ -239,7 +253,119 @@
       <option name="project" value="LOCAL" />
       <updated>1612213390290</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Material.io experimentation">
+      <created>1612216847256</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1612216847256</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Update: Generally top/side nav structure">
+      <created>1612387935928</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1612387935929</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Update: Side Nav design updated">
+      <created>1612454636281</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1612454636281</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Update: Main content design update">
+      <created>1612460750178</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1612460750178</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Side nav opens and closes, though slide effect would be nice">
+      <created>1612815200072</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1612815200072</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Rich text editor changed to one with more functionality.">
+      <created>1613055738525</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1613055738525</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Rich text editor changed to one with more functionality.">
+      <created>1613056620635</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1613056620635</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Design updates">
+      <created>1613418238350</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1613418238350</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Changes to checklist">
+      <created>1613421979330</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1613421979330</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Checklist design!">
+      <created>1613423910057</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1613423910057</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Fixed resizing">
+      <created>1613424250843</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1613424250843</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Initial form component separation began">
+      <created>1613426142578</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1613426142578</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Working on HTML output">
+      <created>1613586654606</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1613586654606</updated>
+    </task>
+    <task id="LOCAL-00034" summary="states added to new components">
+      <created>1613599207107</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1613599207107</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Basic course info set up">
+      <created>1613659998765</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1613659998765</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Instructor information set up">
+      <created>1613661504370</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1613661504370</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -259,11 +385,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Update: Breakdown of content state into logical sections for cleaner data management" />
-    <MESSAGE value="Update: Working checklist and update for Course Content" />
-    <MESSAGE value="Update: RTE is *dangerously* previewing" />
-    <MESSAGE value="Update: RTE content loaded in and displayed&#10;TODO: Need to handle data sanitization" />
-    <MESSAGE value="Update: RTE fields update properly. Working on HTML display/design of syllabus." />
     <MESSAGE value="Update: Syllabus HTML template built. Design may change a bit but HTML structure should largely stay the same.&#10;TODO: Still need to build course schedule." />
     <MESSAGE value="Update: Added sample course schedule to syllabus template at public/sample-syllabus-html-format.html" />
     <MESSAGE value="Update: Added a course schedule example in the template at public/sample-syllabus-html-format.html" />
@@ -274,6 +395,31 @@
     <MESSAGE value="Cleaned up code by removing previous syllabus preview" />
     <MESSAGE value="Moved checklist to separate JS module" />
     <MESSAGE value="Removed some dead code from previous rich text editor implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed some dead code from previous rich text editor implementation" />
+    <MESSAGE value="Material.io experimentation" />
+    <MESSAGE value="Update: Generally top/side nav structure" />
+    <MESSAGE value="Update: Side Nav design updated" />
+    <MESSAGE value="Update: Main content design update" />
+    <MESSAGE value="Side nav opens and closes, though slide effect would be nice" />
+    <MESSAGE value="Rich text editor changed to one with more functionality." />
+    <MESSAGE value="Design updates" />
+    <MESSAGE value="Changes to checklist" />
+    <MESSAGE value="Checklist design!" />
+    <MESSAGE value="Fixed resizing" />
+    <MESSAGE value="Initial form component separation began" />
+    <MESSAGE value="Working on HTML output" />
+    <MESSAGE value="states added to new components" />
+    <MESSAGE value="Basic course info set up" />
+    <MESSAGE value="Instructor information set up" />
+    <option name="LAST_COMMIT_MESSAGE" value="Instructor information set up" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/SyllabusPreview.js</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

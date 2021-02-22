@@ -4,60 +4,36 @@ import './css/style.css';
 import './css/bootstrap.css';
 import './css/html-syllabus-styles.css';
 import './css/preview-styles.css';
-import RichTextEditor from 'react-rte';
+import './css/main-content.css';
+import './css/checklist-styles.css';
 import SyllabusPreview from "./SyllabusPreview";
 import sanitizeHtml from 'sanitize-html';
 import RequirementsChecklist from "./RequirementsChecklist";
+import TopBar from "./TopBar";
+import SideNav from "./SideNav";
+import { EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import {stateToHTML} from 'draft-js-export-html';
+import SyllabusRequirements from "./SyllabusRequirements";
+import SyllabusGeneratorInfo from "./SyllabusGeneratorInfo";
+import ControlledEditor from "./ControlledEditor";
 
 
-//--------------------------------
-import Assignment from './components/Assignment';
-import AdditionalMeetingTimes from './components/AdditionalMeetingTimes';
-import AdditionalOfficeHours from './components/AdditionalOfficeHours';
 
-//--------------------------------
-
-// Uses Draft.js for functionality and renders content into HTML format
-class MyStatefulEditor extends Component {
-	state = {
-		value: RichTextEditor.createEmptyValue()
-	}
-
-	onChange = (value) => {
-		this.setState({value});
-		if (this.props.onChange) {
-			// Send the changes up to the parent component as an HTML string.
-			// This is here to demonstrate using `.toString()` but in a real app it
-			// would be better to avoid generating a string on each change.
-			this.props.onChange(
-				value
-			);
-		}
-		let dirtyHTML = value.toString('html');
-		if (dirtyHTML !== "") {
-			if(dirtyHTML === "<p><br></p>"){dirtyHTML = ""}
-			let cleanHTML = sanitizeHtml(dirtyHTML);
-			let tempInfo = {
-				id: this.props.id,
-				value: cleanHTML
-			}
-			this.props.updateContent(tempInfo);
-		}
-	};
-
-	render () {
-		return (
-			<RichTextEditor
-				value={this.state.value}
-				onChange={this.onChange}
-			/>
-		);
-	}
-}
+import {
+	BasicCourseInfo, InstructorInfo, CourseMaterials,
+	CourseDescriptions, CoursePolicies, CourseSchedule,
+	AvailableStudentServices}
+	from "./FormComponents";
 
 
 //Main function that contains all the contents
 function App() {
+
+	const[webView, setWebViewState] = React.useState( {
+		sideNavOpen: true
+	})
 
   const [state, setState] = React.useState({
 	//course info
@@ -69,7 +45,7 @@ function App() {
 	course_start_date: "",
 	course_end_date: "",
 	course_meeting_type: "",
-	//course_meeting_days: "",
+	course_meeting_days: "",
 	course_start_times: "",
 	course_end_times: "",
 	//contact info
@@ -87,24 +63,38 @@ function App() {
 	RichTextExamPolicies: "",
 	RichTextAdditionalContent: "",
    //meeting days
-	// meeting_mon: false,
-	// meeting_tues: false,
-	// meeting_wed: false,
-	// meeting_thurs: false,
-	// meeting_fri: false,
-	// meeting_sat: false,
-	// meeting_sun: false,
+	meeting_mon: false,
+	meeting_tues: false,
+	meeting_wed: false,
+	meeting_thurs: false,
+	meeting_fri: false,
+	meeting_sat: false,
+	meeting_sun: false,
 	//office hour days
-	// office_mon: false,
-	// office_tues: false,
-	// office_wed: false,
-	// office_thurs: false,
-	// office_fri: false,
-	// office_sat: false,
-	// office_sun: false,
+	office_mon: false,
+	office_tues: false,
+	office_wed: false,
+	office_thurs: false,
+	office_fri: false,
+	office_sat: false,
+	office_sun: false,
 
-	office_start_time : "",
-	office_end_time : "",
+		office_start_time : "",
+		office_end_time : "",
+
+      //Grading Scale
+      //JP_Changes
+      grade_percentage : false,
+      grade_points: false,
+      grade_A: [94, 100, 940, 1000],
+      grade_A_minus: [90, 93, 900, 930],
+      grade_B_plus: [87, 89, 970, 890],
+      grade_B: [83, 86, 830, 860],
+      grade_B_minus: [80, 82, 800, 820],
+      grade_C_plus: [77, 79, 770, 790],
+      grade_C: [70, 76, 700, 760],
+      grade_D: [60, 69, 600, 690],
+      grade_F: [59, 590],
 
 	disability_statement : false
   })
@@ -120,26 +110,25 @@ function App() {
     // meetingInfo holds data related to meetings for the course
     // when new meeting added, add additional object to meeting_times array
 	const [meetingInfo, setMeetingInfo] = useState({
-		meeting_location: "",
-		meeting_type: "",
-		meeting_days: {
-			monday: false,
-			tuesday: false,
-			wednesday: false,
-			thursday: false,
-			friday: false,
-			saturday: false,
-			sunday: false
-		},
-		meeting_start_time: "",
-		meeting_end_time: "",
-		
-	});
-	
-	// additional meetings state variables
-	const [addMeetingInfo, setAddMeetingInfo] = useState({
-		add_meetings: []
-	});
+        meeting_location: "",
+        meeting_times: [
+            {
+                meeting_id: 0,
+                meeting_type: "",
+                days: [
+                    {monday: false},
+                    {tuesday: false},
+                    {wednesday: false},
+                    {thursday: false},
+                    {friday: false},
+                    {saturday: false},
+                    {sunday: false}
+                ],
+                start_time: null,
+                end_time: null
+            }
+            ]
+    });
 
 	// contactInfo holds data related to contacting the instructor, including
     // office hours.
@@ -166,11 +155,6 @@ function App() {
             }
         ]
     });
-
-	// additional office hours state
-	const [addOfficeHours, setAddOfficeHours] = useState({
-		add_office_hours: []
-	});
 
     // holds RTE formatted text for course goals and objectives
     const [courseObjectives, setCourseObjectives] = useState("");
@@ -218,264 +202,6 @@ function App() {
 
     });
 
-	//-----------------------------------------------
-
-	function handleAddOfficeHoursInfo(info, i) {
-		let name = info.target.name;
-
-		if(info.target == "checkbox") {
-			const value = info.target.checked;
-
-			let temp = {
-				office_mon: "monday",
-				office_tues: "tuesday",
-				office_wed: "wednesday",
-				office_thurs: "thursday",
-				office_fri: "friday",
-				office_sat: "saturday",
-				office_sun: "sunday"
-			}
-
-			let add_office_hours = addOfficeHours.add_office_hours[i].add_office_hours_days;
-			add_office_hours[temp[name]] = value;
-			let temp_name = add_office_hours;
-
-			setAddOfficeHours({
-				...addOfficeHours,
-				[temp_name]: add_office_hours
-			});
-		} else {
-
-			const value = info.target.value;
-			
-			name = name.replace(/[0-9]/g, '');
-
-			let add_office_hour = addOfficeHours.add_office_hours[i];
-			add_office_hour[name] = value;
-
-			let add_office_hours = addOfficeHours.add_office_hours;
-			add_office_hours[i] = add_office_hour;
-
-			setAddOfficeHours({
-				add_office_hours
-			});
-		}
-	}
-
-	function addAddOfficeHours(evt) {
-		evt.preventDefault();
-
-		let new_add_office_hours = {
-			add_office_start_time: "",
-			add_office_end_time: "",
-			add_office_hours_days: {
-				monday: false,
-				tuesday: false,
-				wednesday: false,
-				thursday: false,
-				friday: false,
-				saturday: false,
-				sunday: false
-			}
-		}
-
-		const add_office_hours = addOfficeHours.add_office_hours.concat(new_add_office_hours);
-		
-		setAddOfficeHours({
-			add_office_hours
-		});
-	}
-
-
-
-
-
-	// handles input from the Meeting times section
-
-
-	// TODO: pretty sure once the input is fixed (where the new meetings aren't inputting for the original meeting), should fix the problem
-	function handleMeetingInfo(info) {
-		const name = info.target.name;
-		
-		if(info.target.type === "checkbox") {
-			const value = info.target.type === "checkbox" ? info.target.checked : info.target.value;
-			let temp = {
-				meeting_mon: "monday",
-				meeting_tues: "tuesday",
-				meeting_wed: "wednesday",
-				meeting_thurs: "thursday",
-				meeting_fri: "friday",
-				meeting_sat: "saturday",
-				meeting_sun: "sunday"
-			};
-
-			let meeting_days = meetingInfo.meeting_days;
-			meeting_days[temp[name]] = value;
-			let temp_name = meeting_days;
-
-			setMeetingInfo({
-				...meetingInfo,
-				[temp_name]: meeting_days
-			});
-
-		} else {
-			
-			const value = info.target.value;
-			setMeetingInfo({
-				...meetingInfo,
-				[name]: value
-			});
-
-		}
-	}
-
-	// delete button doesn't delete the one that you select, need to investigate
-	function deleteAddMeeting(evt, index) {
-		evt.preventDefault();
-		let add_meetings = addMeetingInfo.add_meetings;
-		//console.log("BEFORE: " + JSON.stringify(add_meetings));
-		add_meetings.splice(index, 1);
-
-		console.log("index to be deleted: " + index);
-		//console.log("AFTER: " + JSON.stringify(add_meetings));
-		
-		setAddMeetingInfo({
-			add_meetings
-		});
-	}
-
-	function handleAddMeetingInfo(info, i) {
-		let name = info.target.name;
-
-		if(info.target.type === "checkbox") {
-			
-			const value = info.target.checked;
-			console.log("name: " + name);
-			
-			name = name.replace(/[0-9]/g, '');
-
-			//console.log("name: " + name);
-
-			let temp = {
-				add_meeting_mon: "monday",
-				add_meeting_tues: "tuesday",
-				add_meeting_wed: "wednesday",
-				add_meeting_thurs: "thursday",
-				add_meeting_fri: "friday",
-				add_meeting_sat: "saturday",
-				add_meeting_sun: "sunday"
-			};
-
-			let meeting_days = addMeetingInfo.add_meetings[i].add_meeting_days;
-			meeting_days[temp[name]] = value;
-			let temp_name = meeting_days;
-
-			setAddMeetingInfo({
-				...addMeetingInfo,
-				[temp_name]: meeting_days
-			});
-
-		} else {
-			
-			const value = info.target.value;
-
-			name = name.replace(/[0-9]/g, '');
-
-			let add_meeting = addMeetingInfo.add_meetings[i];
-			add_meeting[name] = value;
-
-			let add_meetings = addMeetingInfo.add_meetings;
-			add_meetings[i] = add_meeting;
-			
-			setAddMeetingInfo({
-				add_meetings
-			});
-
-		}
-
-	}
-
-	function addMeetingTime(evt) {
-		evt.preventDefault();
-		let new_meeting = {
-			add_meeting_id: addMeetingInfo.add_meetings.length,
-			add_meeting_type: "",
-			add_meeting_days: {
-				monday: false,
-				tuesday: false,
-				wednesday: false,
-				thursday: false,
-				friday: false,
-				saturday: false,
-				sunday: false
-			},
-			add_meeting_start_time: "",
-			add_meeting_end_time: "",
-		};
-		
-		const add_meetings = addMeetingInfo.add_meetings.concat(new_meeting);
-		
-		setAddMeetingInfo({
-			add_meetings
-		});
-	}
-	
-
-	//-----------------------------------
-
-	//-----------------------------------
-
-
-    //-----------------------------------------------
-
-    // onClick function for add assessment button
-    // Adds blank assessment object into assessmentInfo.assignment array
-    function addAssignment(evt) {
-		evt.preventDefault();
-        let blank_assessment = {
-            title:"",
-            description:"",
-            points_each: 0,
-            num_of: 0,
-            points_total: 0
-        };
-        const assignments = assessmentInfo.assignments.concat(blank_assessment);
-        setAssessmentInfo({
-            assignments
-        });
-	}
-	
-
-    // onChange function for assignments in assessmentInfo
-    // TODO: check out the other variables in assessmentInfo
-    function handleAssessmentInfo(info, index) {
-
-        const value = info.target.value;
-        const name = info.target.name;
-        
-        let assignment = assessmentInfo.assignments[index];
-        assignment[name] = value;
-        
-        let assignments = assessmentInfo.assignments;
-        assignments[index] = assignment;
-        
-        setAssessmentInfo({
-          assignments 
-        });
-    }
-
-    function deleteAssignment(evt, index) {
-        evt.preventDefault();
-		let assignments = assessmentInfo.assignments;
-        assignments.splice(index, 1);
-
-        setAssessmentInfo({
-            assignments
-        });
-    }
-
-
-    //-----------------------
     // holds RTE of any optional additional content
     const [additionalContent, setAdditionalContent] = useState("");
 
@@ -651,6 +377,24 @@ function App() {
 		if(info.value === "" && includedContentCheck[info.id].added){updateChecklist(info.id, false);}
 	}
 
+    //JP_Changes
+    //added a function to save the states of the different grades:
+    //A, A_minus, B_plus, B, B_minus, C_plus, C, D, F
+    function handleGradeOnChange(evt, grade_state, indx)
+    {
+        const value = evt.target.value
+        const new_grade_state = grade_state.slice()
+        new_grade_state[indx] = value
+
+        setState({
+            ...state,
+            [evt.target.name]: new_grade_state
+        });
+
+        console.log(evt.target.name, value);
+        console.log(state);
+    }
+
 	function handleExamInfo(info){
 		setAssessmentInfo({
 			...assessmentInfo,
@@ -683,674 +427,639 @@ function App() {
 		// })
 	}
 
+	function toggleSideNav(){
+		let tmpOpenStatus = !webView.sideNavOpen;
+		setWebViewState({
+			sideNavOpen: tmpOpenStatus
+		});
+	}
+
 
   return (
-	  <>
-		<div id="main-container">
-		<div class="container">
-		<div class="row intro">
-			<div class="col12">
-				<h1 id="title">Syllabus Generator</h1>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas faucibus fringilla. Mauris magna lectus, egestas ut dolor a, malesuada gravida lectus. Proin lobortis nunc id consectetur tempor. Donec quis mauris dapibus ex iaculis sollicitudin. Donec id ligula arcu. Integer luctus magna metus, vel tempor dui iaculis eu. Aenean porta maximus dapibus. Vivamus euismod felis quam, in rhoncus dolor efficitur eu. Morbi quis diam vel eros consectetur tristique finibus quis lorem. Vivamus tristique venenatis tortor sit amet ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam lectus eros, fringilla et sem quis, consectetur lacinia sem. Curabitur at quam eu orci consequat accumsan sed vitae dui.</p>
-				<div class="intro-buttons">
-					<button type="button" class="btn btn-primary btn-lg">
-						Create a Syllabus
-					</button>
-					<button type="button" class="btn btn-primary btn-lg">
-						Generate a Template
-					</button>
-				</div>
-			</div>
-		</div>
-
-		<div class="row contents">
-			<div class="col">
-			<div class="box">
-
-				<h2>Syllabus Contents</h2>
-				<div class="information">
-				<p id="description">
-					Fill in the sections below to create a syllabus.
-				</p>
-
-				<form id="syllabus-generator">
-
-				<fieldset>
-					<legend>Course Information</legend>
-					<div class="form-section">
-					<p class="description">Description for information in this section goes here.</p>
-					<div class="form-field-inline">
-					  <label for="course_name">Course Number:</label>
-					  <input type="text" id="course_name" placeholder="EDUC 305"
-		  name="course_num"
-		  value={courseInfo.course_num}
-		  onChange={handleCourseInfo} />
+	  <><div id="app-container">
+			<SideNav isOpen={webView.sideNavOpen}/>
+			<div className="main-content">
+				<TopBar toggleNav={toggleSideNav} isOpen={webView.sideNavOpen} />
+				<main class="content-container container-fluid">
+				<section className="section">
+					<SyllabusRequirements />
+				</section>
+				<section className="section">
+					<RequirementsChecklist requirementsInfo={includedContentCheck} />
+				</section>
+				<section className="section">
+					<div className="row">
+							<h2 className="col s12">Build a Syllabus</h2>
 					</div>
-					  <div class="form-field-inline">
-					  <label for="course_name">Course Name:</label>
-					  <input type="text" id="course_name" placeholder="Creative Arts"
-		  name="course_name"
-		  value={courseInfo.course_name}
-		  onChange={handleCourseInfo}/>
+					<div className="row">
+						<p id="description">Fill in the sections below to create a syllabus.</p>
 					</div>
-					<div class="form-field-inline">
-					  <label id="course_section">Section:</label>
-					  <input type="email" id="course_section" placeholder="001"
-		  name="course_section"
-		  value={courseInfo.course_section}
-		  onChange={handleCourseInfo}/>
-					</div>
-					<div class="form-field-inline">
-					  <label for="meeting_location">Meeting Location:</label>
-					  <input type="text" id="meeting_location" placeholder="Olmsted 205"
-		  name="meeting_location"
-		  value={courseInfo.meeting_location}
-		  onChange={handleCourseInfo}/>
-					</div>
-					</div>
-				</fieldset>
+					<form id="syllabus-generator" className="row">
+						<BasicCourseInfo />
+						<InstructorInfo />
+						<CourseMaterials />
+						<CourseDescriptions />
+						<CoursePolicies />
+						<CourseSchedule />
+						<AvailableStudentServices />
 
-				<fieldset>
-					<legend>Course Meeting Times & Location</legend>
-					<div class="form-section">
-						<p class="description">Description for information in this section goes here.</p>
-						<div class="form-field-inline">
-							<label for="start-date">Course Start Date:</label>
-							<input id="end-date" type="date"
-							  name="course_start_date"
-							  value={state.course_start_date}
-							  onChange={handleChange}/>
+					<fieldset className="row">
+						<legend>Course Information</legend>
+						<div class="form-section">
+						<p>Description for information in this section goes here.</p>
+						<div class="input-field col s12 m6">
+						  <label for="course_name">Course Number:</label>
+						  <input type="text" id="course_name" placeholder="EDUC 305"
+							 name="course_num"
+							 value={courseInfo.course_num}
+							 onChange={handleCourseInfo} />
 						</div>
-						<div class="form-field-inline">
-							<label for="end-date">Course End Date:</label>
-							<input id="end-date" type="date"
-							name="course_end_date"
-							value={state.course_end_date}
-							onChange={handleChange}
-							/>
+						  <div class="input-field col s12 m6">
+						  <label for="course_name">Course Name:</label>
+						  <input type="text" id="course_name" placeholder="Creative Arts"
+							  name="course_name"
+							  value={courseInfo.course_name}
+							  onChange={handleCourseInfo}/>
 						</div>
-						<h4>Meeting Times</h4>
-						{/*--------------------------------- */}
+						<div class="input-field col s12 m6">
+						  <label id="course_section">Section:</label>
+						  <input type="email" id="course_section" placeholder="001"
+							  name="course_section"
+							  value={courseInfo.course_section}
+							  onChange={handleCourseInfo}/>
+						</div>
+						<div class="input-field col s12 m6">
+						  <label for="meeting_location">Meeting Location:</label>
+						  <input type="text" id="meeting_location" placeholder="Olmsted 205"
+							  name="meeting_location"
+							  value={courseInfo.meeting_location}
+							  onChange={handleCourseInfo}/>
+						</div>
+						</div>
+					</fieldset>
+					<fieldset className="row">
+						<legend>Course Meeting Times & Location</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<div class="input-field col s12 m6">
+
+								<input id="end-date" type="date"
+								  name="course_start_date"
+								  value={state.course_start_date}
+								  onChange={handleChange}/>
+								<label className="active" htmlFor="start-date">Course Start Date:</label>
+							</div>
+							<div class="input-field col s12 m6">
+
+								<input id="end-date" type="date"
+								name="course_end_date"
+								value={state.course_end_date}
+								onChange={handleChange}
+								/>
+								<label htmlFor="end-date" className="active">Course End Date:</label>
+							</div>
+						</div>
+					</fieldset>
+					<fieldset className="row">
+						<legend>Contact Information</legend>
+						<div className="form-section">
+							<p>Description for information in this section goes here.</p>
+							<div class="input-field col s12 m6">
+								<label for="name">Instructor Name:</label>
+								<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
+								name="instructor_name"
+								value={contactInfo.instructor_name}
+								onChange={handleContactInfo}
+								/>
+							</div>
+							<div class="input-field col s12 m6">
+							  <label for="email">Email:</label>
+							  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
+							  name="email"
+							  value={contactInfo.email}
+							  onChange={handleContactInfo}
+							  />
+							</div>
+							<div class="input-field col s12 m6">
+							  <label for="phone">Phone:</label>
+							  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
+							  name="phone"
+							  value={contactInfo.phone}
+							  onChange={handleContactInfo}
+							  />
+							</div>
+							<div class="input-field col s12 m6">
+							  <label for="office">Office Location:</label>
+							  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
+							  name="office_location"
+							  value={contactInfo.office_location}
+							  onChange={handleContactInfo}
+							  />
+							</div>
+						</div>
+						<div className="form-section">
+							<h4>Office Hours</h4>
+						</div>
+					</fieldset>
+					<fieldset className="row">
+						<legend>Course Goals & Objectives</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<label for="objectives">Course Goals and Objectives:</label>
+							<ControlledEditor updateContent={handleCourseObjectives} id="course_objectives" />
+						</div>
+					</fieldset>
+					<fieldset className="row">
+						<legend>Prerequisites</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<label for="prerequisites">Prerequisites:</label>
+							<ControlledEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
+						</div>
+					</fieldset>
+					<fieldset className="row">
+						<legend>Required Materials</legend>
+							<div className="form-section">
+								<p>Description for information in this section goes here.</p>
+								<label for="req_textbooks">Required Textbooks:</label>
+								<ControlledEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
+							</div>
+							<div className="form-section">
+								<label for="req_add_materials">Additional Required Materials:</label>
+								<ControlledEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
+							</div>
+							<div className="form-section">
+								<label for="req_lab_info">Lab Information:</label>
+								<ControlledEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
+							</div>
+
+							<div class="form-section radio-set">
+								<div class="custom-control custom-checkbox custom-control-inline">
+									<input type="checkbox" id="has_no_required" class="custom-control-input"
+										   checked={requiredMaterials.has_no_required}
+										   onChange={handleNoReqMaterials}
+									/>
+									<label for="has_no_required" class="custom-control-label">
+										There are no required materials for this course.
+									</label>
+								</div>
+						</div>
+					</fieldset>
+					<fieldset className="row">
+						<legend>Additional Materials</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+							<label for="additional-materials">Additional Materials:</label>
+							<ControlledEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
+						</div>
+					</fieldset>
+					<fieldset className="row">
+						<legend>Assessment and Grading Scale</legend>
+						<div class="form-section">
+							<p>Description for information in this section goes here.</p>
+						<div>
+							<label for="exam_info">Exam Policies:</label>
+							<ControlledEditor updateContent={handleExamInfo} id="exam_info"/>
+						</div>
+						<div>
+							<h4>Grading Scale</h4>
 							<div class="radio-set">
-								<span class="title">Meeting Type:</span>
-								<div class="form-group" >
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-class" name="meeting_type" value="class" class="custom-control-input"
-									checked={meetingInfo.meeting_type === "class"}
-									onChange={handleMeetingInfo}
-									/>
-									<label for="meeting-class" class="custom-control-label">Class</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-lab" name="meeting_type" value="lab" class="custom-control-input"
-									checked={meetingInfo.meeting_type === "lab"}
-									onChange={handleMeetingInfo}
-									/>
-									<label for="meeting-lab" class="custom-control-label">Lab</label>
-								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="meeting-other" name="meeting_type" value="other" class="custom-control-input"
-									checked={meetingInfo.meeting_type === "other"}
-									onChange={handleMeetingInfo}
-									/>
-									<label for="meeting-other" class="custom-control-label">Other</label>
-								</div>
+								<span class="title">Type of Grade: </span>
+								{/*JP_Changes*/}
+								{/*saved the state of percent-grade checkbox*/}
+								<div class="form-group">
+									<div class="custom-control custom-checkbox custom-control-inline">
+										<input type="checkbox" class="custom-control-input" id="percent-grade" name="grade_percentage" value="percent"
+											   defaultChecked={state.grade_percentage}
+											   onChange={handleChangeCheckbox}
+										/>
+										<label for="percent-grade" class="custom-control-label">Percent</label>
+									</div>
+									{/*JP_Changes*/}
+									{/*saved the state of point-grade checkbox*/}
+									<div class="custom-control custom-checkbox custom-control-inline">
+										<input type="checkbox" class="custom-control-input" id="point-grade" name="grade_points" value="point"
+											   defaultChecked={state.grade_points}
+											   onChange={handleChangeCheckbox}
+										/>
+										<label for="point-grade" class="custom-control-label">Points</label>
+									</div>
 								</div>
 							</div>
+							<>
+								<div class="grade-scale">
+									{/*JP_Changes*/}
+									{/*Added state values to each letter grade state*/}
+									<ul>
+										<li>
+											<label class="letter">A</label>
+											{/*JP_Changes*/}
+											{/*percentage*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_A" min="0" max ="100"
+									   defaultValue={state.grade_A[0]}
+									   onChange={e => handleGradeOnChange(e,state.grade_A, 0)}
+								/>  to
+								<input type="number" name="grade_A" min="0" max ="100"
+									   defaultValue={state.grade_A[1]}
+									   onChange={e => handleGradeOnChange(e,state.grade_A, 1)}
+								/>
+								</span> :
+												<></>
+											}
 
-						<div class="radio-set">
-							<span class="title">Day(s):</span>
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_A" min="0"
+									   defaultValue={state.grade_A[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A, 2)}
+								/>  to
+								<input type="number" name="grade_A" min="0"
+									   defaultValue={state.grade_A[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A, 3)}
+								/>
+							</span> :
+												<></>
+											}
+
+										</li>
+										<li>
+											<label class="letter">A-</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_A_minus" min="0" max="100"
+									   defaultValue={state.grade_A_minus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 0)}
+								/>  to
+								<input type="number" name="grade_A_minus" min="0" max="100"
+									   defaultValue={state.grade_A_minus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 1)}
+								/>
+							</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_A_minus" min="0"
+									   defaultValue={state.grade_A_minus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 2)}
+								/>  to
+								<input type="number" name="grade_A_minus" min="0"
+									   defaultValue={state.grade_A_minus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_A_minus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">B+</label>
+											{/*JP_Changes*/}
+											{/*Percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_B_plus" min="0" max="100"
+									   defaultValue={state.grade_B_plus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 0)}
+								/>  to
+								<input type="number" name="grade_B_plus" min="0" max="100"
+									   defaultValue={state.grade_B_plus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 1)}
+								/>
+							</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_B_plus" min="0"
+									   defaultValue={state.grade_B_plus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 2)}
+								/>  to
+								<input type="number" name="grade_B_plus" min="0"
+									   defaultValue={state.grade_B_plus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_plus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">B</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_B" min="0" max="100"
+									   defaultValue={state.grade_B[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 0)}
+								/>  to
+								<input type="number" name="grade_B" min="0" max="100"
+									   defaultValue={state.grade_B[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 1)}
+								/>
+							</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_B" min="0"
+									   defaultValue={state.grade_B[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 2)}
+								/>  to
+								<input type="number" name="grade_B" min="0"
+									   defaultValue={state.grade_B[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">B-</label>
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_B_minus" min="0" max="100"
+									   defaultValue={state.grade_B_minus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 0)}
+								/>  to
+								<input type="number" name="grade_B_minus" min="0" max="100"
+									   defaultValue={state.grade_B_minus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 1)}
+								/>
+								</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_B_minus" min="0"
+									   defaultValue={state.grade_B_minus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 2)}
+								/>  to
+								<input type="number" name="grade_B_minus" min="0"
+									   defaultValue={state.grade_B_minus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_B_minus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">C+</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_C_plus" min="0" max="100"
+									   defaultValue={state.grade_C_plus[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 0)}
+								/> to
+								<input type="number" name="grade_C_plus" min="0" max="100"
+									   defaultValue={state.grade_C_plus[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 1)}
+								/>
+							</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_C_plus" min="0"
+									   defaultValue={state.grade_C_plus[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 2)}
+								/>  to
+								<input type="number" name="grade_C_plus" min="0"
+									   defaultValue={state.grade_C_plus[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C_plus, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">C</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_C" min="0" max="100"
+									   defaultValue={state.grade_C[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 0)}
+								/>  to
+								<input type="number" name="grade_C" min="0" max="100"
+									   defaultValue={state.grade_C[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 1)}
+								/>
+							</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_C" min="0"
+									   defaultValue={state.grade_C[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 2)}
+								/>  to
+								<input type="number" name="grade_C" min="0"
+									   defaultValue={state.grade_C[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_C, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">D</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<input type="number" name="grade_D" min="0" max="100"
+									   defaultValue={state.grade_D[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 0)}
+								/>  to
+								<input type="number" name="grade_D" min="0" max="100"
+									   defaultValue={state.grade_D[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 1)}
+								/>
+							</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<input type="number" name="grade_D" min="0"
+									   defaultValue={state.grade_D[2]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 2)}
+								/>  to
+								<input type="number" name="grade_D" min="0"
+									   defaultValue={state.grade_D[3]}
+									   onChange={e => handleGradeOnChange(e, state.grade_D, 3)}
+								/>
+							</span> : <></>
+											}
+										</li>
+										<li>
+											<label class="letter">F</label>
+											{/*JP_Changes*/}
+											{/*percentages*/}
+											{state.grade_percentage ?
+												<span class="range">
+								<span> below </span>
+								<input type="number" name="grade_F" min="0" max="100"
+									   defaultValue={state.grade_F[0]}
+									   onChange={e => handleGradeOnChange(e, state.grade_F, 0)}
+								/>
+							</span> : <></>
+											}
+
+											{/*JP_Changes*/}
+											{/*points*/}
+											{state.grade_points ?
+												<span className="range">
+								<span> below </span>
+								<input type="number" name="grade_F" min="0"
+									   defaultValue={state.grade_F[1]}
+									   onChange={e => handleGradeOnChange(e, state.grade_F, 1)}
+								/>
+							</span> : <></>
+											}
+										</li>
+									</ul>
+								</div>
+							</>
+						</div>
+						</div>
+
+					</fieldset>
+					<fieldset className="row">
+						<legend>Detailed Course Schedule</legend>
+						<div class="form-section">
+							<p>A course schedule can be automatically generated based on meeting times and days.
+								You can choose to fill it in later or use this app to do so.
+							</p>
 							<div class="form-group">
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-mon" name="meeting_mon" value="monday"
-								checked={meetingInfo.meeting_days.monday}
-								onChange={handleMeetingInfo}
-								/>
-								<label for="meet-mon" class="custom-control-label">Mon</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-tues" name="meeting_tues" value="tuesday"
-								checked={meetingInfo.meeting_days.tuesday}
-								onChange={handleMeetingInfo}
-								/>
-								<label for="meet-tues" class="custom-control-label">Tues</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-wed" name="meeting_wed" value="wednesday"
-								checked={meetingInfo.meeting_days.wednesday}
-								onChange={handleMeetingInfo}
-								/>
-								<label for="meet-wed" class="custom-control-label">Wed</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-thurs" name="meeting_thurs" value="thursday"
-								checked={meetingInfo.meeting_days.thursday}
-								onChange={handleMeetingInfo}
-								/>
-								<label for="meet-thurs" class="custom-control-label">Thurs</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-fri" name="meeting_fri" value="friday"
-								checked={meetingInfo.meeting_days.friday}
-								onChange={handleMeetingInfo}
-								/>
-								<label for="meet-fri" class="custom-control-label">Fri</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-sat" name="meeting_sat" value="saturday"
-								checked={meetingInfo.meeting_days.saturday}
-								onChange={handleMeetingInfo}
-								/>
-								<label for="meet-sat" class="custom-control-label">Sat</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="meet-sun" name="meeting_sun" value="sunday"
-								checked={meetingInfo.meeting_days.sunday}
-								onChange={handleMeetingInfo}
-								/>
-								<label for="meet-sun" class="custom-control-label">Sun</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-row">
-							<div class="col">
-							<label id="start-time">Start Time:</label>
-							<input type="time" id="start-time"
-							name="meeting_start_time"
-							value={meetingInfo.meeting_start_time}
-							onChange={handleMeetingInfo}
-							/>
-
-							</div>
-							<div class="col">
-							<label id="end-time">End Time:</label>
-							<input type="time" id="end-time"
-							name="meeting_end_time"
-							value={meetingInfo.meeting_end_time}
-							onChange={handleMeetingInfo}
-							/>
-							</div>  
-						</div>
-						<h4>Additional Meetings</h4>
-						<div>
-							{addMeetingInfo.add_meetings.map((add_meetings, i) => {
-								return (
-									<AdditionalMeetingTimes
-										add_meeting_type={addMeetingInfo.add_meetings[i].add_meeting_type}
-										add_meeting_days={addMeetingInfo.add_meetings[i].add_meeting_days}
-										add_meeting_start_time={addMeetingInfo.add_meetings[i].add_meeting_start_time}
-										add_meeting_end_time={addMeetingInfo.add_meetings[i].add_meeting_end_time}
-										add_meeting_key={i}
-										handleAddMeetingInfo={info => {
-											handleAddMeetingInfo(info, i);
-										}}
-										deleteAddMeeting={info => {
-											deleteAddMeeting(info, i);
-										}}
-										
-									/>
-								);
-							})}
-						</div>
-						<div class="add-another">
-							<button onClick={addMeetingTime} class="btn btn-outline-secondary btn-sm">
-							+ Add Another Meeting
-							</button>
-						</div>
-						{/*--------------------------------------*/}
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Contact Information</legend>
-					<div class="form-section">
-						<p class="description">Description for information in this section goes here.</p>
-						<div class="form-field-inline">
-							<label for="name">Instructor Name:</label>
-							<input type="text" id="name" name="name" placeholder="Dr. John Smith" required="Required"
-							name="instructor_name"
-							value={contactInfo.instructor_name}
-							onChange={handleContactInfo}
-							/> 
-						</div>
-						<div class="form-field-inline">
-						  <label for="email">Email:</label>
-						  <input type="email" id="email" name="user_email" placeholder="abc@psu.edu" required=""
-						  name="email"
-						  value={contactInfo.email}
-						  onChange={handleContactInfo}
-						  />
-						</div>
-						<div class="form-field-inline">
-						  <label for="phone">Phone:</label>
-						  <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
-						  name="phone"
-						  value={contactInfo.phone}
-						  onChange={handleContactInfo}
-						  />  
-						</div>
-						<div class="form-field-inline">
-						  <label for="office">Office Location:</label>
-						  <input type="text" id="office" name="office" placeholder="Olmsted 203" required=""
-						  name="office_location"
-						  value={contactInfo.office_location}
-						  onChange={handleContactInfo}
-						  />
-						</div>
-						<h4>Office Hours</h4>
-						<div class="radio-set">
-							<span class="title">Day(s):</span>
-							<div class="form-group">
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-mon" name="office_mon" value="monday"
-								checked={state.office_mon}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-mon" class="custom-control-label">Mon</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-tues" name="office_tues" value="tuesday"
-								checked={state.office_tues}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-tues" class="custom-control-label">Tues</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-wed" name="office_wed" value="wednesday"
-								checked={state.office_wed}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-wed" class="custom-control-label">Wed</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-thurs" name="office_thurs" value="thursday"
-								checked={state.office_thurs}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-thurs" class="custom-control-label">Thurs</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-fri" name="office_fri" value="friday"
-								checked={state.office_fri}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-fri" class="custom-control-label">Fri</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-sat" name="office_sat" value="saturday"
-								checked={state.office_sat}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-sat" class="custom-control-label">Sat</label>
-							</div>
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" class="custom-control-input" id="oh-sun" name="office_sun" value="sunday"
-								checked={state.office_sun}
-								onChange={handleChangeCheckbox}
-								/>
-								<label for="oh-sun" class="custom-control-label">Sun</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-row">
-							<div class="col">
-							<label id="oh-start-time">Start Time:</label>
-							<input type="time" id="oh-start-time"
-							name="office_start_time"
-							value={state.office_start_time}
-							onChange={handleChange}
-							/>
-							</div>
-							<div class="col">
-							<label id="oh-end-time">End Time:</label>
-							<input type="time" id="oh-end-time"
-							name="office_end_time"
-							value={state.office_end_time}
-							onChange={handleChange}
-							/>
-							</div>  
-					</div>
-                    {/*------------------*/}
-                    <div>
-                        <h4>Additional Office Hours</h4>
-						<div>
-							{addOfficeHours.add_office_hours.map((add_office_hours, i) => {
-								return (
-									<AdditionalOfficeHours
-										add_office_hours_days={addOfficeHours.add_office_hours[i].add_office_hours_days}
-										add_office_hours_start_time={addOfficeHours.add_office_hours[i].add_office_hours_start_time}
-										add_office_hours_end_time={addOfficeHours.add_office_hours[i].add_office_hours_end_time}
-										add_office_hours_key={i}
-										handleAddOfficeHoursInfo={info => {
-											handleAddOfficeHoursInfo(info, i);
-										}}
-									/>
-								);
-							})}
-						</div>
-                    </div>
-                    {/*--------------------*/}
-						<div class="add-another">
-							<button onClick={addAddOfficeHours} class="btn btn-outline-secondary btn-sm">
-							+ Add Another Office Hours Timeslot
-							</button>
-						</div>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Course Goals & Objectives</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="objectives">Course Goals and Objectives:</label>
-						<MyStatefulEditor updateContent={handleCourseObjectives} id="course_objectives"/>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Prerequisites</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="prerequisites">Prerequisites:</label>
-						<MyStatefulEditor updateContent={handleCoursePrereqs} id="course_prereqs"/>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Required Materials</legend>
-
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="req_textbooks">
-						Required Textbooks:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_textbooks"/>
-						<label for="req_add_materials">
-						Additional Required Materials:</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_add_materials"/>
-						<label for="req_lab_info">
-						Lab Information:
-						</label>
-						<MyStatefulEditor updateContent={handleRequiredMaterials} id="req_lab_info"/>
-
-						<div class="radio-set">
-							<div class="custom-control custom-checkbox custom-control-inline">
-								<input type="checkbox" id="has_no_required" class="custom-control-input"
-									   checked={requiredMaterials.has_no_required}
-									   onChange={handleNoReqMaterials}
-								/>
-								<label for="has_no_required" class="custom-control-label">
-									There are no required materials for this course.
-								</label>
-							</div>
-						</div>
-					</div>
-				</fieldset>
-
-				 <fieldset>
-					<legend>Additional Materials</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-						<label for="additional-materials">
-						Additional Materials:</label>
-						<MyStatefulEditor updateContent={handleAdditionalMaterials} id="add_materials"/>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Assessment and Grading Scale</legend>
-					<div class="form-section">
-						<p class="description">
-						Description for information in this section goes here.
-						</p>
-					<div>
-						<label for="exam_info">Exam Policies:</label>
-						<MyStatefulEditor updateContent={handleExamInfo} id="exam_info"/>
-					</div>
-                    {/* ---------- */}
-                    <div>
-                        <h4>Assignment Information</h4>
-                        <div>
-                            {assessmentInfo.assignments.map((assignments, i) => {
-                                return (
-                                    <Assignment
-                                        assignment_title={assessmentInfo.assignments[i].title}
-                                        assignment_points_each={assessmentInfo.assignments[i].points_each}
-                                        assignment_num_of={assessmentInfo.assignments[i].num_of}
-                                        assignment_points_total={assessmentInfo.assignments[i].points_total}
-                                        assignment_description={assessmentInfo.assignments[i].description}
-                                        handleAssessmentInfo={info => {
-                                            handleAssessmentInfo(info, i);
-                                        }}
-                                        deleteAssignment={info => {deleteAssignment(info, i);}}
-                                    />
-                                )
-                            })}
-                        </div>
-                        <div class="add-another">
-							<button onClick={addAssignment} class="btn btn-outline-secondary btn-sm">
-							+ Add Another Assignment
-							</button>
-						</div>
-                    </div>
-                    {/* ---------- */}
-					<div>
-						<h4>Grading Scale</h4>
-						<div class="radio-set">
-							<span class="title">Type of Grade: </span>
-							<div class="form-group">
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="percent-grade" name="grade-type" value="percent" class="custom-control-input" checked/>
-									<label for="percent-grade" class="custom-control-label">Percent</label>
+								<div class="custom-control custom-radio not-inline">
+									<input type="radio" id="include-schedule" value="include-schedule" name="schedule-type" class="custom-control-input" checked/>
+									<label for="include-schedule" class="custom-control-label">
+										Include empty weekly schedule in syllabus
+									</label>
 								</div>
-								<div class="custom-control custom-radio custom-control-inline">
-									<input type="radio" id="point-grade" name="grade-type" value="point" class="custom-control-input"/>
-									<label for="point-grade" class="custom-control-label">Points</label>
+								<div class="custom-control custom-radio not-inline">
+									<input type="radio" id="separate-schedule" value="separate-schedule" name="schedule-type" class="custom-control-input"/>
+									<label for="separate-schedule" class="custom-control-label">
+										Generate empty weekly schedule in a separate file
+									</label>
+								</div>
+								<div class="custom-control custom-radio not-inline">
+									<input type="radio" id="build-schedule" value="build-schedule" name="schedule-type" class="custom-control-input"/>
+									<label for="build-schedule" class="custom-control-label">
+										Build schedule with app
+									</label>
 								</div>
 							</div>
 						</div>
-						<>
-						<div class="grade-scale">
-						<ul>
-							<li>
-								<label class="letter">A</label>
-								<span class="range"> <input type="number" min="0" value="94"/>  to <input type="number" min="0" value="100"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">A-</label>
-								<span class="range">
-									<input type="number" min="0"/>  to <input type="number" min="0" value="94"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">B+</label>
-								<span class="range">
-									<input type="number" min="0" value="87"/>  to <input type="number" min="0" value="90"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">B</label>
-								<span class="range">
-									<input type="number" min="0" value="83"/>  to <input type="number" min="0" value="87"/>
-								</span>
-							 </li>
-							<li>
-								<label class="letter">B-</label>
-								<span class="range">
-									<input type="number" min="0" value="80"/>  to <input type="number" min="0" value="83"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">C+</label>
-								<span class="range">
-									<input type="number" min="0" value="77"/> to <input type="number" min="0" value="80"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">C</label>
-								<span class="range">
-									<input type="number" min="0" value="70"/>  to <input type="number" min="0" value="77"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">D</label>
-								<span class="range">
-									<input type="number" min="0" value="60"/>  to <input type="number" min="0" value="70"/>
-								</span>
-							</li>
-							<li>
-								<label class="letter">F</label>
-								<span class="range">
-									<span> below </span>
-									<input type="number" min="0" value="60"/>
-								</span>
-							</li>
-						</ul>
+					</fieldset>
+					<fieldset className="row">
+				<legend>Additional Syllabus Content</legend>
+				<div class="form-section">
+					<p class="description">
+					Include any additional content you would like in the syllabus here.
+					</p>
+					<label for="additional-content">Additional Content:</label>
+					<ControlledEditor updateContent={handleAdditionalContent} id="additional_content"/>
+				</div>
+			</fieldset>
+					<fieldset className="row" disabled="">
+				<legend>Required Policies</legend>
+				<div class="form-section">
+					<p class="description">
+					These policies will be included in the generated syllabus. Click on a policy to see a preview of it.
+					</p>
+					<div class="form-group">
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-ai" value="academic-integrity" class="custom-control-input" checked/>
+							<label for="policy-ai" class="custom-control-label">
+								<div >
+									<a className="read-more-link" name="academic_integrity"><span>{requiredPolicies.academic_integrity.title}</span></a>
+										{requiredPolicies.academic_integrity.preview && requiredPolicies.academic_integrity.content}
+								</div>
+							</label>
 						</div>
-					  </>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-da" value="disability-access" class="custom-control-input" checked/>
+							<label for="policy-da" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.disability_access.title}</span></a>
+										{requiredPolicies.disability_access.preview && requiredPolicies.disability_access.content}
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-cs" value="counseling-services" class="custom-control-input" checked/>
+							<label for="policy-cs" class="custom-control-label">
+							  <div >
+									<a className="read-more-link"><span>{requiredPolicies.counseling_statement.title}</span></a>
+										{requiredPolicies.counseling_statement.preview && requiredPolicies.counseling_statement.content }
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-ee" value="educational-equity" class="custom-control-input" checked/>
+							<label for="policy-ee" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.educational_equity.title}</span></a>
+										{requiredPolicies.educational_equity.preview && requiredPolicies.educational_equity.content}
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-mr" value="mandated-reporting" class="custom-control-input" checked/>
+							<label for="policy-mr" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.mandated_reporting.title}</span></a>
+										{requiredPolicies.mandated_reporting.preview && requiredPolicies.mandated_reporting.content}
+								</div>
+							</label>
+						</div>
+						<div class="custom-control custom-checkbox not-inline">
+							<input type="checkbox" id="policy-c19" value="covid-19-statements" class="custom-control-input" checked/>
+							<label for="policy-c19" class="custom-control-label">
+								<div >
+									<a className="read-more-link"><span>{requiredPolicies.covid_statements.title}</span></a>
+										{requiredPolicies.covid_statements.preview && requiredPolicies.covid_statements.content}
+								</div>
+							</label>
+						</div>
 					</div>
 				</div>
-
-				</fieldset>
-
-				<fieldset>
-					<legend>Detailed Course Schedule</legend>
-					<div class="form-section">
-						<p class="description">
-						A course schedule can be automatically generated based on meeting times and days. You can choose to fill it in later or use this app to do so.</p>
-						<div class="form-group">
-							<div class="custom-control custom-radio not-inline">
-								<input type="radio" id="include-schedule" value="include-schedule" name="schedule-type" class="custom-control-input" checked/>
-								<label for="include-schedule" class="custom-control-label">
-									Include empty weekly schedule in syllabus
-								</label>
-							</div>
-							<div class="custom-control custom-radio not-inline">
-								<input type="radio" id="separate-schedule" value="separate-schedule" name="schedule-type" class="custom-control-input"/>
-								<label for="separate-schedule" class="custom-control-label">
-									Generate empty weekly schedule in a separate file
-								</label>
-							</div>
-							<div class="custom-control custom-radio not-inline">
-								<input type="radio" id="build-schedule" value="build-schedule" name="schedule-type" class="custom-control-input"/>
-								<label for="build-schedule" class="custom-control-label">
-									Build schedule with app
-								</label>
-							</div>
-						</div>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend>Additional Syllabus Content</legend>
-					<div class="form-section">
-						<p class="description">
-						Include any additional content you would like in the syllabus here.
-						</p>
-						<label for="additional-content">Additional Content:</label>
-						<MyStatefulEditor updateContent={handleAdditionalContent} id="additional_content"/>
-					</div>
-				</fieldset>
-
-				<fieldset disabled="">
-					<legend>Required Policies</legend>
-					<div class="form-section">
-						<p class="description">
-						These policies will be included in the generated syllabus. Click on a policy to see a preview of it.
-						</p>
-						<div class="form-group">
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-ai" value="academic-integrity" class="custom-control-input" checked/>
-								<label for="policy-ai" class="custom-control-label">
-									<div >
-										<a className="read-more-link" name="academic_integrity"><span>{requiredPolicies.academic_integrity.title}</span></a>
-											{requiredPolicies.academic_integrity.preview && requiredPolicies.academic_integrity.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-da" value="disability-access" class="custom-control-input" checked/>
-								<label for="policy-da" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.disability_access.title}</span></a>
-											{requiredPolicies.disability_access.preview && requiredPolicies.disability_access.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-cs" value="counseling-services" class="custom-control-input" checked/>
-								<label for="policy-cs" class="custom-control-label">
-								  <div >
-										<a className="read-more-link"><span>{requiredPolicies.counseling_statement.title}</span></a>
-											{requiredPolicies.counseling_statement.preview && requiredPolicies.counseling_statement.content }
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-ee" value="educational-equity" class="custom-control-input" checked/>
-								<label for="policy-ee" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.educational_equity.title}</span></a>
-											{requiredPolicies.educational_equity.preview && requiredPolicies.educational_equity.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-mr" value="mandated-reporting" class="custom-control-input" checked/>
-								<label for="policy-mr" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.mandated_reporting.title}</span></a>
-											{requiredPolicies.mandated_reporting.preview && requiredPolicies.mandated_reporting.content}
-									</div>
-								</label>
-							</div>
-							<div class="custom-control custom-checkbox not-inline">
-								<input type="checkbox" id="policy-c19" value="covid-19-statements" class="custom-control-input" checked/>
-								<label for="policy-c19" class="custom-control-label">
-									<div >
-										<a className="read-more-link"><span>{requiredPolicies.covid_statements.title}</span></a>
-											{requiredPolicies.covid_statements.preview && requiredPolicies.covid_statements.content}
-									</div>
-								</label>
-							</div>
-						</div>
-					</div>
-				</fieldset>
-				<div class="line-break"></div>
-
-					<div id="submitbutton">
-						<button type="submit" id="submit" class="btn btn-primary btn-lg">
-							Generate a full syllabus
-						</button>  
-					</div>
+			</fieldset>
 				</form>
+				</section>
 
+		<section>
+			<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
+									courseObjectives, assessmentInfo, requiredMaterials,
+									additionalMaterials ,coursePrereqs, additionalContent,
+									includedContentCheck, requiredPolicies}} />
+		</section>
 
-				</div>
-			</div>
-			</div>
-
-			<div id="results" class="col results">
-				<RequirementsChecklist requirementsInfo={includedContentCheck} />
-				<SyllabusPreview userInput={{courseInfo, contactInfo, meetingInfo,
-											courseObjectives, assessmentInfo, requiredMaterials,
-											additionalMaterials ,coursePrereqs, additionalContent,
-											includedContentCheck, requiredPolicies}} />
-			</div>
-		</div>
-		</div>
-		<div class="footer">
+		<div className="footer">
 			<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
 		</div>
-		</div>
+	</main>
+			</div>
+	  </div>
 	  </>
   );
 }
