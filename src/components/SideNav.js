@@ -1,5 +1,5 @@
 import React, {useEffect, useState, Component} from 'react';
-import './css/sidenav-styles.css';
+import '../css/sidenav-styles.css';
 import {docxExport} from "./ExportBuilder";
 import {htmlExport} from "./ExportBuilder";
 

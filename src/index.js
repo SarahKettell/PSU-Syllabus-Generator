@@ -6,18 +6,18 @@ import './css/html-syllabus-styles.css';
 import './css/preview-styles.css';
 import './css/main-content.css';
 import './css/checklist-styles.css';
-import SyllabusPreview from "./SyllabusPreview";
+import SyllabusPreview from "./components/SyllabusPreview";
 import sanitizeHtml from 'sanitize-html';
-import RequirementsChecklist from "./RequirementsChecklist";
-import TopBar from "./TopBar";
-import SideNav from "./SideNav";
+import RequirementsChecklist from "./components/RequirementsChecklist";
+import TopBar from "./components/TopBar";
+import SideNav from "./components/SideNav";
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {stateToHTML} from 'draft-js-export-html';
-import SyllabusRequirements from "./SyllabusRequirements";
-import SyllabusGeneratorInfo from "./SyllabusGeneratorInfo";
-import ControlledEditor from "./ControlledEditor";
+import SyllabusRequirements from "./components/SyllabusRequirements";
+import SyllabusGeneratorInfo from "./components/SyllabusGeneratorInfo";
+import ControlledEditor from "./components/ControlledEditor";
 
 //--------------------------------
 import Assignment from './components/Assignment';
@@ -30,7 +30,7 @@ import {
 	BasicCourseInfo, InstructorInfo, CourseMaterials,
 	CourseDescriptions, CoursePolicies, CourseSchedule,
 	AvailableStudentServices}
-	from "./FormComponents";
+	from "./components/FormComponents";
 
 
 //Main function that contains all the contents
