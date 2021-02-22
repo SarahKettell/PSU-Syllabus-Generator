@@ -19,7 +19,12 @@ import SyllabusRequirements from "./SyllabusRequirements";
 import SyllabusGeneratorInfo from "./SyllabusGeneratorInfo";
 import ControlledEditor from "./ControlledEditor";
 
+//--------------------------------
+import Assignment from './components/Assignment';
+import AdditionalMeetingTimes from './components/AdditionalMeetingTimes';
+import AdditionalOfficeHours from './components/AdditionalOfficeHours';
 
+//--------------------------------
 
 import {
 	BasicCourseInfo, InstructorInfo, CourseMaterials,
@@ -130,6 +135,12 @@ function App() {
             ]
     });
 
+	// additional meetings state variables
+	const [addMeetingInfo, setAddMeetingInfo] = useState({
+		add_meetings: []
+	});
+
+
 	// contactInfo holds data related to contacting the instructor, including
     // office hours.
     // when a new set of hours is added, add additional object to officeHours
@@ -155,6 +166,11 @@ function App() {
             }
         ]
     });
+
+	// additional office hours state
+	const [addOfficeHours, setAddOfficeHours] = useState({
+		add_office_hours: []
+	});
 
     // holds RTE formatted text for course goals and objectives
     const [courseObjectives, setCourseObjectives] = useState("");
@@ -434,8 +450,266 @@ function App() {
 		});
 	}
 
+	//-----------------------------------------------
 
-  return (
+	function handleAddOfficeHoursInfo(info, i) {
+		let name = info.target.name;
+
+		if(info.target == "checkbox") {
+			const value = info.target.checked;
+
+			let temp = {
+				office_mon: "monday",
+				office_tues: "tuesday",
+				office_wed: "wednesday",
+				office_thurs: "thursday",
+				office_fri: "friday",
+				office_sat: "saturday",
+				office_sun: "sunday"
+			}
+
+			let add_office_hours = addOfficeHours.add_office_hours[i].add_office_hours_days;
+			add_office_hours[temp[name]] = value;
+			let temp_name = add_office_hours;
+
+			setAddOfficeHours({
+				...addOfficeHours,
+				[temp_name]: add_office_hours
+			});
+		} else {
+
+			const value = info.target.value;
+
+			name = name.replace(/[0-9]/g, '');
+
+			let add_office_hour = addOfficeHours.add_office_hours[i];
+			add_office_hour[name] = value;
+
+			let add_office_hours = addOfficeHours.add_office_hours;
+			add_office_hours[i] = add_office_hour;
+
+			setAddOfficeHours({
+				add_office_hours
+			});
+		}
+	}
+
+	function addAddOfficeHours(evt) {
+		evt.preventDefault();
+
+		let new_add_office_hours = {
+			add_office_start_time: "",
+			add_office_end_time: "",
+			add_office_hours_days: {
+				monday: false,
+				tuesday: false,
+				wednesday: false,
+				thursday: false,
+				friday: false,
+				saturday: false,
+				sunday: false
+			}
+		}
+
+		const add_office_hours = addOfficeHours.add_office_hours.concat(new_add_office_hours);
+
+		setAddOfficeHours({
+			add_office_hours
+		});
+	}
+
+
+
+
+
+	// handles input from the Meeting times section
+
+
+	// TODO: pretty sure once the input is fixed (where the new meetings aren't inputting for the original meeting), should fix the problem
+	function handleMeetingInfo(info) {
+		const name = info.target.name;
+
+		if(info.target.type === "checkbox") {
+			const value = info.target.type === "checkbox" ? info.target.checked : info.target.value;
+			let temp = {
+				meeting_mon: "monday",
+				meeting_tues: "tuesday",
+				meeting_wed: "wednesday",
+				meeting_thurs: "thursday",
+				meeting_fri: "friday",
+				meeting_sat: "saturday",
+				meeting_sun: "sunday"
+			};
+
+			let meeting_days = meetingInfo.meeting_days;
+			meeting_days[temp[name]] = value;
+			let temp_name = meeting_days;
+
+			setMeetingInfo({
+				...meetingInfo,
+				[temp_name]: meeting_days
+			});
+
+		} else {
+
+			const value = info.target.value;
+			setMeetingInfo({
+				...meetingInfo,
+				[name]: value
+			});
+
+		}
+	}
+
+	// delete button doesn't delete the one that you select, need to investigate
+	function deleteAddMeeting(evt, index) {
+		evt.preventDefault();
+		let add_meetings = addMeetingInfo.add_meetings;
+		//console.log("BEFORE: " + JSON.stringify(add_meetings));
+		add_meetings.splice(index, 1);
+
+		console.log("index to be deleted: " + index);
+		//console.log("AFTER: " + JSON.stringify(add_meetings));
+
+		setAddMeetingInfo({
+			add_meetings
+		});
+	}
+
+	function handleAddMeetingInfo(info, i) {
+		let name = info.target.name;
+
+		if(info.target.type === "checkbox") {
+
+			const value = info.target.checked;
+			console.log("name: " + name);
+
+			name = name.replace(/[0-9]/g, '');
+
+			//console.log("name: " + name);
+
+			let temp = {
+				add_meeting_mon: "monday",
+				add_meeting_tues: "tuesday",
+				add_meeting_wed: "wednesday",
+				add_meeting_thurs: "thursday",
+				add_meeting_fri: "friday",
+				add_meeting_sat: "saturday",
+				add_meeting_sun: "sunday"
+			};
+
+			let meeting_days = addMeetingInfo.add_meetings[i].add_meeting_days;
+			meeting_days[temp[name]] = value;
+			let temp_name = meeting_days;
+
+			setAddMeetingInfo({
+				...addMeetingInfo,
+				[temp_name]: meeting_days
+			});
+
+		} else {
+
+			const value = info.target.value;
+
+			name = name.replace(/[0-9]/g, '');
+
+			let add_meeting = addMeetingInfo.add_meetings[i];
+			add_meeting[name] = value;
+
+			let add_meetings = addMeetingInfo.add_meetings;
+			add_meetings[i] = add_meeting;
+
+			setAddMeetingInfo({
+				add_meetings
+			});
+
+		}
+
+	}
+
+	function addMeetingTime(evt) {
+		evt.preventDefault();
+		let new_meeting = {
+			add_meeting_id: addMeetingInfo.add_meetings.length,
+			add_meeting_type: "",
+			add_meeting_days: {
+				monday: false,
+				tuesday: false,
+				wednesday: false,
+				thursday: false,
+				friday: false,
+				saturday: false,
+				sunday: false
+			},
+			add_meeting_start_time: "",
+			add_meeting_end_time: "",
+		};
+
+		const add_meetings = addMeetingInfo.add_meetings.concat(new_meeting);
+
+		setAddMeetingInfo({
+			add_meetings
+		});
+	}
+
+
+	//-----------------------------------
+
+	//-----------------------------------
+
+
+	//-----------------------------------------------
+
+	// onClick function for add assessment button
+	// Adds blank assessment object into assessmentInfo.assignment array
+	function addAssignment(evt) {
+		evt.preventDefault();
+		let blank_assessment = {
+			title:"",
+			description:"",
+			points_each: 0,
+			num_of: 0,
+			points_total: 0
+		};
+		const assignments = assessmentInfo.assignments.concat(blank_assessment);
+		setAssessmentInfo({
+			assignments
+		});
+	}
+
+
+	// onChange function for assignments in assessmentInfo
+	// TODO: check out the other variables in assessmentInfo
+	function handleAssessmentInfo(info, index) {
+
+		const value = info.target.value;
+		const name = info.target.name;
+
+		let assignment = assessmentInfo.assignments[index];
+		assignment[name] = value;
+
+		let assignments = assessmentInfo.assignments;
+		assignments[index] = assignment;
+
+		setAssessmentInfo({
+			assignments
+		});
+	}
+
+	function deleteAssignment(evt, index) {
+		evt.preventDefault();
+		let assignments = assessmentInfo.assignments;
+		assignments.splice(index, 1);
+
+		setAssessmentInfo({
+			assignments
+		});
+	}
+
+
+
+
+	return (
 	  <><div id="app-container">
 			<SideNav isOpen={webView.sideNavOpen}/>
 			<div className="main-content">
