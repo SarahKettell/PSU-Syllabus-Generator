@@ -1,0 +1,197 @@
+.syllabus-container .table-of-contents ul,
+.syllabus-container .table-of-contents ul:not(.browser-default) {
+    margin:0;
+}
+.syllabus-container .table-of-contents li,
+.syllabus-container .table-of-contents li,
+.syllabus-container .table-of-contents ul:not(.browser-default)>li{
+    display: inline-block;
+    /*padding: 0 8px 0 8px;*/
+    margin:4pt 0 4pt 0;
+    padding-left: 10pt;
+    padding-right: 10pt;
+    border-right: 1px solid lightgrey;
+}
+.syllabus-container .table-of-contents li:first-child{
+    border-left: 1px solid lightgrey;
+}
+.syllabus-container .table-of-contents a{
+    padding-left: 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #009CDE;
+    font-size: 9pt;
+}
+.syllabus-container .table-of-contents a:hover{
+    text-decoration: none;
+    color:#1E407C;
+    border: none;
+}
+.syllabus-container p{
+    margin: 0;
+    padding: 0;
+}
+.syllabus-container .course-information .title{
+    font-weight: bold;
+    margin-right:.5em;
+}
+.syllabus-container .grading-information ul  {
+    list-style: none;
+    padding-left: 0;
+}
+.syllabus-container ul:not(.browser-default),
+.syllabus-container ul:not(.browser-default)>li{
+    list-style-type: disc;
+    margin-left: 15px;
+}
+.syllabus-container .grading-information ul.assignment-grades .title{
+    font-weight:bold;
+    margin-left:0;
+}
+.syllabus-container .grading-information ul.assignment-grades li{
+    margin-bottom:20px;
+}
+.syllabus-container .grading-information  ul.grading-scale li.grade-scale-titles span{
+    font-weight: bold;
+    text-align: center;
+}
+.syllabus-container .grading-information ul.grading-scale li span{
+    width:100px;
+    display:inline-block;
+    text-align: center;
+}
+.syllabus-container .grading-information ul.grading-scale li span.grade{
+    text-align: left;
+}
+
+.syllabus-container .assignment-information h4{
+    font-size: 13pt;
+}
+
+.syllabus-container ul.grading-scale,
+.syllabus-container ul.grading-scale li{
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+    margin-bottom: 2pt;
+    letter-spacing: 0.5pt;
+}
+.syllabus-container .grading-scale .grade {
+    display: inline-block;
+    width: 50pt;
+}
+.syllabus-container .grading-scale .percentage,
+.syllabus-container .grading-scale .points{
+    display: inline-block;
+    width: 100pt;
+}
+.syllabus-container .grading-scale .grade-scale-titles{
+    font-weight: bold;
+    text-align: left;
+    letter-spacing: normal!important;
+}
+
+.preview .syllabus-container{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11pt;
+    max-height: 900px;
+    overflow: auto;
+    border:1px solid rgba(49,77,100,0.2);
+    padding: 60px;
+    margin: 0 0 0 15px;
+}
+
+.preview .syllabus-container p{
+    margin: 10px 0 10px 0;
+}
+.main-content-row .preview .syllabus-container h1,
+.main-content-row .preview .syllabus-container h2,
+.main-content-row .preview .syllabus-container h3,
+.main-content-row .preview .syllabus-container h4,
+.main-content-row .preview .syllabus-container h5,
+.main-content-row .preview .syllabus-container h6{
+    font-family: Avenir, 'Roboto', sans-serif;
+    background: none;
+    color:black;
+    font-weight: bold;
+    font-size: 12pt;
+    text-transform: uppercase;
+}
+.preview .syllabus-container h1 {
+    font-size: 21pt;
+    padding: 0;
+    background: none;
+    color: black;
+    text-transform: none;
+}
+.preview .syllabus-container h2 {
+    font-size: 17pt;
+    margin-top: 1.5em;
+    border-top: 1px solid #314d64;
+    padding-top: 1em;
+    text-transform: none;
+}
+.preview .syllabus-container h3{
+    margin-top: 2em;
+    font-size: 14pt;
+}
+.preview .syllabus-container h4{
+    margin-top: 2em;
+    text-transform: none;
+}
+.preview .syllabus-container a{
+    text-decoration: none;
+    color: #009CDE;
+    border: none;
+}
+.preview .syllabus-container a:hover{
+    color:#1E407C;
+}
+.preview .syllabus-container .header{
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.preview .syllabus-container .header h1{
+    margin-bottom: 0;
+    border:none;
+}
+.preview .syllabus-container .header h2{
+    margin-top: 0;
+    border:none;
+}
+.preview .syllabus-container .table-of-contents ul{
+    list-style: none;
+    border-bottom: 1px solid #314d64;
+    text-transform: uppercase;
+    padding: 20px;
+}
+
+.preview .syllabus-container code{
+    color: black;
+    background: rgba(49,77,100,0.07);
+    padding: .4em;
+    font-size: .9em;
+}
+
+
+@media print {
+    .syllabus-container{
+        margin: 0;
+        padding: 0;
+        background-position: top left;
+        background-repeat: no-repeat;
+        background-size: 100px;
+    }
+    .header img {
+        display:none;
+    }
+    .header h1{
+        font-size: 16pt;
+    }
+    .header h2{
+        font-size: 14pt;
+    }
+    .table-of-contents {
+        display: none;
+    }
+}
