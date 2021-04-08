@@ -1,7 +1,7 @@
 {
-  "name": "PSU-Syllabus-Generator",
+  "name": "psu-syllabus-generator",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "homepage": "https://sarahkettell.github.io/PSU-Syllabus-Generator/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.6",
