@@ -300,7 +300,9 @@ function App() {
 		</section>
 
 					<div className="footer">
-						<p>The policies and syllabus requirements were last updated on 12/03/2020.</p>
+						<p>The policies and syllabus requirements were last updated on 02/03/2020.</p>
+						<p>Application developed by
+							<a href="https://cte.psu.edu/" target="_blank">The Center for Teaching Excellence, Penn State Harrisburg.</a></p>
 					</div>
 				</main>
 			</div>

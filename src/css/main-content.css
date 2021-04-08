@@ -369,3 +369,13 @@ table.table {
     margin-left: 35px;
     margin-top: 5px;
 }
+
+.content-container a.btn-large{
+    color: #fff!important;
+}
+.content-container a.btn-large:hover{
+    color:#fff;
+    text-transform: uppercase;
+    font-style: normal;
+    text-decoration: none;
+}

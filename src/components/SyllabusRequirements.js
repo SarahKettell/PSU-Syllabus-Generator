@@ -5,6 +5,18 @@ export default function SyllabusRequirements(){
     return (
         <div className="requirements">
             <div className="row">
+                <div className="col-sm-12 col-md-9">
+                    <p className="alert"><span className="emph">Development Note: </span>
+                        This app is still in its early testing phase and is actively undergoing further development. Due to this,
+                        some features are disabled or may give unexpected errors.
+                        Please use this form to send feedback, suggestions, and details of any errors experienced to the developers.
+                    </p>
+                </div>
+                <div className="col-sm-12 col-md-3 valign-wrapper">
+                    <a className="btn-large" href="https://forms.office.com/r/s9aXHAv32U" target="_blank">Send Feedback</a>
+                </div>
+            </div>
+            <div className="row">
                 <h2 className="col-sm-12" id="syllabus-requirements">Syllabus Requirements</h2>
             </div>
             <div className="row">
