@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../css/topbar-styles.css';
 import {htmlExport} from "./ExportBuilder";
+import DownloadingModal from "./DownloadingModal";
 
 export default function TopBar(props){
 

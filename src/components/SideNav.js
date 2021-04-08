@@ -126,6 +126,7 @@ export default function SideNav(props){
         <>
             {props.isOpen
                 ? <SideNavContent
+                    exportInfo={props.exportInfo}
                     updatePreview={props.updatePreview}
                     previewTracker={props.previewTracker} />
                 : <div></div>

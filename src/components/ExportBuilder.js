@@ -47,11 +47,14 @@ export function htmlExport(info){
     const previewHTML = document.getElementById("html-preview");
     const currentHTML = previewHTML.innerHTML;
 
+    const courseNum = (info !== undefined && info.course_num.content !== "") ? info.course_num.content.split(" ").join("") : "";
+    console.log(courseNum, info)
+
     let newHTML = "<!DOCTYPE html>" +
                     "<html lang=\"en\">" +
                     "<head>" +
                     "<meta charset=\"utf-8\" />" +
-                    "<title>" + info.course_num.content + " Syllabus</title>" +
+                    "<title>" + courseNum + " Syllabus</title>" +
                     "<link href=\"https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap\" rel=\"stylesheet\">" +
                     "<style>" + htmlStyles + "</style>" +
                     "</head>" +
@@ -59,8 +62,8 @@ export function htmlExport(info){
 
     const innerBlob = new Blob([newHTML], {type: 'text/html'});
     let filename = "";
-    if(info.course_num.content !== ""){
-        filename = info.course_num.content + "-syllabus.html";
+    if(courseNum !== ""){
+        filename = courseNum + "-syllabus.html";
     } else {
         filename = "syllabus.html";
     }

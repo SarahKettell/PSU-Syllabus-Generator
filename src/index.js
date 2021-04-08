@@ -21,6 +21,7 @@ import {
 	MemoInstructorInfo,
 	MemoSyllabusPreview
 } from "./components/MemoizedComponents";
+import DownloadingModal from "./components/DownloadingModal";
 
 //Main function that contains all the contents
 function App() {
@@ -28,6 +29,7 @@ function App() {
 	const[webView, setWebViewState] = React.useState( {
 		sideNavOpen: true
 	})
+	const [showDownloading, setShowDownloading] = useState(true);
 
 	// each form section is stored in main state once a user clicks outside
 	// of an input field they were updating
@@ -243,6 +245,8 @@ function App() {
 					 updatePreview={setPreviewRefresh}
 					 previewTracker={previewRefresh}
 					 exportInfo={basicCourseInfo}
+					 isDownloading={showDownloading}
+					 setDownloading={setShowDownloading}
 			/>
 			<div className="main-content">
 				<TopBar toggleNav={toggleSideNav}
@@ -250,8 +254,11 @@ function App() {
 						updatePreview={setPreviewRefresh}
 						previewTracker={previewRefresh}
 						exportInfo={basicCourseInfo}
+						isDownloading={showDownloading}
+						setDownloading={setShowDownloading}
 				/>
 				<main className="content-container container-fluid">
+					<DownloadingModal isOpen={showDownloading} />
 					<section className="section">
 					<SyllabusRequirements />
 					</section>
@@ -301,8 +308,7 @@ function App() {
 
 					<div className="footer">
 						<p>The policies and syllabus requirements were last updated on 02/03/2020.</p>
-						<p>Application developed by
-							<a href="https://cte.psu.edu/" target="_blank">The Center for Teaching Excellence, Penn State Harrisburg.</a></p>
+						<p>Application developed by <a href="https://cte.psu.edu/" target="_blank">The Center for Teaching Excellence, Penn State Harrisburg.</a></p>
 					</div>
 				</main>
 			</div>
