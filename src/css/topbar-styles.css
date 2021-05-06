@@ -40,14 +40,18 @@ nav {
     align-items: center;
 }
 
-.top-bar button{
+.top-bar button,
+.top-bar a{
     background: none;
     border:none;
     color: white;
     padding: 10px;
+    text-decoration: none;
+    display: inline-block;
 }
 
-.top-bar button:hover{
+.top-bar button:hover,
+.top-bar a:hover{
     background: rgba(250,250,250,0.1);
     border-radius: 30px;
 }

@@ -32,16 +32,16 @@ export default function TopBar(props){
                     <h1 className="brand-logo">Syllabus Generator</h1>
                     <ul id="nav-mobile" className="right hide-on-small-only">
                         <div className="top-sticky">
-                            <button className="sticky-button" onClick={updatePreview}>
+                            <a className="sticky-button" href="#syllabus-preview" onClick={updatePreview}>
                                 <i className="material-icons left">wysiwyg</i>
                                 <span className="hide-on-med-and-down">
                                     Preview Syllabus
                                 </span>
-                            </button>
-                            <button className="sticky-button" onClick={downloadSyllabus}>
+                            </a>
+                            <a className="sticky-button" onClick={downloadSyllabus}>
                                 <i className="material-icons left">download</i>
                                 <span className="hide-on-med-and-down"> Download</span>
-                            </button>
+                            </a>
                         </div>
                     </ul>
 

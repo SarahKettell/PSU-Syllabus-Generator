@@ -58,12 +58,14 @@ export default function SyllabusPreview(props) {
             <li>List item of things to do this week</li>
         </ul>;
 
-    let schedule_header = schedule.map((ele) =>
-        <div key={ele.entry_key.toString()}>
-            <h3>Week {ele.entry_key}: [Optional Topic] {ele.week}</h3>
-            {schedule_list}
-        </div>
-    );
+    if(courseSchedule.add_schedule.content) {
+        let schedule_header = schedule.map((ele) =>
+            <div key={ele.entry_key.toString()}>
+                <h3>Week {ele.entry_key}: [Optional Topic] {ele.week}</h3>
+                {schedule_list}
+            </div>
+        );
+    }
 
 
     // Assign defaults for each of the fields
@@ -84,7 +86,6 @@ export default function SyllabusPreview(props) {
     const details_needed = "[Add details here]"
     const textbooks = "[APA format - Author, A. A. (Year of publication). Title of work: Capital letter also for subtitle. Location (City, State): Publisher.]"
 
-    console.log("Preview updated");
 
     return (
         <div className="preview">

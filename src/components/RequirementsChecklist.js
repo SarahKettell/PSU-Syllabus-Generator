@@ -79,7 +79,7 @@ export default function RequirementsChecklist(props) {
             library:                {removed: false, icon_style: 'remove', name: "Library Services"},
             academic_advising:      {removed: false, icon_style: 'remove', name: "Academic Advising, SEC 204"},
             career:                 {removed: false, icon_style: 'remove', name: "Career Services & Student Conduct, SEC 212"},
-            counselling:            {removed: false, icon_style: 'remove', name: "Counseling &Psychological Services, SEC 205"},
+            counselling:            {removed: false, icon_style: 'remove', name: "Counseling & Psychological Services, SEC 205"},
             tech_help:              {removed: false, icon_style: 'remove', name: "Technology Help Desk, Basement of Olmsted Building"},
         }
     });

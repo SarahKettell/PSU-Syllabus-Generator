@@ -195,6 +195,7 @@
 }
 .checklist .adv_checklist .included{
     font-weight: bold;
+    color: #008755;
 }
 .checklist .adv_checklist .removed{
     text-decoration: line-through;

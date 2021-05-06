@@ -286,6 +286,7 @@ table.table input{
     width: 75% !important;
     margin-right:5% !important;
     margin-bottom:0!important;
+    background-color: rgba(248, 249, 250, 1) !important;
 }
 
 table.table label{
@@ -304,6 +305,19 @@ table.table th, table.table td{
 
 table.table {
     border:none;
+}
+
+table.table .hide{
+    /*visibility: collapse;*/
+    display: table-cell!important;
+    opacity: 30%;
+    color: rgba(108, 117, 125, 1);
+    background-color: rgba(248, 249, 250, 1);
+}
+table.table .hide input,
+table.table .hide input:disabled{
+    border-bottom: none!important;
+    color: #fff;
 }
 
 .policy-header{
@@ -372,6 +386,7 @@ table.table {
 
 .content-container a.btn-large{
     color: #fff!important;
+    height: fit-content;
 }
 .content-container a.btn-large:hover{
     color:#fff;
@@ -379,3 +394,67 @@ table.table {
     font-style: normal;
     text-decoration: none;
 }
+
+.content-container .startOver{
+    color: #BC204B!important;
+    width: fit-content;
+    box-shadow: none;
+    text-align: right;
+    float: right;
+    line-height: 20pt;
+}
+
+.content-container .startOver:hover,
+.content-container .startOver:active{
+    background-color: #BC204B!important;
+    color: #fff!important;
+}
+
+.content-container .buildHeader{
+    display: inline-block;
+    width: fit-content!important;
+}
+
+.content-container .modal{
+    width: 50%;
+    height: fit-content;
+}
+.content-container .modal .modal-content{
+    border-radius: 0;
+}
+.content-container .modal .modal-content p{
+    padding: 10px 0 0 0!important;
+}
+.content-container .modal .modal-footer{
+    background: white;
+    justify-content: space-between;
+    padding: 10px 20px 10px 20px;
+    height: fit-content;
+}
+.content-container .modal .btn-flat.cancel-clear{
+    background: #BC204B;
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.content-container .modal .btn-flat.cancel-clear:hover,
+.content-container .modal .btn-flat.cancel-clear:active {
+    background: #de3866;
+}
+.content-container .modal .btn-flat.confirm-clear{
+    background: #3EA39E;
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.content-container .modal .btn-flat.confirm-clear:hover,
+.content-container .modal .btn-flat.confirm-clear:active{
+    background: #57cbc5;
+}
+
+.content-container .devNotes{
+    background: rgba(0,0,0, 0.05);
+    padding: 30px 30px 10px 0;
+}
+
+

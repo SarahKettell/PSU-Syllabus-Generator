@@ -1,9 +1,9 @@
-import React, {Component, useEffect, useState} from "react";
+import React, {Component, useEffect, useRef, useState} from "react";
 import Assignment from './Assignment';
 import AdditionalMeetingTimes from './AdditionalMeetingTimes';
 import AdditionalOfficeHours from './AdditionalOfficeHours';
 import SyllabusSchedule from '../scripts/SyllabusSchedule';
-import {EditorState} from "draft-js";
+import {EditorState, convertToRaw, convertFromRaw} from "draft-js";
 import {stateToHTML} from "draft-js-export-html";
 import sanitizeHtml from "sanitize-html";
 import {Editor} from "react-draft-wysiwyg";
@@ -30,12 +30,22 @@ import {
     DISABILITY_RESOURCES} from '../information/policy-information';
 import {htmlExportSchedule} from "./ExportBuilder";
 
-export default class ControlledEditor extends Component {
+export class ControlledEditor extends Component {
+
     constructor(props) {
         super(props);
-        this.state = {
-            editorState: EditorState.createEmpty(),
-        };
+        if(props.storedContent !== undefined){
+            const restoredStateRaw = convertFromRaw(JSON.parse(props.storedContent));
+            const restoredState = EditorState.createWithContent(restoredStateRaw);
+            this.state = {
+                editorState: restoredState
+            };
+        }
+        else {
+            this.state = {
+                editorState: EditorState.createEmpty(),
+            };
+        }
     }
 
     onEditorStateChange: function = (editorState) => {
@@ -58,9 +68,12 @@ export default class ControlledEditor extends Component {
             if (cleanHTML === "<p><br /></p>") {
                 cleanHTML = false
             }
+            // get state format for saving
+            const rawState = convertToRaw(editorState.getCurrentContent());
             let tempInfo = {
                 id: this.props.id,
-                value: cleanHTML
+                value: cleanHTML,
+                savedState: JSON.stringify(rawState)
             }
             if(tempInfo) {this.props.updateContent(tempInfo);}
         }
@@ -97,50 +110,18 @@ export default class ControlledEditor extends Component {
     }
 }
 
-// primitive values can be updated with the same structure, while
-// complex values hold arrays or objects and need special cases
-const PRIM_VAL = "primitive value";
-const COMPLEX_VAL = "complex value";
-
 export function BasicCourseInfo(props){
 
-    // local state to hold all updates
-    const [basicInfo, setBasicInfo] = useState({
-            course_num:         {content: "", req: false, included: false},
-            course_name:        {content: "", req: false, included: false},
-            course_section:     {content: "", req: false, included: false},
-            num_credits:        {content: "", req: false, included: false},
-            prerequisites:      {content: "", req: false, included: false},
-            permission_req:     {content: false, req: false, included: false},
-            class_location:     {content: "", req: false, included: false},
-            class_time:         {content: "", req: false, included: false},
-            class_start_time:   {content: "", req: false, included: false},
-            class_end_time:   {content: "", req: false, included: false},
-            class_days:         {content: {
-                monday: false,
-                tuesday: false,
-                wednesday: false,
-                thursday: false,
-                friday: false,
-                saturday: false,
-                sunday: false
-                }, req: false, included: false},
-            lab_location:       {content: "", req: false, included: false},
-            lab_time:           {content: "", req: false, included: false},
-            lab_start_time:   {content: "", req: false, included: false},
-            lab_end_time:   {content: "", req: false, included: false},
-            lab_days:           {content: {
-                    monday: false,
-                    tuesday: false,
-                    wednesday: false,
-                    thursday: false,
-                    friday: false,
-                    saturday: false,
-                    sunday: false
-                }, req: false, included: false},
-            canvas_info:        {content: "", req: false, included: false},
-            semester: 			{content: "", req: false, included: false},
-    });
+    // local state to hold short-term updates, such as while typing
+    const [basicInfo, setBasicInfo] = useState(props.content);
+    const [refresh, setRefresh] = useState(0);
+    useEffect(() => {
+        setBasicInfo(prev => props.content);
+        setRefresh(prev => prev + 1);
+    }, [props.clearState])
+    useEffect(() => {
+        focusChange();
+    }, [basicInfo.permission_req]);
 
     // user has switched to a new field, save new content to overall state
     const focusChange = () => {
@@ -152,14 +133,31 @@ export function BasicCourseInfo(props){
         let fieldValue = (info.value !== undefined) ? info.value : info.target.value;
         const required = basicInfo[fieldName].req;
         const included = (fieldValue !== "" && fieldValue !== null);
+        console.log(info.target)
         if(info.target && info.target.type === "time") {
             // make new time strings
             const newTime = info.target.value.split(':');
             fieldValue = (parseInt(newTime[0]) % 12) + ":" + newTime[1] + (parseInt(newTime[0]) > 12 ? "PM" : "AM");
+            setBasicInfo({
+                ...basicInfo, [fieldName]: {content: fieldValue, req: required, included: included, savedState: info.target.value}
+            });
         }
-        setBasicInfo({
-            ...basicInfo, [fieldName]: {content: fieldValue, req: required, included: included}
-        });
+        else if(fieldName === "permission_req"){
+            const boolVal = (fieldValue === "true");
+            setBasicInfo({
+                ...basicInfo, [fieldName]: {content: boolVal, req: required, included: included, savedState: info.target.value}
+            });
+        }
+        else if(info.savedState !== undefined){
+            setBasicInfo({
+                ...basicInfo, [fieldName]: {content: fieldValue, req: required, included: included, savedState: info.savedState}
+            });
+        }
+        else {
+            setBasicInfo({
+                ...basicInfo, [fieldName]: {content: fieldValue, req: required, included: included}
+            });
+        }
     }
 
     const handleCheckChange = (info) => {
@@ -211,6 +209,7 @@ export function BasicCourseInfo(props){
                     <label id="f1-3" id="course_section">Number of Credits:</label>
                     <input type="number" id="num_credits" placeholder="3"
                            name="num_credits"
+                           min="0"
                            value={basicInfo.num_credits.content}
                            onChange={handleBasicChange}
                            onBlur={focusChange}
@@ -253,7 +252,9 @@ export function BasicCourseInfo(props){
                                    name="class_days"
                                    id="class_days_monday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.class_days.content.monday}
+                            />
                             <span>Mon</span>
                         </label>
                         <label htmlFor="class_days_tuesday">
@@ -262,7 +263,9 @@ export function BasicCourseInfo(props){
                                    name="class_days"
                                    id="class_days_tuesday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.class_days.content.tuesday}
+                            />
                             <span>Tue</span>
                         </label>
                         <label htmlFor="class_days_wednesday">
@@ -271,7 +274,9 @@ export function BasicCourseInfo(props){
                                    name="class_days"
                                    id="class_days_wednesday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.class_days.content.wednesday}
+                            />
                             <span>Wed</span>
                         </label>
                         <label htmlFor="class_days_thursday">
@@ -280,7 +285,9 @@ export function BasicCourseInfo(props){
                                    name="class_days"
                                    id="class_days_thursday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.class_days.content.thursday}
+                            />
                             <span>Thu</span>
                         </label>
                         <label htmlFor="class_days_friday">
@@ -289,7 +296,9 @@ export function BasicCourseInfo(props){
                                    name="class_days"
                                    id="class_days_friday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.class_days.content.friday}
+                            />
                             <span>Fri</span>
                         </label>
                         <label htmlFor="class_days_saturday">
@@ -298,7 +307,9 @@ export function BasicCourseInfo(props){
                                    name="class_days"
                                    id="class_days_saturday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.class_days.content.saturday}
+                            />
                             <span>Sat</span>
                         </label>
                         <label htmlFor="class_days_sunday">
@@ -307,7 +318,9 @@ export function BasicCourseInfo(props){
                                    name="class_days"
                                    id="class_days_sunday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.class_days.content.sunday}
+                            />
                             <span>Sun</span>
                         </label>
                     </p>
@@ -317,6 +330,7 @@ export function BasicCourseInfo(props){
                            name="class_start_time"
                            onChange={handleBasicChange}
                            onBlur={focusChange}
+                           defaultValue={basicInfo.class_start_time.savedState}
                     />
                     <label className="active" htmlFor="class_start_time">Class Start Time:</label>
                 </div>
@@ -325,6 +339,7 @@ export function BasicCourseInfo(props){
                            name="class_end_time"
                            onChange={handleBasicChange}
                            onBlur={focusChange}
+                           defaultValue={basicInfo.class_end_time.savedState}
                     />
                     <label htmlFor="class_end_time" className="active">Class End Time:</label>
                 </div>
@@ -347,7 +362,9 @@ export function BasicCourseInfo(props){
                                    name="lab_days"
                                    id="lab_days_monday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.lab_days.content.monday}
+                            />
                             <span>Mon</span>
                         </label>
                         <label htmlFor="lab_days_tuesday">
@@ -356,7 +373,9 @@ export function BasicCourseInfo(props){
                                    name="lab_days"
                                    id="lab_days_tuesday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.lab_days.content.tuesday}
+                            />
                             <span>Tue</span>
                         </label>
                         <label htmlFor="lab_days_wednesday">
@@ -365,7 +384,9 @@ export function BasicCourseInfo(props){
                                    name="lab_days"
                                    id="lab_days_wednesday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.lab_days.content.wednesday}
+                            />
                             <span>Wed</span>
                         </label>
                         <label htmlFor="lab_days_thursday">
@@ -374,7 +395,9 @@ export function BasicCourseInfo(props){
                                    name="lab_days"
                                    id="lab_days_thursday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.lab_days.content.thursday}
+                            />
                             <span>Thu</span>
                         </label>
                         <label htmlFor="lab_days_friday">
@@ -383,7 +406,9 @@ export function BasicCourseInfo(props){
                                    name="lab_days"
                                    id="lab_days_friday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.lab_days.content.friday}
+                            />
                             <span>Fri</span>
                         </label>
                         <label htmlFor="lab_days_saturday">
@@ -392,7 +417,9 @@ export function BasicCourseInfo(props){
                                    name="lab_days"
                                    id="lab_days_saturday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.lab_days.content.saturday}
+                            />
                             <span>Sat</span>
                         </label>
                         <label htmlFor="lab_days_sunday">
@@ -401,7 +428,9 @@ export function BasicCourseInfo(props){
                                    name="lab_days"
                                    id="lab_days_sunday"
                                    onChange={handleCheckChange}
-                                   type="checkbox"/>
+                                   type="checkbox"
+                                   checked={!!basicInfo.lab_days.content.sunday}
+                            />
                             <span>Sun</span>
                         </label>
                     </p>
@@ -411,6 +440,7 @@ export function BasicCourseInfo(props){
                            name="lab_start_time"
                            onChange={handleBasicChange}
                            onBlur={focusChange}
+                           value={basicInfo.lab_start_time.savedState}
                     />
                     <label className="active" htmlFor="lab_start_time">Lab Start Time:</label>
                 </div>
@@ -419,20 +449,20 @@ export function BasicCourseInfo(props){
                            name="lab_end_time"
                            onChange={handleBasicChange}
                            onBlur={focusChange}
+                           value={basicInfo.lab_end_time.savedState}
                     />
                     <label htmlFor="lab_end_time" className="active">Lab End Time:</label>
                 </div>
                 <div className="col s12">
                         <p id="f1-8" className="simple-radio-group"
-                           onChange={handleBasicChange}
                             onBlur={focusChange}>
                             <span className="radio-title"> Is permission from the instructor required to register?</span>
                             <label>
-                                <input id="perm_req_true" className="with-gap" name="permission_req" value={true} type="radio"/>
+                                <input id="perm_req_true" onClick={handleBasicChange} className="with-gap" name="permission_req" checked={!!basicInfo.permission_req.content} value={true} type="radio"/>
                                 <span>Yes</span>
                             </label>
                             <label>
-                                <input id="perm_req_false" className="with-gap" name="permission_req" type="radio" value={false}/>
+                                <input id="perm_req_false" onClick={handleBasicChange} className="with-gap" name="permission_req" checked={!basicInfo.permission_req.content} type="radio" value={false}/>
                                 <span>No</span>
                             </label>
                         </p>
@@ -440,17 +470,21 @@ export function BasicCourseInfo(props){
                 <div className="col s12 m12 xl6">
                     <label htmlFor="prerequisites">Prerequisites:</label>
                     <ControlledEditor
+                        key={refresh + "prerequisites"}
                         updateContent={handleBasicChange}
                         id="prerequisites"
                         changeFocus={focusChange}
+                        storedContent={basicInfo.prerequisites.savedState}
                     />
                 </div>
                 <div className="col s12 m12 xl6">
                     <label htmlFor="canvas_info">Canvas Information:</label>
                     <ControlledEditor
+                        key={refresh + "canvas_info"}
                         id="canvas_info"
                         updateContent={handleBasicChange}
                         changeFocus={focusChange}
+                        storedContent={basicInfo.canvas_info.savedState}
                     />
                 </div>
             </div>
@@ -459,34 +493,15 @@ export function BasicCourseInfo(props){
 }
 
 export function InstructorInfo(props){
-    const [instructorInfo, setInstructorInfo] = useState({
-        instructor_name:    {content: "", req: true, included: false},
-        office_location:    {content: "", req: false, included: false},
-        office_phone:       {content: "", req: false, included: false},
-        contact_info:       {content: "", req: true, included: false},
-        ta_info:            {content: "", req: false, included: false},
-        department_info:    {content: "", req: false, included: false},
-        educational_phil:   {content: "", req: false, included: false},
-        office_hours:       {content: [{
-                office_start_time: "",
-                office_end_time: "",
-                office_days: {
-                    monday: false,
-                    tuesday: false,
-                    wednesday: false,
-                    thursday: false,
-                    friday: false,
-                    saturday: false,
-                    sunday: false
-                }
-            }], req: false, included: false},
-    });
+    const [instructorInfo, setInstructorInfo] = useState(props.content);
+    const [refresh, setRefresh] = useState(0);
     useEffect(() => {
-        console.log(instructorInfo.office_hours)
+        setInstructorInfo(prev => props.content);
+        setRefresh(prev => prev + 1);
+    }, [props.clearState])
+    useEffect(() => {
         focusChange()
     }, [instructorInfo.office_hours])
-
-
 
     function handleAddOfficeHoursInfo(info, id) {
         const fullOfficeHours = instructorInfo.office_hours.content;
@@ -503,6 +518,7 @@ export function InstructorInfo(props){
             const value = (parseInt(newTime[0]) % 12) + ":" + newTime[1] + (parseInt(newTime[0]) > 12 ? "PM" : "AM");
             const timeType = info.target.name;
             currentOfficeHourSlot[timeType] = value;
+            currentOfficeHourSlot[timeType + "_savedState"] = info.target.value;
         }
         let includedCheck = false;
         // check if currently included
@@ -529,7 +545,9 @@ export function InstructorInfo(props){
 
         let new_add_office_hours = [{
             office_start_time: "",
+            office_start_time_savedState: "",
             office_end_time: "",
+            office_end_time_savedState: "",
             office_days: {
                 monday: false,
                 tuesday: false,
@@ -560,9 +578,16 @@ export function InstructorInfo(props){
         const fieldValue = (info.value !== undefined) ? info.value : info.target.value;
         const required = instructorInfo[fieldName].req;
         const included = (fieldValue !== "" && fieldValue);
-        setInstructorInfo({
-            ...instructorInfo, [fieldName]: {content: fieldValue, req: required, included: included}
-        });
+        if(info.savedState !== undefined){
+            setInstructorInfo({
+                ...instructorInfo, [fieldName]: {content: fieldValue, req: required, included: included, savedState: info.savedState}
+            });
+        }
+        else {
+            setInstructorInfo({
+                ...instructorInfo, [fieldName]: {content: fieldValue, req: required, included: included}
+            });
+        }
     }
 
     return(
@@ -609,25 +634,31 @@ export function InstructorInfo(props){
                 <div className="col s12 m12">
                     <label htmlFor="contact_info"><span className="required-symbol">Contact Information and Preferences:</span></label>
                     <ControlledEditor
+                        key={refresh + "contact_info"}
                         id="contact_info"
                         updateContent={handleBasicChange}
                         changeFocus={focusChange}
+                        storedContent={instructorInfo.contact_info.savedState}
                     />
                 </div>
                 <div className="col s12 m12">
                     <label htmlFor="ta_info">Teaching Assistant(s) Information:</label>
                     <ControlledEditor
+                        key={refresh + "canvas_info"}
                         id="ta_info"
                         updateContent={handleBasicChange}
                         changeFocus={focusChange}
+                        storedContent={instructorInfo.ta_info.savedState}
                     />
                 </div>
                 <div className="col s12 m12">
                     <label htmlFor="educational_phil">Educational Philosophy:</label>
                     <ControlledEditor
+                        key={refresh + "educational_phil"}
                         id="educational_phil"
                         updateContent={handleBasicChange}
                         changeFocus={focusChange}
+                        storedContent={instructorInfo.educational_phil.savedState}
                     />
                 </div>
 
@@ -637,8 +668,8 @@ export function InstructorInfo(props){
                             return (
                                 <AdditionalOfficeHours
                                     add_office_hours_days={instructorInfo.office_hours.content[i].office_days}
-                                    add_office_hours_start_time={instructorInfo.office_hours.content[i].office_start_time}
-                                    add_office_hours_end_time={instructorInfo.office_hours.content[i].office_end_time}
+                                    add_office_hours_start_time={instructorInfo.office_hours.content[i].office_start_time_savedState}
+                                    add_office_hours_end_time={instructorInfo.office_hours.content[i].office_end_time_savedState}
                                     add_office_hours_key={i}
                                     handleAddOfficeHoursInfo={handleAddOfficeHoursInfo}
                                 />
@@ -656,13 +687,12 @@ export function InstructorInfo(props){
 }
 
 export function CourseMaterials(props){
-    const [courseMaterials, setCourseMaterials] = useState({
-        textbook_info:      {content: "", req: true, included: false},
-        add_material_info:  {content: "", req: true, included: false},
-        supp_material_info: {content: "", req: false, included: false},
-        has_no_required:    {content: false, req: true, included: false}
-    });
-
+    const [courseMaterials, setCourseMaterials] = useState(props.content);
+    const [refresh, setRefresh] = useState(0);
+    useEffect(() => {
+        setCourseMaterials(prev => props.content);
+        setRefresh(prev => prev + 1);
+    }, [props.clearState])
     // user has switched to a new field, save new content to overall state
     const focusChange = () => {
         props.updateState(courseMaterials);
@@ -673,9 +703,16 @@ export function CourseMaterials(props){
         const fieldValue = (info.value !== undefined) ? info.value : info.target.value;
         const required = courseMaterials[fieldName].req;
         const included = (fieldValue !== "" && fieldValue);
-        setCourseMaterials({
-            ...courseMaterials, [fieldName]: {content: fieldValue, req: required, included: included}
-        });
+        if(info.savedState !== undefined){
+            setCourseMaterials({
+                ...courseMaterials, [fieldName]: {content: fieldValue, req: required, included: included, savedState: info.savedState}
+            });
+        }
+        else {
+            setCourseMaterials({
+                ...courseMaterials, [fieldName]: {content: fieldValue, req: required, included: included}
+            });
+        }
     }
 
     const handleCheckbox = (info) => {
@@ -696,25 +733,31 @@ export function CourseMaterials(props){
             <div className="col s12">
                 <label htmlFor="textbook_info"><span className="required-symbol">Required Textbooks:</span></label>
                 <ControlledEditor
+                    key={refresh + "textbook_info"}
                     id="textbook_info"
                     updateContent={handleBasicChange}
                     changeFocus={focusChange}
+                    storedContent={courseMaterials.textbook_info.savedState}
                 />
             </div>
             <div className="col s12">
                 <label htmlFor="add_material_info"><span className="required-symbol">Additional Required Materials:</span></label>
                 <ControlledEditor
+                    key={refresh + "add_material_info"}
                     id="add_material_info"
                     updateContent={handleBasicChange}
                     changeFocus={focusChange}
+                    storedContent={courseMaterials.add_material_info.savedState}
                 />
             </div>
             <div className="col s12">
                 <label htmlFor="supp_material_info">Supplementary Readings:</label>
                 <ControlledEditor
+                    key={refresh + "supp_material_info"}
                     id="supp_material_info"
                     updateContent={handleBasicChange}
                     changeFocus={focusChange}
+                    storedContent={courseMaterials.supp_material_info.savedState}
                 />
             </div>
             <div className="col s12">
@@ -723,6 +766,7 @@ export function CourseMaterials(props){
                         <input type="checkbox" className="filled-in" name="has_no_required"
                                onChange={handleCheckbox}
                                onBlur={focusChange}
+                               checked={!!courseMaterials.has_no_required.content}
                         />
                         <span>There are no required materials for this course.</span>
                     </label>
@@ -736,46 +780,15 @@ export function CourseMaterials(props){
 export function CourseDescriptions(props){
     const GRADE_SCALE_INDEX = ["A", "A-", "B+", "B", "B-", "C+", "C", "D", "F"];
 
-    const [courseDescriptions, setCourseDescriptions] = useState({
-        course_description:         {content: "", req: true, included: false},
-        course_goals:               {content: "", req: false, included: false},
-        learning_objs:              {content: "", req: false, included: false},
-        instruction_methods:        {content: "", req: false, included: false},
-        tech_used:                  {content: "", req: false, included: false},
-        student_responsibilities:   {content: "", req: false, included: false},
-        grading_scale_type:         {percent: true, points: false},
-        grading_scale: 				{content: [
-                {letter: "A",   percent: {low: 94, high: 100}, points: {low: 940, high: 1000}},
-                {letter: "A-",  percent: {low: 90, high:  94}, points: {low: 900, high:  940}},
-                {letter: "B+",  percent: {low: 87, high:  90}, points: {low: 870, high:  900}},
-                {letter: "B",   percent: {low: 83, high:  87}, points: {low: 830, high:  870}},
-                {letter: "B-",  percent: {low: 80, high:  83}, points: {low: 800, high:  830}},
-                {letter: "C+",  percent: {low: 77, high:  80}, points: {low: 770, high:  800}},
-                {letter: "C",   percent: {low: 70, high:  77}, points: {low: 700, high:  770}},
-                {letter: "D",   percent: {low: 60, high:  70}, points: {low: 600, high:  700}},
-                {letter: "F",   percent: {low:  0, high:  60}, points: {low:   0, high:  600}},
-            ], req: false, included: true},
-        number_assignment_types:    0,
-        assignment_info:            {content: [
-            {id: 0, title:"", description:"", points_each: 0, num_of: 0, points_total: 0}
-            ], req: false, included: false},
-    });
+    const [courseDescriptions, setCourseDescriptions] = useState(props.content);
+    const [refresh, setRefresh] = useState(0);
+    useEffect(() => {
+        setCourseDescriptions(prev => props.content);
+        setRefresh(prev => prev + 1);
+    }, [props.clearState])
     useEffect(() =>{
-        console.log(courseDescriptions.assignment_info)
         focusChange();
     }, [courseDescriptions.number_assignment_types])
-
-    const [assessmentInfo, setAssessmentInfo] = useState({
-        assignments: [{
-            id: 0,
-            title:"",
-            description:"",
-            points_each: 0,
-            num_of: 0,
-            points_total: 0,
-            percent_total: 0
-        }]
-    });
 
     // onClick function for add assessment button
     // Adds blank assessment object into assessmentInfo.assignment array
@@ -813,6 +826,10 @@ export function CourseDescriptions(props){
         let assignment = courseDescriptions.assignment_info.content[index];
         assignment[name] = value;
 
+        if(info.savedState !== undefined){
+            assignment.savedState = info.savedState;
+        }
+
         let assignments = courseDescriptions.assignment_info.content;
         assignments[index] = assignment;
 
@@ -847,9 +864,16 @@ export function CourseDescriptions(props){
         const fieldValue = (info.value !== undefined) ? info.value : info.target.value;
         const required = courseDescriptions[fieldName].req;
         const included = (fieldValue !== "" && fieldValue);
-        setCourseDescriptions ({
-            ...courseDescriptions, [fieldName]: {content: fieldValue, req: required, included: included}
-        });
+        if(info.savedState !== undefined){
+            setCourseDescriptions({
+                ...courseDescriptions, [fieldName]: {content: fieldValue, req: required, included: included, savedState: info.savedState}
+            });
+        }
+        else {
+            setCourseDescriptions({
+                ...courseDescriptions, [fieldName]: {content: fieldValue, req: required, included: included}
+            });
+        }
     }
 
     const handleCheckChange = (info) => {
@@ -899,39 +923,63 @@ export function CourseDescriptions(props){
             <div className="form-section">
                 <div className="col s12 xl6">
                     <label htmlFor="textbook_info"><span className="required-symbol">Course Description:</span></label>
-                    <ControlledEditor updateContent={handleBasicChange}
-                                        id="course_description"
-                                        changeFocus={focusChange}/>
+                    <ControlledEditor
+                        key={refresh + "textbook_info"}
+                        updateContent={handleBasicChange}
+                        id="course_description"
+                        changeFocus={focusChange}
+                        storedContent={courseDescriptions.course_description.savedState}
+                    />
                 </div>
                 <div className="col s12 xl6">
-                    <label htmlFor="add_material_info">Course Goals:</label>
-                    <ControlledEditor updateContent={handleBasicChange}
-                                      id="course_goals"
-                                      changeFocus={focusChange} />
+                    <label htmlFor="course_goals">Course Goals:</label>
+                    <ControlledEditor
+                        key={refresh + "course_goals"}
+                        updateContent={handleBasicChange}
+                        id="course_goals"
+                        changeFocus={focusChange}
+                        storedContent={courseDescriptions.course_goals.savedState}
+                    />
                 </div>
                 <div className="col s12 xl6">
-                    <label htmlFor="supp_material_info">Learning Objectives for Students:</label>
-                    <ControlledEditor updateContent={handleBasicChange}
-                                      id="learning_objs"
-                                      changeFocus={focusChange}/>
+                    <label htmlFor="learning_objs">Learning Objectives for Students:</label>
+                    <ControlledEditor
+                        key={refresh + "learning_objs"}
+                        updateContent={handleBasicChange}
+                        id="learning_objs"
+                        changeFocus={focusChange}
+                        storedContent={courseDescriptions.learning_objs.savedState}
+                    />
                 </div>
                 <div className="col s12 xl6">
-                    <label htmlFor="supp_material_info">Instructional Methods to be Used:</label>
-                    <ControlledEditor updateContent={handleBasicChange}
-                                      id="instruction_methods"
-                                      changeFocus={focusChange}/>
+                    <label htmlFor="instruction_methods">Instructional Methods to be Used:</label>
+                    <ControlledEditor
+                        key={refresh + "instruction_methods"}
+                        updateContent={handleBasicChange}
+                        id="instruction_methods"
+                        changeFocus={focusChange}
+                        storedContent={courseDescriptions.instruction_methods.savedState}
+                    />
                 </div>
                 <div className="col s12 xl6">
-                    <label htmlFor="supp_material_info">Technology to be Used:</label>
-                    <ControlledEditor updateContent={handleBasicChange}
-                                      id="tech_used"
-                                      changeFocus={focusChange}/>
+                    <label htmlFor="tech_used">Technology to be Used:</label>
+                    <ControlledEditor
+                        key={refresh + "tech_used"}
+                        updateContent={handleBasicChange}
+                        id="tech_used"
+                        changeFocus={focusChange}
+                        storedContent={courseDescriptions.tech_used.savedState}
+                    />
                 </div>
                 <div className="col s12 xl6">
-                    <label htmlFor="supp_material_info">Student Responsibilities:</label>
-                    <ControlledEditor updateContent={handleBasicChange}
-                                      id="student_responsibilities"
-                                      changeFocus={focusChange}/>
+                    <label htmlFor="student_responsibilities">Student Responsibilities:</label>
+                    <ControlledEditor
+                        key={refresh + "student_responsibilities"}
+                        updateContent={handleBasicChange}
+                        id="student_responsibilities"
+                        changeFocus={focusChange}
+                        storedContent={courseDescriptions.student_responsibilities.savedState}
+                    />
                 </div>
                 <div className="col s12">
                     <h4>Grading Scale</h4>
@@ -939,19 +987,39 @@ export function CourseDescriptions(props){
                     the fields in below and totals will be automatically calculated.</p>
                     <div className="col s12">
                         <p id="f4-1" className="simple-radio-group"
-                           onChange={handleCheckChange}
                            onBlur={focusChange}>
                             <span className="radio-title">Format to be Included: </span>
                             <label>
-                                <input id="grading_scale_type_percent" className="with-gap" name="grading_scale_type" value="percent" type="radio"  defaultChecked="defaultChecked"/>
+                                <input id="grading_scale_type_percent"
+                                       className="with-gap"
+                                       name="grading_scale_type"
+                                       value="percent"
+                                       type="radio"
+                                       onClick={handleCheckChange}
+                                       checked={!!courseDescriptions.grading_scale_type.percent && !courseDescriptions.grading_scale_type.points}
+                                />
                                 <span>Percent</span>
                             </label>
                             <label>
-                                <input id="grading_scale_type_points" className="with-gap" name="grading_scale_type" type="radio" value="points" />
+                                <input id="grading_scale_type_points"
+                                       className="with-gap"
+                                       name="grading_scale_type"
+                                       type="radio"
+                                       value="points"
+                                       onClick={handleCheckChange}
+                                       checked={courseDescriptions.grading_scale_type.points && !courseDescriptions.grading_scale_type.percent}
+                                />
                                 <span>Points</span>
                             </label>
                             <label>
-                                <input id="grading_scale_type_both" className="with-gap" name="grading_scale_type" type="radio" value="both"/>
+                                <input id="grading_scale_type_both"
+                                       className="with-gap"
+                                       name="grading_scale_type"
+                                       type="radio"
+                                       value="both"
+                                       onClick={handleCheckChange}
+                                       checked={courseDescriptions.grading_scale_type.points && courseDescriptions.grading_scale_type.percent}
+                                />
                                 <span>Both</span>
                             </label>
                         </p>
@@ -960,61 +1028,65 @@ export function CourseDescriptions(props){
                         <thead>
                         <tr>
                             <td rowSpan="2"></td>
-                            <th colSpan="2" scope="colgroup">Percent</th>
-                            <th colSpan="2" scope="colgroup">Points</th>
+                            <th className={courseDescriptions.grading_scale_type.percent ? "" : "hide"} colSpan="2" scope="colgroup">Percent</th>
+                            <th className={courseDescriptions.grading_scale_type.points ? "" : "hide"} colSpan="2" scope="colgroup">Points</th>
                         </tr>
                         <tr>
-                            <th className="reg-col" scope="col">Min</th>
-                            <th className="reg-col" scope="col">Max</th>
-                            <th className="reg-col" scope="col">Min</th>
-                            <th className="reg-col" scope="col">Max</th>
+                            <th className={"reg-col" + (courseDescriptions.grading_scale_type.percent ? "" : " hide")} scope="col">Min</th>
+                            <th className={"reg-col" + (courseDescriptions.grading_scale_type.percent ? "" : " hide")} scope="col">Max</th>
+                            <th className={"reg-col" + (courseDescriptions.grading_scale_type.points ? "" : " hide")} scope="col">Min</th>
+                            <th className={"reg-col" + (courseDescriptions.grading_scale_type.points ? "" : " hide")} scope="col">Max</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <th scope="row">A</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_0L"
                                        name="percent_low_0"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[0].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_0H"
                                        name="percent_high_0"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[0].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_0L"
                                        name="points_low_0"
                                        type="number"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[0].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_0H"
                                        name="points_high_0"
                                        type="number"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[0].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1024,50 +1096,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">A-</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_1L"
                                        name="percent_low_1"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[1].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_1H"
                                        name="percent_high_1"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[1].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_1L"
                                        name="points_low_1"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[1].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_1H"
                                        name="points_high_1"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[1].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1077,50 +1153,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">B+</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_2L"
                                        name="percent_high_2"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[2].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_2H"
                                        name="percent_high_2"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[2].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_2L"
                                        name="points_low_2"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[2].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_2H"
                                        name="points_high_2"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[2].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1130,50 +1210,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">B</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_3L"
                                        name="percent_high_3"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[3].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_3H"
                                        name="percent_high_3"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[3].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_3L"
                                        name="points_low_3"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[3].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_3H"
                                        name="points_high_3"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[3].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1183,50 +1267,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">B-</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_4L"
                                        name="percent_high_4"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[4].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_4H"
                                        name="percent_high_4"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[4].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_4L"
                                        name="points_low_4"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[4].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_4H"
                                        name="points_high_4"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[4].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1236,50 +1324,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">C+</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_5L"
                                        name="percent_high_5"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[5].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_5H"
                                        name="percent_high_5"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[5].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_5L"
                                        name="points_low_5"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[5].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_5H"
                                        name="points_high_5"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[5].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1289,50 +1381,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">C</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_6L"
                                        name="percent_low_6"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[6].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_6H"
                                        name="percent_high_6"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[6].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_6L"
                                        name="points_low_6"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[6].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_6H"
                                        name="points_high_6"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[6].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1342,50 +1438,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">D</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_7L"
                                        name="percent_low_7"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[7].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_7H"
                                        name="percent_high_7"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[7].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_7L"
                                        name="points_low_7"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[7].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_7H"
                                        name="points_high_7"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[7].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1395,50 +1495,54 @@ export function CourseDescriptions(props){
                         </tr>
                         <tr>
                             <th scope="row">F</th>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_8L"
                                        name="percent_low_8"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[8].percent.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.percent ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_percent_8H"
                                        name="percent_high_8"
                                        type="number"
                                        min="0"
                                        max="100"
+                                       disabled={!!courseDescriptions.grading_scale_type.percent ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[8].percent.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>%</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_8L"
                                        name="points_low_8"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[8].points.low}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
                                 />
                                 <label>pts</label>
                             </td>
-                            <td>
+                            <td className={courseDescriptions.grading_scale_type.points ? "" : "hide"}>
                                 <input placeholder="0"
                                        id="gs_points_8H"
                                        name="points_high_8"
                                        type="number"
                                        min="0"
+                                       disabled={!!courseDescriptions.grading_scale_type.points ? "" : "disabled"}
                                        value={courseDescriptions.grading_scale.content[8].points.high}
                                        onChange={handleGradingScale}
                                        onBlur={focusChange}
@@ -1460,7 +1564,9 @@ export function CourseDescriptions(props){
                                 assignment_points_each={courseDescriptions.assignment_info.content[i].points_each}
                                 assignment_num_of={courseDescriptions.assignment_info.content[i].num_of}
                                 assignment_points_total={courseDescriptions.assignment_info.content[i].points_total}
+                                assignment_percent_total={courseDescriptions.assignment_info.content[i].percent_total}
                                 assignment_description={courseDescriptions.assignment_info.content[i].description}
+                                assignment_savedState={courseDescriptions.assignment_info.content[i].savedState}
                                 handleAssessmentInfo={info => {
                                     handleAssessmentInfo(info, i);
                                 }}
@@ -1484,21 +1590,12 @@ export function CourseDescriptions(props){
 }
 
 export function CoursePolicies(props){
-    const [coursePolicies, setCoursePolicies] = useState({
-        academic_integrity:     {content: "", req: true, included: false, checked: true},
-        grading:                {content: "", req: true, included: false, checked: true},
-        exam_policy:            {content: "", req: true, included: false, checked: true},
-        disability_statement:   {content: "", req: true, included: false, checked: true},
-        edu_equity:             {content: "", req: true, included: false, checked: true},
-        mandated_reporting:     {content: "", req: true, included: false, checked: true},
-        attendance:             {content: "", req: false, included: false, checked: false},
-        class_participation:    {content: "", req: false, included: false, checked: false},
-        missed_assignments:     {content: "", req: false, included: false, checked: false},
-        extra_credit:           {content: "", req: false, included: false, checked: false},
-        lab_safety:             {content: "", req: false, included: false, checked: false},
-        emergency_statement:    {content: "", req: false, included: false, checked: false},
-        code_of_conduct:        {content: "", req: false, included: false, checked: false}
-    });
+    const [coursePolicies, setCoursePolicies] = useState(props.content);
+    const [refresh, setRefresh] = useState(0);
+    useEffect(() => {
+        setCoursePolicies(prev => props.content);
+        setRefresh(prev => prev + 1);
+    }, [props.clearState])
     useEffect(() => {
         props.updateState(coursePolicies);
     }, [
@@ -1528,9 +1625,16 @@ export function CoursePolicies(props){
         const required = coursePolicies[fieldName].req;
         const included = (fieldValue !== "" && fieldValue);
         const checked = coursePolicies[fieldName].checked;
-        setCoursePolicies({
-            ...coursePolicies, [fieldName]: {content: fieldValue, req: required, included: included, checked: checked}
-        });
+        if(info.savedState !== undefined) {
+            setCoursePolicies({
+                ...coursePolicies, [fieldName]: {content: fieldValue, req: required, included: included, checked: checked, savedState: info.savedState}
+            });
+        }
+        else {
+            setCoursePolicies({
+                ...coursePolicies, [fieldName]: {content: fieldValue, req: required, included: included, checked: checked}
+            });
+        }
     }
 
     const handleCheckChange = (info) => {
@@ -1587,9 +1691,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="grading">
                                         <p className="emph">Your Grading Policy:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="grading"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "grading"}
+                                        updateContent={handleBasicChange}
+                                        id="grading"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.grading.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: GRADING}}/>
                                 </div>
@@ -1610,9 +1718,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="exam_policy">
                                         <p className="emph">Your Exam Policy:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="exam_policy"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "exam_policy"}
+                                        updateContent={handleBasicChange}
+                                        id="exam_policy"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.exam_policy.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: EXAMINATION}}/>
                                 </div>
@@ -1671,7 +1783,12 @@ export function CoursePolicies(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="attendance" className="filled-in" onChange={handleCheckChange}/>
+                                <input type="checkbox"
+                                       name="attendance"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!coursePolicies.attendance.checked}
+                                />
                                 <span>Attendance Policy</span>
                             </label>
                             <button type="button" className="col-sm-1 form-dropdown-button collapsed right" data-toggle="collapse"
@@ -1683,9 +1800,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="attendance">
                                         <p className="emph">Your Attendance, Lateness, and Missed Class Policy:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="attendance"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "exam_policy"}
+                                        updateContent={handleBasicChange}
+                                        id="attendance"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.attendance.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: ATTENDANCE}}/>
                                 </div>
@@ -1693,7 +1814,12 @@ export function CoursePolicies(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="class_participation" className="filled-in" onChange={handleCheckChange} />
+                                <input type="checkbox"
+                                       name="class_participation"
+                                       className="filled-in"
+                                       checked={!!coursePolicies.class_participation.checked}
+                                       onChange={handleCheckChange}
+                                />
                                 <span>Class Participation</span>
                                 </label>
                             <button type="button" className="col-sm-1 form-dropdown-button collapsed right" data-toggle="collapse"
@@ -1705,9 +1831,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="class_participation">
                                         <p className="emph">Your Attendance, Lateness, and Missed Class Policy:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="class_participation"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "class_participation"}
+                                        updateContent={handleBasicChange}
+                                        id="class_participation"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.class_participation.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: PARTICIPATION}}/>
                                 </div>
@@ -1715,10 +1845,15 @@ export function CoursePolicies(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="missed_assignments" className="filled-in" onChange={handleCheckChange} />
+                                <input type="checkbox"
+                                       name="missed_assignments"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!coursePolicies.missed_assignments.checked}
+                                />
                                 <span>Missed Assignments and Exams</span>
                                 </label>
-                            <button type="button" name="grading" className="col-sm-1 form-dropdown-button  collapsed right" data-toggle="collapse"
+                            <button type="button" className="col-sm-1 form-dropdown-button  collapsed right" data-toggle="collapse"
                                     data-target="#course_policies-9" aria-expanded="false" aria-controls="course_policies-9">
                                 <i className="material-icons right">keyboard_arrow_down</i>
                             </button>
@@ -1726,9 +1861,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="missed_assignments">
                                         <p className="emph">Your Missed Assignments, Quizzes and Exams Policy:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="missed_assignments"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "missed_assignments"}
+                                        updateContent={handleBasicChange}
+                                        id="missed_assignments"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.missed_assignments.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: MISSED_ASSIGNMENTS}}/>
                                 </div>
@@ -1736,7 +1875,12 @@ export function CoursePolicies(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="extra_credit" className="filled-in" onChange={handleCheckChange} />
+                                <input type="checkbox"
+                                       name="extra_credit"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!coursePolicies.extra_credit.checked}
+                                />
                                 <span>Extra Credit</span>
                             </label>
                             <button type="button" className="col-sm-1 form-dropdown-button collapsed right" data-toggle="collapse"
@@ -1748,9 +1892,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="extra_credit">
                                         <p className="emph">Your Extra Credit Policy:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="extra_credit"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "extra_credit"}
+                                        updateContent={handleBasicChange}
+                                        id="extra_credit"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.extra_credit.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: EXTRA_CREDIT}}/>
                                 </div>
@@ -1758,7 +1906,12 @@ export function CoursePolicies(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="lab_safety" className="filled-in" onChange={handleCheckChange} />
+                                <input type="checkbox"
+                                       name="lab_safety"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!coursePolicies.lab_safety.checked}
+                                />
                                 <span>Laboratory Safety</span>
                                 </label>
                             <button type="button" className="col-sm-1 form-dropdown-button collapsed right" data-toggle="collapse"
@@ -1769,9 +1922,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="lab_safety">
                                         <p className="emph">Your Lab Safety Policy:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="lab_safety"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "lab_safety"}
+                                        updateContent={handleBasicChange}
+                                        id="lab_safety"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.lab_safety.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: LAB_SAFETY}}/>
                                 </div>
@@ -1779,7 +1936,12 @@ export function CoursePolicies(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="emergency_statement" className="filled-in" onChange={handleCheckChange} />
+                                <input type="checkbox"
+                                       name="emergency_statement"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!coursePolicies.emergency_statement.checked}
+                                />
                                 <span>Emergency Statement</span>
                             </label>
                             <button type="button" className="col-sm-1 form-dropdown-button collapsed right" data-toggle="collapse"
@@ -1790,9 +1952,13 @@ export function CoursePolicies(props){
                                 <div className="policy-box">
                                     <label htmlFor="emergency_statement">
                                         <p className="emph">Your Emergency Statement:</p></label>
-                                    <ControlledEditor updateContent={handleBasicChange}
-                                                      id="emergency_statement"
-                                                      changeFocus={focusChange}/>
+                                    <ControlledEditor
+                                        key={refresh + "emergency_statement"}
+                                        updateContent={handleBasicChange}
+                                        id="emergency_statement"
+                                        changeFocus={focusChange}
+                                        storedContent={coursePolicies.emergency_statement.savedState}
+                                    />
                                     <p className="emph">Suggested Policy Wording:</p>
                                     <div dangerouslySetInnerHTML={{__html: EMERGENCY_STATEMENT}}/>
                                 </div>
@@ -1800,7 +1966,12 @@ export function CoursePolicies(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="code_of_conduct" className="filled-in" onChange={handleCheckChange} />
+                                <input type="checkbox"
+                                       name="code_of_conduct"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!coursePolicies.code_of_conduct.checked}
+                                />
                                 <span>Penn State’s Code of Conduct</span>
                             </label>
                             <button type="button" className="col-sm-1 form-dropdown-button collapsed right" data-toggle="collapse"
@@ -1823,16 +1994,12 @@ export function CoursePolicies(props){
 }
 
 export function CourseSchedule(props){
-    const [courseScheduleInfo, setCourseScheduleInfo] = useState({
-        syllabus_changes:       {content: "", req: false, included: false},
-        test_dates:             {content: "", req: false, included: false},
-        major_assignment_dates: {content: "", req: false, included: false},
-        special_events:         {content: "", req: false, included: false},
-        start_date:             {content: "", req: false, included: false},
-        end_date:               {content: "", req: false, included: false},
-        schedule:				{content: [], req: false, included: false},
-        add_schedule: 			{content: false, req: false, included: false},
-    });
+    const [courseScheduleInfo, setCourseScheduleInfo] = useState(props.content);
+    const [refresh, setRefresh] = useState(0);
+    useEffect(() => {
+        setCourseScheduleInfo(prev => props.content);
+        setRefresh(prev => prev + 1);
+    }, [props.clearState])
     useEffect(() => {
         props.updateState(courseScheduleInfo);
     })
@@ -1923,7 +2090,7 @@ export function CourseSchedule(props){
             <div className="form-section">
                 <div className="form-divider col s12"></div>
                 <div className="input-field col s12 m6">
-                    <input id="cs_start_date" type="date" class="validate"
+                    <input id="cs_start_date" type="date" className="validate"
                            name="start_date"
                            value={courseScheduleInfo.start_date.content}
                            onChange={handleBasicChange}
@@ -1933,7 +2100,7 @@ export function CourseSchedule(props){
                     <span className="helper-text" data-error="Required"></span>
                 </div>
                 <div className="input-field col s12 m6">
-                    <input id="cs_end_date" type="date" class="validate"
+                    <input id="cs_end_date" type="date" className="validate"
                            name="end_date"
                            value={courseScheduleInfo.end_date.content}
                            onChange={handleBasicChange}
@@ -1956,6 +2123,7 @@ export function CourseSchedule(props){
                         <label>
                             <input type="checkbox" className="filled-in" id="include-schedule"
                                    onChange={handleScheduleInclude}
+                                   checked={!!courseScheduleInfo.add_schedule.content}
                             />
                             <span>Include a schedule in the syllabus.</span>
                         </label>
@@ -1982,18 +2150,22 @@ export function CourseSchedule(props){
 }
 
 export function AvailableStudentServices(props){
-    const [supportServices, setSupportServices] = useState({
-        learning_center:        {content: "", req: false, included: false, checked: false},
-        disability:             {content: "", req: true, included: false, checked: true},
-        library:                {content: "", req: false, included: false, checked: false},
-        academic_advising:      {content: "", req: false, included: false, checked: false},
-        career:                 {content: "", req: false, included: false, checked: false},
-        counselling:            {content: "", req: true, included: false, checked: true},
-        tech_help:              {content: "", req: false, included: false, checked: false}
-    });
+    const [supportServices, setSupportServices] = useState(props.content);
+    const [refresh, setRefresh] = useState(0);
+    useEffect(() => {
+        setSupportServices(prev => props.content);
+        setRefresh(prev => prev + 1);
+    }, [props.clearState])
     useEffect( () => {
         props.updateState(supportServices);
-    })
+    }, [
+        supportServices.academic_advising.checked,
+        supportServices.disability.checked,
+        supportServices.learning_center.checked,
+        supportServices.library.checked,
+        supportServices.counselling.checked,
+        supportServices.career.checked
+    ])
 
     const handleCheckChange = (info) => {
         const fieldName = info.target.name;
@@ -2019,7 +2191,12 @@ export function AvailableStudentServices(props){
                     <ul id="student_service_accordion">
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="learning_center" className="filled-in" onChange={handleCheckChange}/>
+                                <input type="checkbox"
+                                       name="learning_center"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!supportServices.learning_center.checked}
+                                />
                                 <span>Russell E. Horn Sr. Learning Center, SEC 201</span>
                             </label>
                             <button type="button" className="form-dropdown-button collapsed right" data-toggle="collapse"
@@ -2035,7 +2212,12 @@ export function AvailableStudentServices(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="disability" className="filled-in" checked="checked" disabled="disabled"/>
+                                <input type="checkbox"
+                                       name="disability"
+                                       className="filled-in"
+                                       checked="checked"
+                                       disabled="disabled"
+                                />
                                 <span>Disability Services, SEC 205</span>
                                 <span className="required-symbol"></span>
                             </label>
@@ -2052,7 +2234,12 @@ export function AvailableStudentServices(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="library" className="filled-in" onChange={handleCheckChange}/>
+                                <input type="checkbox"
+                                       name="library"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!supportServices.library.checked}
+                                />
                                 <span>Library Services</span>
                             </label>
                             <button type="button" className="collapsed right form-dropdown-button" data-toggle="collapse"
@@ -2068,7 +2255,12 @@ export function AvailableStudentServices(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="academic_advising" className="filled-in" onChange={handleCheckChange}/>
+                                <input type="checkbox"
+                                       name="academic_advising"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!supportServices.academic_advising.checked}
+                                />
                                 <span>Academic Advising, SEC 204</span>
                             </label>
                             <button type="button" className="collapsed right form-dropdown-button" data-toggle="collapse"
@@ -2084,7 +2276,12 @@ export function AvailableStudentServices(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="career" className="filled-in" onChange={handleCheckChange} />
+                                <input type="checkbox"
+                                       name="career"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!supportServices.career.checked}
+                                />
                                 <span>Career Services & Student Conduct, SEC 212</span>
                             </label>
                             <button type="button" className="collapsed right form-dropdown-button" data-toggle="collapse"
@@ -2100,7 +2297,11 @@ export function AvailableStudentServices(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="counselling" className="filled-in" checked="checked" disabled="disabled"/>
+                                <input type="checkbox"
+                                       name="counselling"
+                                       className="filled-in"
+                                       checked="checked"
+                                       disabled="disabled"/>
                                 <span>Counseling & Psychological Services, SEC 205</span>
                                 <span className="required-symbol"></span>
                             </label>
@@ -2117,7 +2318,12 @@ export function AvailableStudentServices(props){
                         </li>
                         <li className="policy-list-item col-sm-12">
                             <label>
-                                <input type="checkbox" name="tech_help" className="filled-in" onChange={handleCheckChange}/>
+                                <input type="checkbox"
+                                       name="tech_help"
+                                       className="filled-in"
+                                       onChange={handleCheckChange}
+                                       checked={!!supportServices.tech_help.checked}
+                                />
                                 <span>Technology Help Desk, Basement of Olmsted Building</span>
                             </label>
                             <button type="button" className="collapsed right form-dropdown-button" data-toggle="collapse"
