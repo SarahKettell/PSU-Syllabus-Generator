@@ -18,8 +18,6 @@ export default function Assignment(props) {
     let description = props.assignment_description;
     let descriptionState = props.assignment_savedState;
 
-    console.log(props)
-
     let handleAssessmentInfo = props.handleAssessmentInfo;
     let deleteAssignment = props.deleteAssignment;
     let focusChange = props.handleFocusChange;
@@ -51,6 +49,7 @@ export default function Assignment(props) {
                 <input
                     type="number"
                     id={"points_each_" + assignmentID}
+                    min="0"
                     placeholder="5"
                     name="points_each"
                     value={points_each}
@@ -63,6 +62,7 @@ export default function Assignment(props) {
                 <input
                     type="number"
                     id={"num_of_" + assignmentID}
+                    min="0"
                     placeholder="4"
                     name="num_of"
                     value={num_of}
@@ -71,22 +71,16 @@ export default function Assignment(props) {
                 />
             </div>
             <div className="input-field col s12 m3">
-                <label className="active" htmlFor={"points_total_" + assignmentID}>Points Total:</label>
-                <input
-                    type="number"
-                    id={"points_total_" + assignmentID}
-                    placeholder="50"
-                    name="points_total"
-                    value={points_total}
-                    onChange={handleAssessmentInfo}
-                    onBlur={focusChange}
-                />
+                <label className="active" htmlFor={"points_total_" + assignmentID}>Total Points:</label>
+                <div className="pointsTotal valign-wrapper"><span>{points_total}</span></div>
             </div>
             <div className="input-field col s12 m3">
                 <label className="active" htmlFor={"percent_total_" + assignmentID}>Percent of Total Grade:</label>
                 <input
                     type="number"
                     id={"percent_total_" + assignmentID}
+                    min="0"
+                    max="100"
                     placeholder="50"
                     name="percent_total"
                     value={percent_total}

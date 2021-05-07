@@ -457,4 +457,12 @@ table.table .hide input:disabled{
     padding: 30px 30px 10px 0;
 }
 
+.content-container .pointsTotal{
+    font-size: 16px;
+    height:3rem;
+}
+
+.content-container .pointsTotal span{
+    display: block;
+}
 

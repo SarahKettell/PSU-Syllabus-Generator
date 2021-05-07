@@ -575,9 +575,26 @@ export function InstructorInfo(props){
 
     const handleBasicChange = (info) => {
         const fieldName = (info.id) ? info.id : info.target.name;
-        const fieldValue = (info.value !== undefined) ? info.value : info.target.value;
+        let fieldValue = (info.value !== undefined) ? info.value : info.target.value;
         const required = instructorInfo[fieldName].req;
         const included = (fieldValue !== "" && fieldValue);
+        console.log(fieldName, fieldValue);
+        if(fieldName === "office_phone"){
+            const phoneNumerals = fieldValue.replace(/[ +-/()]/gi, '');
+            console.log(phoneNumerals)
+            if(phoneNumerals.length > 3 && phoneNumerals.length <= 6){
+                fieldValue = "(" + phoneNumerals.substr(0,3) + ") " + phoneNumerals.substr(3);
+            }
+            else if(phoneNumerals.length > 6 && phoneNumerals.length < 11){
+                fieldValue = "(" + phoneNumerals.substr(0,3) + ") " + phoneNumerals.substr(3,3) + "-" + phoneNumerals.substr(6);
+            }
+            else if(phoneNumerals.length >= 11){
+                fieldValue = "+" + phoneNumerals.substr(0,1) + " (" + phoneNumerals.substr(1,3) + ") " + phoneNumerals.substr(4,3) + "-" + phoneNumerals.substr(7);
+            }
+            // else {
+            //     fieldValue = phoneNumerals;
+            // }
+        }
         if(info.savedState !== undefined){
             setInstructorInfo({
                 ...instructorInfo, [fieldName]: {content: fieldValue, req: required, included: included, savedState: info.savedState}
@@ -624,8 +641,9 @@ export function InstructorInfo(props){
                 </div>
                 <div className="input-field col s12 m6">
                     <label htmlFor="phone">Office Phone:</label>
-                    <input type="tel" id="phone" name="phone" placeholder="000-000-0000" required=""
+                    <input type="tel" id="phone" name="phone" placeholder="(000) 000-0000" required=""
                            name="office_phone"
+                           minlength="0" maxlength="17"
                            value={instructorInfo.office_phone.content}
                            onChange={handleBasicChange}
                            onBlur={focusChange}
@@ -823,8 +841,12 @@ export function CourseDescriptions(props){
         const required = courseDescriptions.assignment_info.req;
         const include = courseDescriptions.assignment_info.included || value !== "";
 
+        console.log(name, value);
         let assignment = courseDescriptions.assignment_info.content[index];
         assignment[name] = value;
+        if(name === "points_each" || name === "num_of"){
+            assignment.points_total = assignment.points_each * assignment.num_of;
+        }
 
         if(info.savedState !== undefined){
             assignment.savedState = info.savedState;

@@ -18,9 +18,10 @@ export default function SyllabusRequirements(){
                 <div>
                     <p className="alert"><span className="emph">Updates:</span><br/>
                         - Content entered into the syllabus generator is now saved locally in your
-                        browser and can be returned to if you refresh or leave the page. (05/06/2021)<br />
-                        - "Start Over" button to clear content entered. (05/06/2021)<br/>
-                        - Toggle of Grading Scale to clearly show whether percent, points, or both are used (05/06/2021)
+                        browser and can be returned to if you refresh or leave the page. (05/07/2021)<br />
+                        - "Start Over" button to clear content entered. (05/07/2021)<br/>
+                        - Toggle of Grading Scale to clearly show whether percent, points, or both are used (05/07/2021)<br/>
+                        - Minor design changes (05/07/2021)
                     </p>
                 </div>
             </div>
