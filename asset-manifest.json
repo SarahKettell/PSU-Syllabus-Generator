@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/PSU-Syllabus-Generator/static/css/main.2afd9fb8.chunk.css",
+    "main.css": "/PSU-Syllabus-Generator/static/css/main.969df7d1.chunk.css",
     "main.js": "/PSU-Syllabus-Generator/static/js/main.939221ae.chunk.js",
     "main.js.map": "/PSU-Syllabus-Generator/static/js/main.939221ae.chunk.js.map",
     "runtime-main.js": "/PSU-Syllabus-Generator/static/js/runtime-main.e3870700.js",
@@ -10,14 +10,14 @@
     "static/js/2.668d5fbe.chunk.js.map": "/PSU-Syllabus-Generator/static/js/2.668d5fbe.chunk.js.map",
     "index.html": "/PSU-Syllabus-Generator/index.html",
     "static/css/2.979034dc.chunk.css.map": "/PSU-Syllabus-Generator/static/css/2.979034dc.chunk.css.map",
-    "static/css/main.2afd9fb8.chunk.css.map": "/PSU-Syllabus-Generator/static/css/main.2afd9fb8.chunk.css.map",
+    "static/css/main.969df7d1.chunk.css.map": "/PSU-Syllabus-Generator/static/css/main.969df7d1.chunk.css.map",
     "static/js/2.668d5fbe.chunk.js.LICENSE.txt": "/PSU-Syllabus-Generator/static/js/2.668d5fbe.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.e3870700.js",
     "static/css/2.979034dc.chunk.css",
     "static/js/2.668d5fbe.chunk.js",
-    "static/css/main.2afd9fb8.chunk.css",
+    "static/css/main.969df7d1.chunk.css",
     "static/js/main.939221ae.chunk.js"
   ]
 }
