@@ -311,8 +311,8 @@ table.table .hide{
     /*visibility: collapse;*/
     display: table-cell!important;
     opacity: 30%;
-    color: rgba(108, 117, 125, 1);
-    background-color: rgba(248, 249, 250, 1);
+    color: #6c757d;
+    background-color: #f8f9fa;
 }
 table.table .hide input,
 table.table .hide input:disabled{
